@@ -24,6 +24,8 @@ Consecuencias en el modelo:
 
 **Objetivo:** tener el sitio publicado mientras sigue en desarrollo, con los controles de seguridad operativos desde ahora, y que cada cambio subido a GitHub se publique solo.
 
+**En producción desde el 2026-10-02:** https://cliperia-xi.vercel.app · repositorio privado `dresnac/cliperia` · base y funciones en la misma región (us-east-1 / iad1).
+
 **Infraestructura**
 
 | Pieza | Elección | Por qué |
