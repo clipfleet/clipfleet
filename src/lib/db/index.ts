@@ -7,6 +7,7 @@ import { drizzle as drizzlePglite } from "drizzle-orm/pglite";
 import { migrate as migratePglite } from "drizzle-orm/pglite/migrator";
 import { Pool, type PoolConfig } from "pg";
 import * as schema from "./schema";
+import { SUPABASE_ROOT_CA } from "./supabase-ca";
 import type { Db } from "./types";
 
 export type { Db, Executor, Tx } from "./types";
@@ -21,9 +22,10 @@ function databaseUrl(): string | undefined {
 }
 
 /**
- * Conexión siempre cifrada fuera de la máquina local. Por defecto verifica el certificado
- * del servidor; con `DATABASE_CA_CERT` (PEM) verifica contra esa autoridad. `DATABASE_SSL=require`
- * cifra sin verificar el certificado: solo para proveedores cuya cadena no es pública.
+ * Conexión siempre cifrada fuera de la máquina local, verificando el certificado del servidor:
+ * contra la raíz fijada de Supabase si el host es de Supabase, contra `DATABASE_CA_CERT` (PEM)
+ * si se define, o contra las raíces públicas del sistema. `DATABASE_SSL=require` cifra sin
+ * verificar y existe solo como salida de emergencia.
  */
 function poolConfig(rawUrl: string): PoolConfig {
   const url = new URL(rawUrl);
@@ -32,7 +34,8 @@ function poolConfig(rawUrl: string): PoolConfig {
   url.searchParams.delete("supa");
   const local = ["localhost", "127.0.0.1", "::1"].includes(url.hostname);
   const mode = process.env.DATABASE_SSL ?? (local ? "disable" : "verify");
-  const ca = process.env.DATABASE_CA_CERT?.replace(/\\n/g, "\n");
+  const supabase = /\.supabase\.(com|co)$/.test(url.hostname);
+  const ca = process.env.DATABASE_CA_CERT?.replace(/\\n/g, "\n") ?? (supabase ? SUPABASE_ROOT_CA : undefined);
   const ssl = mode === "disable" ? false : mode === "require" ? { rejectUnauthorized: false } : { rejectUnauthorized: true, ...(ca ? { ca } : {}) };
   return { connectionString: url.toString(), ssl, max: 5, idleTimeoutMillis: 10_000, connectionTimeoutMillis: 10_000 };
 }

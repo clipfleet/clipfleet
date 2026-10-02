@@ -46,3 +46,7 @@ next-env.d.ts
 
 # herramientas locales
 /.claude/
+
+# archivos que instala la integración de Supabase
+/.agents/
+/skills-lock.json
