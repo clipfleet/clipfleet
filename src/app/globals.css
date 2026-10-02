@@ -1,0 +1,360 @@
+@import "tailwindcss";
+
+/*
+ * Sistema visual. Documentación completa: docs/design-system.md
+ *
+ * Regla de oro: no se usan colores, radios, sombras ni fuentes fuera de estos tokens.
+ * La paleta por defecto de Tailwind está desactivada a propósito.
+ */
+
+@theme {
+  /* ---- Fuente: una sola familia (--font-app la define next/font en <html>) ---- */
+  --font-sans: var(--font-app), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* La monoespaciada es la del sistema y solo se usa para links y códigos que se copian. */
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ---- Color: la paleta de Tailwind se reemplaza entera ---- */
+  --color-*: initial;
+
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Texto: principal / secundario / terciario (rótulos) / decorativo (nunca texto que haya que leer) */
+  --color-ink: #14181c;
+  --color-ink-2: #4b535c;
+  --color-ink-3: #646c76;
+  --color-ink-4: #9aa1a9;
+
+  /* Superficies: blanco y un gris de apoyo */
+  --color-surface: #ffffff;
+  --color-wash: #f7f8f9;
+  --color-wash-2: #eef0f2;
+
+  /* Líneas: contenedores y filas / controles */
+  --color-line: #e5e8ec;
+  --color-line-strong: #cdd2d8;
+
+  /* Acento: verde pino. Acción principal, links, foco, selección. Nada más. */
+  --color-accent: #0c6b4e;
+  --color-accent-hover: #09573f;
+  --color-accent-soft: #e8f3ee;
+  --color-accent-line: #c2ddd0;
+
+  /* Semánticos: texto / fondo tenue / línea */
+  --color-positive: #0b6146;
+  --color-positive-soft: #e6f3ec;
+  --color-positive-line: #c2ddd0;
+
+  --color-warning: #855600;
+  --color-warning-soft: #fbf2dc;
+  --color-warning-line: #ecd9a8;
+
+  --color-negative: #b3261e;
+  --color-negative-soft: #fcecea;
+  --color-negative-line: #f0c6c2;
+
+  --color-info: #33587d;
+  --color-info-soft: #ecf2f8;
+  --color-info-line: #cbd9e8;
+
+  /* ---- Radios: controles 6px, contenedores 10px ---- */
+  --radius-*: initial;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* ---- Sombras: dos niveles ---- */
+  --shadow-*: initial;
+  /* Controles y botones: apenas los despega del fondo. */
+  --shadow-xs: 0 1px 2px 0 rgb(20 24 28 / 0.05);
+  /* Superficie elevada: solo la captura de producto de la landing. */
+  --shadow-raised: 0 1px 2px rgb(20 24 28 / 0.04), 0 16px 40px -16px rgb(20 24 28 / 0.14);
+
+  /* ---- Anchos ---- */
+  --container-page: 70rem;
+  --container-prose: 40rem;
+  --container-form: 30rem;
+}
+
+/* ---------- Roles tipográficos ---------- */
+
+/* Titular de la landing. El tamaño lo pone la pantalla (máximo ~60px). */
+@utility type-display {
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+/* Título de página: el único h1 de cada pantalla. */
+@utility type-page {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* Título de panel o de sección. */
+@utility type-title {
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Rótulo: encabezado de columna, etiqueta de un dato. */
+@utility type-label {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  font-weight: 400;
+}
+
+/* Link de texto: el color de acento. Para links dentro de un párrafo o una línea. */
+@utility link {
+  color: var(--color-accent);
+  font-weight: 500;
+  border-radius: 2px;
+  transition: color 100ms;
+  &:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+/* Link de fila: el nombre que lleva al detalle. Hereda el color y toma el acento al pasar. */
+@utility link-row {
+  border-radius: 2px;
+  transition: color 100ms;
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+/* Oculta la barra de scroll en tiras horizontales. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------- Base ---------- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+
+  /* Foco: un anillo del color de acento. Global: no lo saques ni lo reemplaces. */
+  :where(a, button, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Contenedores que marcan el foco de un input oculto adentro (RadioCards). */
+  .focus-within-ring:has(:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ---------- Controles de formulario ---------- */
+@layer components {
+  /*
+   * Recuadro de Input, Select y Textarea (y del envoltorio de un Input con adornos).
+   * Está en esta capa para que cualquier utilidad (`w-28`, `h-8`) lo pise.
+   */
+  .control {
+    width: 100%;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    box-shadow: var(--shadow-xs);
+    transition:
+      border-color 120ms,
+      box-shadow 120ms;
+  }
+
+  .control::placeholder,
+  .control input::placeholder {
+    color: var(--color-ink-3);
+  }
+
+  .control:hover {
+    border-color: var(--color-ink-4);
+  }
+
+  .control:focus-visible,
+  .control:has(input:focus-visible) {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+
+  .control[aria-invalid="true"],
+  .control:has(input[aria-invalid="true"]) {
+    border-color: var(--color-negative);
+  }
+
+  .control[aria-invalid="true"]:focus-visible,
+  .control:has(input[aria-invalid="true"]:focus-visible) {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-negative) 16%, transparent);
+  }
+
+  .control:disabled,
+  .control:has(input:disabled),
+  .control[readonly] {
+    border-color: var(--color-line);
+    background-color: var(--color-wash);
+    box-shadow: none;
+  }
+
+  .control:disabled,
+  .control:has(input:disabled) {
+    color: var(--color-ink-3);
+    cursor: not-allowed;
+  }
+}
+
+/* ---------- Tabla: modo "ficha" en celular ----------
+ *
+ * Sin capa a propósito: tiene que ganarle a las utilidades de TH/TD.
+ * Se activa con <Table layout="stack">. Ver docs/design-system.md → Table.
+ */
+@media (max-width: 39.99rem) {
+  .table-stack,
+  .table-stack tbody,
+  .table-stack tfoot,
+  .table-stack tr {
+    display: block;
+    min-width: 0;
+  }
+
+  .table-stack thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .table-stack tr {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .table-stack tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .table-stack td,
+  .table-stack tbody th {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.25rem 0;
+    border: 0;
+    position: static;
+    width: auto;
+    background: transparent;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .table-stack td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    text-align: left;
+    color: var(--color-ink-3);
+  }
+
+  .table-stack td:not([data-label])::before {
+    content: none;
+  }
+
+  /* La celda principal de la fila pasa a ser el título de la ficha. */
+  .table-stack td[data-primary],
+  .table-stack tbody th {
+    display: block;
+    text-align: left;
+    padding-bottom: 0.375rem;
+  }
+
+  .table-stack td[data-primary]::before {
+    content: none;
+  }
+
+  /* Celda de acciones: ocupa su propia línea, sin rótulo, controles a la izquierda. */
+  .table-stack td[data-actions] {
+    display: block;
+    padding-top: 0.625rem;
+    text-align: left;
+  }
+
+  .table-stack td[data-actions]::before {
+    content: none;
+  }
+
+  /* Celdas sin contenido (sin acción posible, totales que no aplican): no ocupan lugar en la ficha. */
+  .table-stack td:empty {
+    display: none;
+  }
+
+  /* Pie de totales: una ficha más, sobre el gris de apoyo. */
+  .table-stack tfoot tr {
+    border-bottom: 0;
+    border-top: 1px solid var(--color-line);
+    background: var(--color-wash);
+  }
+
+  .table-stack tfoot th {
+    display: block;
+    padding: 0 0 0.375rem;
+    border: 0;
+    position: static;
+    width: auto;
+    background: transparent;
+    text-align: left;
+  }
+}
