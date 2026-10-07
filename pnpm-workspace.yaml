@@ -2,3 +2,7 @@ allowBuilds:
   esbuild: true
   sharp: false
   unrs-resolver: false
+
+# Versiones mínimas de dependencias indirectas con vulnerabilidades conocidas.
+overrides:
+  source-map-js: ">=1.2.2"
