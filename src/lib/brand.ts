@@ -3,7 +3,7 @@
  * ningún componente ni pantalla lo escribe a mano.
  */
 export const BRAND = {
-  name: "Cliperia",
+  name: "Clipfleet",
   tagline: "Gestión de multicuentas.",
   /** Una línea para metadata y pie de página. */
   description: "Encontrá gente para subir tu contenido en multicuentas y gestioná a tu equipo por resultados.",
