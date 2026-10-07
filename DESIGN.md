@@ -1,4 +1,4 @@
-# DESIGN — Cliperia
+# DESIGN — Clipfleet
 
 Estado: **aprobado el 2026-09-30; modelo vigente revisado el 2026-10-02** (ver "Modelo vigente" justo abajo). Cambios que contradigan este documento se comunican antes de implementarse.
 
@@ -10,7 +10,7 @@ Decisiones del dueño que reemplazan lo que diga el resto del documento donde ha
 - **Sin comisión y sin plata en la plataforma.** Los pagos se hacen por fuera, exclusivamente entre las dos partes. La plataforma calcula cuánto corresponde según la regla y las vistas aprobadas (liquidación), el contratador marca "pagado" y el trabajador confirma el cobro. No hay saldo, depósitos, retiros ni panel de administración.
 - **Solo gestión de multicuentas** (definición en §1).
 - **Interfaz minimalista y profesional.** Dirección visual elegida: clara y sobria (fondo blanco, grises, un acento, tipografía sans precisa, líneas finas, mucho aire; referencias Stripe, Mercury, Ramp). Tiene que leerse como infraestructura de una industria, no como un proyecto de fin de semana.
-- **Nombre:** Cliperia. Vive en una sola constante, `src/lib/brand.ts`.
+- **Nombre:** Clipfleet. Vive en una sola constante, `src/lib/brand.ts`.
 
 Consecuencias en el modelo:
 
@@ -24,15 +24,15 @@ Consecuencias en el modelo:
 
 **Objetivo:** tener el sitio publicado mientras sigue en desarrollo, con los controles de seguridad operativos desde ahora, y que cada cambio subido a GitHub se publique solo.
 
-**En producción desde el 2026-10-02:** https://cliperia-xi.vercel.app · repositorio privado `dresnac/cliperia` · base y funciones en la misma región (us-east-1 / iad1).
+**En producción desde el 2026-10-02:** https://www.clipfleet.app · repositorio privado `clipfleet/clipfleet` (cuentas propias del proyecto desde el 2026-10-08) · base y funciones en la misma región (us-east-1 / iad1).
 
 **Infraestructura**
 
 | Pieza | Elección | Por qué |
 |---|---|---|
-| Hosting | Vercel, proyecto `cliperia` en la cuenta actual | Despliegue automático desde GitHub, HTTPS y vistas previas por rama sin configurar nada |
+| Hosting | Vercel, proyecto `clipfleet` en la cuenta del proyecto | Publica GitHub Actions con un token (el plan gratuito de Vercel solo publica commits del dueño de la cuenta), HTTPS y vistas previas por rama sin configurar nada |
 | Base de datos | Supabase (Postgres, plan gratuito) vía Vercel Marketplace, usada solo como base de datos | Postgres real con conexión cifrada; las variables se cargan solas en Vercel. Las migraciones corren en cada despliegue a producción. Todas las tablas tienen Row Level Security sin políticas, para que la API pública de datos de Supabase no exponga nada: la app entra por conexión directa como dueña |
-| Repositorio | GitHub privado `cliperia` | `main` publica a producción; cada rama o pull request genera una vista previa |
+| Repositorio | GitHub privado `clipfleet/clipfleet` | `main` publica a producción; cada rama o pull request genera una vista previa |
 | Control de cambios | GitHub Actions corre tipos, lint y tests en cada push; Dependabot avisa de dependencias vulnerables | Que nada roto llegue a producción |
 
 **Autenticación:** se mantiene Better Auth (gratis, usuarios en nuestra base, sin servicio externo) y se endurece:

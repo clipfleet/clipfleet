@@ -30,3 +30,28 @@ jobs:
       - run: pnpm test
       - name: Dependencias con vulnerabilidades conocidas
         run: pnpm audit --prod --audit-level high
+
+  # Publica en Vercel con un token de la cuenta del proyecto. Se hace desde acá, y no con la
+  # integración de Git de Vercel, porque el plan gratuito solo publica commits del dueño de la cuenta.
+  publicar:
+    needs: verificar
+    if: github.repository_owner == 'clipfleet' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Producción
+        if: github.event_name == 'push'
+        run: npx --yes vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"
+      - name: Vista previa
+        if: github.event_name == 'pull_request'
+        run: |
+          url=$(npx --yes vercel@latest deploy --yes --token "$VERCEL_TOKEN")
+          echo "Vista previa: $url" >> "$GITHUB_STEP_SUMMARY"

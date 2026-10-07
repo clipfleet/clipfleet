@@ -24,7 +24,7 @@ import type { Db } from "./types";
  * Cuentas (todas con la contraseña DEMO_PASSWORD):
  *   contratador@demo.local · clipper@demo.local · clipper2@demo.local · nuevo@demo.local
  */
-export const DEMO_PASSWORD = "demo-cliperia";
+export const DEMO_PASSWORD = "demo-clipfleet";
 
 const DAY = 24 * 60 * 60 * 1000;
 const daysAgo = (n: number) => new Date(Date.now() - n * DAY);

@@ -1,9 +1,9 @@
-# Cliperia
+# Clipfleet
 
 Punto de encuentro entre creadores de contenido y gestores de multicuentas: gente que crea cuentas descartables para subir ese contenido de forma masiva. Bolsa de búsquedas, perfiles con trayecto, y herramientas para que el contratador gestione a su equipo: rendimiento por persona y cálculo de lo que le corresponde a cada uno. Los pagos se hacen por fuera, entre las partes; la plataforma no cobra comisión.
 
-- **Sitio (en desarrollo):** https://cliperia-xi.vercel.app
-- **Repositorio:** https://github.com/dresnac/cliperia (privado)
+- **Sitio (en desarrollo):** https://www.clipfleet.app
+- **Repositorio:** https://github.com/clipfleet/clipfleet (privado)
 
 El diseño del producto está en [DESIGN.md](DESIGN.md) y el sistema visual en [docs/design-system.md](docs/design-system.md).
 
@@ -33,8 +33,9 @@ En local alcanza con `.env.local` (copiar de `.env.example`). En producción las
 
 ## Trabajar de a dos
 
-- `main` es producción: cada commit que entra a `main` se publica solo en Vercel (antes corren las migraciones de la base).
-- Para un cambio: rama nueva → push → pull request. GitHub corre tipos, lint, tests y auditoría de dependencias, y Vercel arma una vista previa.
+- `main` es producción: cada commit que entra a `main` lo publica GitHub Actions en Vercel, sin importar quién lo hizo (antes corren los chequeos y las migraciones de la base).
+- Para un cambio: rama nueva → push → pull request. GitHub corre tipos, lint, tests y auditoría de dependencias, y publica una vista previa.
+- La publicación usa tres secretos del repositorio: `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID`.
 - Las vistas previas usan la misma base que producción y no aplican migraciones: un cambio de esquema se prueba en local antes de integrarlo.
 
 ## Seguridad

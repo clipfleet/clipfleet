@@ -44,7 +44,7 @@ function createAuth() {
       updateAge: 60 * 60 * 24, // se renueva una vez por día de uso
     },
     advanced: {
-      cookiePrefix: "cliperia",
+      cookiePrefix: "clipfleet",
       useSecureCookies: isProd,
       defaultCookieAttributes: { httpOnly: true, sameSite: "lax", secure: isProd },
     },
@@ -58,7 +58,7 @@ function createAuth() {
   });
 }
 
-const globalRef = globalThis as unknown as { __cliperiaAuth?: ReturnType<typeof createAuth> };
+const globalRef = globalThis as unknown as { __appAuth?: ReturnType<typeof createAuth> };
 
 /**
  * La autenticación se usa solo desde Server Actions (`getAuth().api.*`). No se monta el handler
@@ -66,5 +66,5 @@ const globalRef = globalThis as unknown as { __cliperiaAuth?: ReturnType<typeof 
  * validaciones y los límites de intentos de los formularios.
  */
 export function getAuth() {
-  return (globalRef.__cliperiaAuth ??= createAuth());
+  return (globalRef.__appAuth ??= createAuth());
 }

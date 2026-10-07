@@ -90,9 +90,9 @@ function closeOnExit(client: PGlite) {
 
 // Una sola conexión por proceso, también con el hot reload de desarrollo. Se abre recién
 // en el primer uso, para que importar este módulo (p. ej. durante `next build`) no conecte.
-const globalRef = globalThis as unknown as { __cliperiaDb?: Connection };
+const globalRef = globalThis as unknown as { __appDb?: Connection };
 function connection(): Connection {
-  return (globalRef.__cliperiaDb ??= connect());
+  return (globalRef.__appDb ??= connect());
 }
 
 export const db = new Proxy({} as Db, {
