@@ -28,9 +28,18 @@ describe("earnedFor", () => {
     expect(earnedFor(cpm, 9_999).amount).toBe(0);
   });
 
-  it("cpm: paga proporcional a las vistas", () => {
+  it("cpm: paga por cada 1.000 vistas completas, sin fracción", () => {
     expect(earnedFor(cpm, 10_000).amount).toBe(500_000);
-    expect(earnedFor(cpm, 12_345).amount).toBe(617_250);
+    expect(earnedFor(cpm, 12_345).amount).toBe(600_000);
+    expect(earnedFor(cpm, 12_999).amount).toBe(600_000);
+    expect(earnedFor(cpm, 13_000).amount).toBe(650_000);
+  });
+
+  it("cpm: $50 cada 1.000 vistas con 1.120 vistas paga $50, no $56", () => {
+    const rule: PayRule = { fixedPerDeliverable: 0, variable: { type: "cpm", ratePerThousand: 5_000 } };
+    expect(earnedFor(rule, 999).amount).toBe(0);
+    expect(earnedFor(rule, 1_120).amount).toBe(5_000);
+    expect(earnedFor(rule, 2_000).amount).toBe(10_000);
   });
 
   it("cpm: respeta el tope por entrega", () => {

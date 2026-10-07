@@ -136,9 +136,6 @@ export async function reportViews(form: FormData): Promise<ActionResult> {
   if (views <= row.deliverable.views) {
     return { error: "Las vistas reportadas tienen que superar las ya aprobadas." };
   }
-  const evidenceRaw = text(form, "evidenceUrl", 2000);
-  const evidenceUrl = evidenceRaw ? httpUrl(evidenceRaw) : null;
-  if (evidenceRaw && !evidenceUrl) return { error: "El link de la captura no es válido." };
 
   // Un solo reporte pendiente por entrega: el nuevo reemplaza al anterior.
   await db.transaction(async (tx) => {
@@ -146,7 +143,7 @@ export async function reportViews(form: FormData): Promise<ActionResult> {
       .update(viewSnapshots)
       .set({ status: "rejected", decidedAt: new Date() })
       .where(and(eq(viewSnapshots.deliverableId, row.deliverable.id), eq(viewSnapshots.status, "pending")));
-    await tx.insert(viewSnapshots).values({ deliverableId: row.deliverable.id, views, evidenceUrl });
+    await tx.insert(viewSnapshots).values({ deliverableId: row.deliverable.id, views });
   });
   refresh(row.contract.id);
 }

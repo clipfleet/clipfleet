@@ -54,7 +54,8 @@ function variableAmount(rule: VariableRule, viewCount: number): { amount: number
   if (rule.type === "cpm") {
     const min = rule.minViews ?? 0;
     if (viewCount < min) return { amount: 0, reason: `no llegó al mínimo de ${min} vistas` };
-    const raw = Math.floor((viewCount * rule.ratePerThousand) / 1000);
+    // Solo cuentan los miles completos: 1.120 vistas pagan lo mismo que 1.000.
+    const raw = Math.floor(viewCount / 1000) * rule.ratePerThousand;
     if (rule.capPerDeliverable !== undefined && raw > rule.capPerDeliverable) {
       return { amount: rule.capPerDeliverable, reason: "tope por entrega alcanzado" };
     }

@@ -110,14 +110,6 @@ function DeliverableActions({ deliverable, viewer, active }: { deliverable: Deli
           <input type="hidden" name="snapshotId" value={snapshot.id} />
           <span className="text-[0.8125rem] whitespace-nowrap text-ink-2">
             Reporta <Num value={snapshot.views} compact={false} className="font-medium text-ink" />
-            {httpUrl(snapshot.evidenceUrl) ? (
-              <>
-                {" · "}
-                <a href={httpUrl(snapshot.evidenceUrl)!} target="_blank" rel="noopener noreferrer nofollow" className="link">
-                  ver captura
-                </a>
-              </>
-            ) : null}
           </span>
           <FormSubmit size="sm" variant="secondary" name="decision" value="approved">
             Aprobar vistas
@@ -169,7 +161,6 @@ function DeliverableActions({ deliverable, viewer, active }: { deliverable: Deli
         <ActionForm action={reportViews} resetOnSuccess feedback="inline" className={ROW_FORM}>
           <input type="hidden" name="deliverableId" value={deliverable.id} />
           <Input name="views" type="number" min="0" step="1" required inputMode="numeric" aria-label="Vistas actuales" placeholder="Vistas hoy" size="sm" className="w-28" />
-          <Input name="evidenceUrl" type="url" aria-label="Link a la captura" placeholder="Link a la captura" size="sm" className="w-full sm:w-44" />
           <FormSubmit size="sm" variant="secondary">
             Reportar
           </FormSubmit>

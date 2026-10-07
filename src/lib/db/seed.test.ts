@@ -12,7 +12,7 @@ describe("datos de demostración", () => {
     expect(await db.select().from(user)).toHaveLength(4);
 
     const rows = await db.select().from(payouts);
-    expect(rows.map((row) => row.amount).sort((a, b) => a - b)).toEqual([6_600_000, 20_664_000]);
+    expect(rows.map((row) => row.amount).sort((a, b) => a - b)).toEqual([6_600_000, 20_560_000]);
     for (const row of rows) {
       expect(row.status).toBe("released");
       expect(row.settlement).toBe("external");
