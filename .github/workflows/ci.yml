@@ -35,7 +35,7 @@ jobs:
   # integración de Git de Vercel, porque el plan gratuito solo publica commits del dueño de la cuenta.
   publicar:
     needs: verificar
-    if: github.repository_owner == 'clipfleet' && github.actor != 'dependabot[bot]'
+    if: github.repository_owner == 'clipfleet' && github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -48,10 +48,4 @@ jobs:
         with:
           node-version: 22
       - name: Producción
-        if: github.event_name == 'push'
         run: npx --yes vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"
-      - name: Vista previa
-        if: github.event_name == 'pull_request'
-        run: |
-          url=$(npx --yes vercel@latest deploy --yes --token "$VERCEL_TOKEN")
-          echo "Vista previa: $url" >> "$GITHUB_STEP_SUMMARY"

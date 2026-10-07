@@ -34,9 +34,8 @@ En local alcanza con `.env.local` (copiar de `.env.example`). En producción las
 ## Trabajar de a dos
 
 - `main` es producción: cada commit que entra a `main` lo publica GitHub Actions en Vercel, sin importar quién lo hizo (antes corren los chequeos y las migraciones de la base).
-- Para un cambio: rama nueva → push → pull request. GitHub corre tipos, lint, tests y auditoría de dependencias, y publica una vista previa.
+- Para un cambio: rama nueva → push → pull request. GitHub corre tipos, lint, tests y auditoría de dependencias. No hay vistas previas publicadas: la base solo está conectada a producción, así que los cambios se prueban en local.
 - La publicación usa tres secretos del repositorio: `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID`.
-- Las vistas previas usan la misma base que producción y no aplican migraciones: un cambio de esquema se prueba en local antes de integrarlo.
 
 ## Seguridad
 
