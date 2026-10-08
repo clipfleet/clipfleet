@@ -20,6 +20,52 @@ Consecuencias en el modelo:
 - **Riesgo nuevo:** sin plata de por medio, inflar un perfil con contrataciones falsas no cuesta nada, y un "pagado" que el trabajador no confirma queda en disputa sin árbitro. Para la prueba de mercado se acepta.
 - **Lo que queda guardado para cuando los pagos pasen por la plataforma:** libro contable, comisión (`splitPayout`), depósitos (`PaymentProvider`), retiros (`PayoutProvider`) y sus tablas siguen en `src/lib` con tests, sin pantallas. Las secciones "Modelo monetario" y "La sección monetaria tiene que poder mutar" describen ese modo futuro.
 
+## Datos de pago entre las partes (aprobado e implementado el 2026-10-08)
+
+**Problema:** al pagar, el contratador no sabe a dónde transferir y el gestor no sabe de quién va a recibir.
+
+**Qué se construye**
+
+- El **gestor** carga en su perfil sus datos de cobro: titular de la cuenta y alias, CBU o CVU.
+- El **contratador** carga en su perfil el titular de la cuenta desde la que paga.
+- En cada liquidación por pagar, el contratador ve el monto junto al alias/CBU/CVU y el titular del gestor, con botón para copiar.
+- El gestor ve en esa liquidación a nombre de quién le va a llegar la transferencia.
+- Al marcar "pagado", la liquidación guarda una copia de a qué cuenta y a nombre de quién se pagó. Si después alguien cambia sus datos, el registro de ese pago no cambia.
+
+**Fuera de alcance:** mover la plata (sigue siendo por fuera), verificar que la cuenta pertenezca al titular, varias cuentas por persona, cuentas del exterior.
+
+**Modelo de datos**
+
+```
+PaymentDetails   userId (PK), holderName, account?, accountKind?(alias|cbu|cvu), updatedAt
+Payout           + paidToAccount?, paidToHolder?, paidFromHolder?   -- copia al marcar pagado
+```
+
+Una sola tabla para los dos roles: el gestor completa titular y cuenta; el contratador solo titular. Va en tabla propia, no en los perfiles, porque los perfiles se leen enteros en las páginas públicas y estos datos no pueden viajar ahí ni por error. Con RLS, como todas.
+
+**Reglas**
+
+- **Quién ve qué:** los datos de cobro de un gestor solo los ve el contratador de una contratación suya, y solo en las pantallas de liquidación. El titular del contratador solo lo ven los gestores que tienen una contratación con él. Nunca aparecen en perfiles públicos, el directorio ni las búsquedas. La lectura se hace en las consultas de contratación y liquidaciones, que ya filtran por pertenencia.
+- **Validación:** alias de 6 a 20 caracteres (letras, números, punto, guion); CBU de 22 dígitos con sus dígitos verificadores; CVU (22 dígitos que empiezan con 000) solo por formato, para no rechazar uno válido. El tipo se detecta solo.
+- **Cambiar los datos de cobro pide la contraseña actual**, y tiene límite de intentos. Es la defensa contra el fraude típico: alguien entra a la cuenta de un gestor y cambia el alias para desviar el próximo pago.
+- **Aviso de cambio:** si la cuenta del gestor no es la misma a la que ese contratador le pagó la última vez, la liquidación lo avisa para que confirme por otro canal antes de transferir.
+- **No son obligatorios para postularse ni para ser contratado.** Si faltan al momento de pagar, el contratador ve "todavía no cargó sus datos de cobro" y el gestor ve el pedido de cargarlos en su panel.
+
+**Pantallas que cambian**
+
+| Pantalla | Cambio |
+|---|---|
+| `/app/perfil` (gestor) | Sección "Datos de cobro": titular, alias/CBU/CVU, contraseña actual para guardar |
+| `/app/perfil` (contratador) | Campo "Titular de la cuenta desde la que pagás" |
+| `/app/liquidaciones` y detalle de contratación (contratador) | Junto al monto: a dónde transferir, con copiar, y el aviso si cambió |
+| Detalle de contratación (gestor) | "Te transfiere: titular" en la liquidación pendiente; pedido de cargar datos si faltan |
+
+**Riesgos**
+
+1. **Son datos personales sensibles.** Un alias o CBU con nombre permite identificar a alguien. Se minimiza lo que se guarda y quién lo ve, pero conviene mencionarlo en los términos y la política de privacidad.
+2. **La plataforma no verifica titularidad.** Si un gestor carga mal su alias, el pago va a otra persona. Mitigación: se muestra el titular declarado para que el contratador lo compare con el que le muestra su banco antes de confirmar.
+3. **Cuenta de gestor comprometida.** Cubierto en parte por la contraseña al cambiar datos y el aviso de cambio; sin verificación de email ni segundo factor, sigue siendo el punto más débil.
+
 ## Despliegue, seguridad y versionado (aprobado el 2026-10-02)
 
 **Objetivo:** tener el sitio publicado mientras sigue en desarrollo, con los controles de seguridad operativos desde ahora, y que cada cambio subido a GitHub se publique solo.

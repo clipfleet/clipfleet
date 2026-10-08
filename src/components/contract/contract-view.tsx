@@ -6,6 +6,7 @@ import { PlatformTag } from "@/components/domain/platform";
 import { Rating } from "@/components/domain/rating";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink, buttonClasses } from "@/components/ui/button";
+import { Notice } from "@/components/ui/notice";
 import { Disclosure, DisclosureGroup } from "@/components/ui/disclosure";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Field } from "@/components/ui/field";
@@ -21,6 +22,7 @@ import { Stat, StatGroup } from "@/components/ui/stat";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { decideViews, endContract, leaveReview, reportViews, reviewDeliverable, sendMessage, setViews, submitDeliverable } from "@/lib/actions/contracts";
+import { PayeeBlock } from "@/components/domain/payee-block";
 import { httpUrl } from "@/lib/actions/result";
 import { confirmPayoutAction, generatePayouts, markPayoutPaidAction } from "@/lib/actions/money";
 import { PLATFORM_LABEL, type Platform } from "@/lib/domain/categories";
@@ -177,7 +179,18 @@ function DeliverableActions({ deliverable, viewer, active }: { deliverable: Deli
  * (contratador) o confirmar el cobro (trabajador). Va arriba de todo: es lo
  * único de la pantalla que tiene a la otra parte esperando.
  */
-function PayoutPrompt({ payout, viewer, counterpart }: { payout: Payout; viewer: "hirer" | "worker"; counterpart: string }) {
+function PayoutPrompt({
+  payout,
+  viewer,
+  counterpart,
+  payment,
+}: {
+  payout: Payout;
+  viewer: "hirer" | "worker";
+  counterpart: string;
+  payment: Detail["payment"];
+}) {
+  const paidFrom = payout.paidFromHolder ?? payment.payerHolder;
   const videos = `${payout.items.length} ${payout.items.length === 1 ? "video" : "videos"}`;
   return (
     <section
@@ -190,8 +203,16 @@ function PayoutPrompt({ payout, viewer, counterpart }: { payout: Payout; viewer:
           <Money cents={payout.amount} decimals="always" />
         </p>
         <p className="mt-0.5 text-[0.8125rem] text-ink-2">
-          {videos}, hasta el {formatDate(payout.periodEnd)}. {viewer === "hirer" ? `El pago se hace por fuera; después ${counterpart} confirma el cobro.` : "Confirmá solo si ya lo recibiste."}
+          {videos}, hasta el {formatDate(payout.periodEnd)}.{" "}
+          {viewer === "hirer"
+            ? `El pago se hace por fuera; después ${counterpart} confirma el cobro.`
+            : `${paidFrom ? `La transferencia sale a nombre de ${paidFrom}. ` : ""}Confirmá solo si ya la recibiste.`}
         </p>
+        {viewer === "hirer" ? (
+          <div className="mt-3">
+            <PayeeBlock payee={payment.payee} name={counterpart} />
+          </div>
+        ) : null}
       </div>
       <ActionForm
         action={viewer === "hirer" ? markPayoutPaidAction : confirmPayoutAction}
@@ -261,8 +282,22 @@ export function ContractView({ detail, viewer, userId }: { detail: Detail; viewe
       />
 
       {awaitingMe.map((payout) => (
-        <PayoutPrompt key={payout.id} payout={payout} viewer={viewer} counterpart={counterpart} />
+        <PayoutPrompt key={payout.id} payout={payout} viewer={viewer} counterpart={counterpart} payment={detail.payment} />
       ))}
+
+      {viewer === "worker" && active && detail.payment.mineMissing ? (
+        <Notice
+          tone="info"
+          title="Cargá tus datos de cobro"
+          action={
+            <ButtonLink href="/app/perfil" size="sm" variant="secondary">
+              Ir al perfil
+            </ButtonLink>
+          }
+        >
+          {counterpart} los necesita para saber a dónde transferirte.
+        </Notice>
+      ) : null}
 
       <StatGroup cols={3} label="Rendimiento de la contratación">
         <Stat label="Vistas aprobadas" value={<Num value={performance.totalViews} />} />

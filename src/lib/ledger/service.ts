@@ -11,6 +11,7 @@ import {
 } from "@/lib/db/schema";
 import type { Db, Executor, Tx } from "@/lib/db/types";
 import { computePayout } from "@/lib/payrules";
+import { getPaymentDetails } from "@/lib/payment-details/service";
 import { getSettings } from "@/lib/settings";
 import { buildReleaseEntries, InsufficientFundsError, splitPayout } from "./core";
 
@@ -194,10 +195,33 @@ export async function releasePayout(db: Db, payoutId: string, now: Date = new Da
  * solo deja constancia para el historial y para no volver a liquidar lo mismo.
  */
 export async function markPayoutPaid(db: Db, payoutId: string, now: Date = new Date()): Promise<void> {
-  await db
-    .update(payouts)
-    .set({ status: "released", settlement: "external", releasedAt: now })
-    .where(and(eq(payouts.id, payoutId), eq(payouts.status, "pending")));
+  await db.transaction(async (tx) => {
+    const [row] = await tx
+      .select({ payout: payouts, contract: contracts })
+      .from(payouts)
+      .innerJoin(contracts, eq(contracts.id, payouts.contractId))
+      .where(eq(payouts.id, payoutId))
+      .for("update");
+    if (!row || row.payout.status !== "pending") return;
+
+    // Se guarda a qué cuenta y a nombre de quién fue el pago: si después alguien cambia
+    // sus datos, el registro de este pago no cambia.
+    const [payee, payer] = await Promise.all([
+      getPaymentDetails(tx, row.contract.workerId),
+      getPaymentDetails(tx, row.contract.hirerId),
+    ]);
+    await tx
+      .update(payouts)
+      .set({
+        status: "released",
+        settlement: "external",
+        releasedAt: now,
+        paidToAccount: payee?.account ?? null,
+        paidToHolder: payee?.account ? payee.holderName : null,
+        paidFromHolder: payer?.holderName ?? null,
+      })
+      .where(eq(payouts.id, payoutId));
+  });
 }
 
 /** El trabajador confirma que recibió un pago informado por el contratador. */
