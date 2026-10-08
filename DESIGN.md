@@ -188,14 +188,15 @@ User            id, role(hirer|worker), email, username, name, avatar
 WorkerProfile   userId, headline, bio, categories[], portfolioLinks[], country
 HirerProfile    userId, brandName, description, channels[]
 
-Job             id, hirerId, title, description, category, platform, payRule(json),
+Job             id, hirerId, title, description, category, platform, platformName,
+                payRule(json),
                 slots, status(open|paused|closed)
 Application     id, jobId, workerId, message, status(pending|accepted|rejected)
 
-Invite          id, hirerId, token, platform, payRule(json), expiresAt, usedBy
+Invite          id, hirerId, token, platform, platformName, payRule(json), expiresAt, usedBy
 
 Contract        id, jobId?, hirerId, workerId, origin(job|invite),
-                platform(snapshot), payRule(json, snapshot), feeRate(snapshot),
+                platform + platformName(snapshot), payRule(json, snapshot), feeRate(snapshot),
                 status(active|ended), startedAt, endedAt
 Deliverable     id, contractId, kind(post|file), url, platform, accountHandle,
                 dueAt, submittedAt, status(submitted|approved|rejected),
@@ -365,4 +366,4 @@ Precisiones tomadas al construir. Ninguna cambia el alcance aprobado; se listan 
 - **Depósitos:** adaptador de Mercado Pago (Checkout Pro + webhook) y, sin credenciales y fuera de producción, un checkout simulado.
 - **Admin:** las cuentas admin se crean con `pnpm admin:promote <email>`; no hay registro de admins.
 - **Solo multicuentas (2026-10-01):** se quitaron de la interfaz las categorías, las entregas de archivo, el pedido de entregas con fecha y la métrica de puntualidad, que existían para edición y filmación. El soporte en datos y acciones queda para cuando vuelvan esos tipos de trabajo.
-- **Plataforma por búsqueda (2026-10-08):** una vista no vale lo mismo en TikTok, Instagram o YouTube, así que cada búsqueda e invitación elige una sola plataforma y la regla de pago vale para las vistas de esa plataforma. Para pagar distinto en otra plataforma se publica otra búsqueda. La contratación copia la plataforma y solo acepta videos de ella. Las búsquedas anteriores no tienen plataforma y no se restringen. Los logos se muestran en un solo color, sin modificar y siempre junto al nombre.
+- **Plataforma por búsqueda (2026-10-08):** una vista no vale lo mismo en TikTok, Instagram o YouTube, así que cada búsqueda e invitación elige una sola plataforma y la regla de pago vale para las vistas de esa plataforma. Para pagar distinto en otra plataforma se publica otra búsqueda. La contratación copia la plataforma y solo acepta videos de ella. Las búsquedas anteriores no tienen plataforma y no se restringen. Los logos se muestran en un solo color, sin modificar y siempre junto al nombre. Si la plataforma no está en la lista, se elige "Otra" y se escribe el nombre (`platformName`); esas contrataciones aceptan cualquier link que no sea de TikTok, Instagram o YouTube.

@@ -32,7 +32,7 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
         meta={
           <>
             <Badge tone={JOB_STATUS[job.status].tone}>{JOB_STATUS[job.status].label}</Badge>
-            <PlatformTag platform={job.platform} />
+            <PlatformTag platform={job.platform} name={job.platformName} />
             <span className="tabular-nums">{payRuleText(job.payRule)}</span>
           </>
         }

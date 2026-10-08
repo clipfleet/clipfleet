@@ -73,7 +73,7 @@ export default async function JobPage({ params }: PageProps<"/trabajos/[id]">) {
           )}
         </div>
 
-        <Panel title="Cómo se paga" description={job.platform ? <>Por las vistas en <PlatformTag platform={job.platform} className="align-bottom font-medium text-ink-2" /></> : undefined}>
+        <Panel title="Cómo se paga" description={job.platform ? <>Por las vistas en <PlatformTag platform={job.platform} name={job.platformName} className="align-bottom font-medium text-ink-2" /></> : undefined}>
           <PayRuleSummary {...job.payRule} />
         </Panel>
       </div>

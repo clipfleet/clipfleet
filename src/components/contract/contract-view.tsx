@@ -311,7 +311,7 @@ export function ContractView({ detail, viewer, userId }: { detail: Detail; viewe
           <>
             {contract.platform ? (
               <>
-                <PlatformTag platform={contract.platform} className="align-bottom text-ink-2" /> ·{" "}
+                <PlatformTag platform={contract.platform} name={contract.platformName} className="align-bottom text-ink-2" /> ·{" "}
               </>
             ) : null}
             <span className="text-ink-2 tabular-nums">{payRuleText(contract.payRule)}</span> · El pago se hace por fuera, entre ustedes.

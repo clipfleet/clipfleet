@@ -20,7 +20,7 @@ export default async function JobsPage() {
       ) : (
         <JobList>
           {jobs.map((job) => (
-            <JobRow key={job.id} href={`/trabajos/${job.id}`} title={job.title} brandName={job.brandName} platform={job.platform} payRuleSummary={payRuleText(job.payRule)} />
+            <JobRow key={job.id} href={`/trabajos/${job.id}`} title={job.title} brandName={job.brandName} platform={job.platform} platformName={job.platformName} payRuleSummary={payRuleText(job.payRule)} />
           ))}
         </JobList>
       )}

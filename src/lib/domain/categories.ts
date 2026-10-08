@@ -29,10 +29,18 @@ export const PLATFORM_LABEL: Record<Platform, string> = {
   otra: "Otra",
 };
 
-/** Plataformas que se pueden elegir para una búsqueda o una invitación. Cada una paga sus vistas aparte. */
-export const JOB_PLATFORMS = ["tiktok", "instagram", "youtube"] as const satisfies readonly Platform[];
+/**
+ * Plataformas que se pueden elegir para una búsqueda o una invitación. Cada una paga sus vistas aparte.
+ * Con `otra`, el contratador escribe el nombre (`platformName`).
+ */
+export const JOB_PLATFORMS = ["tiktok", "instagram", "youtube", "otra"] as const satisfies readonly Platform[];
 export type JobPlatform = (typeof JOB_PLATFORMS)[number];
 
 export function isJobPlatform(value: unknown): value is JobPlatform {
   return typeof value === "string" && (JOB_PLATFORMS as readonly string[]).includes(value);
+}
+
+/** Nombre a mostrar: el que escribió el contratador cuando eligió `otra`. */
+export function jobPlatformLabel(platform: JobPlatform, customName?: string | null): string {
+  return platform === "otra" && customName ? customName : PLATFORM_LABEL[platform];
 }

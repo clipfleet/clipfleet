@@ -55,7 +55,7 @@ export default async function MyJobsPage() {
                     <Badge tone={JOB_STATUS[job.status].tone}>{JOB_STATUS[job.status].label}</Badge>
                   </TD>
                   <TD label="Pago" className="text-ink-2 tabular-nums">
-                    {job.platform ? <><PlatformTag platform={job.platform} /> · </> : null}
+                    {job.platform ? <><PlatformTag platform={job.platform} name={job.platformName} /> · </> : null}
                     {payRuleText(job.payRule)}
                   </TD>
                   <TD label="Contratados" numeric>

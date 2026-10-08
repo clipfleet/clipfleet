@@ -61,7 +61,7 @@ export default async function InvitePage() {
                   <TR key={invite.id} tone={invite.usedBy || expired ? "muted" : "default"}>
                     <TH scope="row">{invite.title}</TH>
                     <TD label="Pago" className="tabular-nums">
-                      {invite.platform ? <><PlatformTag platform={invite.platform} /> · </> : null}
+                      {invite.platform ? <><PlatformTag platform={invite.platform} name={invite.platformName} /> · </> : null}
                       {payRuleText(invite.payRule)}
                     </TD>
                     <TD label="Estado">
