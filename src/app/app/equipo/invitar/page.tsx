@@ -1,7 +1,9 @@
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
 import { CopyField } from "@/components/forms/copy-field";
 import { PayRuleFields } from "@/components/forms/pay-rule-fields";
+import { PlatformField } from "@/components/forms/platform-field";
 import { payRuleText } from "@/components/domain/pay-rule-summary";
+import { PlatformTag } from "@/components/domain/platform";
 import { Badge } from "@/components/ui/badge";
 import { Field } from "@/components/ui/field";
 import { formatShortDate } from "@/components/ui/format";
@@ -34,6 +36,7 @@ export default async function InvitePage() {
               <Input name="quantity" type="number" min="1" max="30" step="1" defaultValue="1" inputMode="numeric" />
             </Field>
           </div>
+          <PlatformField />
           <PayRuleFields />
           <div>
             <FormSubmit pendingLabel="Generando…">Generar links</FormSubmit>
@@ -58,6 +61,7 @@ export default async function InvitePage() {
                   <TR key={invite.id} tone={invite.usedBy || expired ? "muted" : "default"}>
                     <TH scope="row">{invite.title}</TH>
                     <TD label="Pago" className="tabular-nums">
+                      {invite.platform ? <><PlatformTag platform={invite.platform} /> · </> : null}
                       {payRuleText(invite.payRule)}
                     </TD>
                     <TD label="Estado">

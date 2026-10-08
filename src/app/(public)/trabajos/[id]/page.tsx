@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
 import { PayRuleSummary } from "@/components/domain/pay-rule-summary";
+import { PlatformTag } from "@/components/domain/platform";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -72,7 +73,7 @@ export default async function JobPage({ params }: PageProps<"/trabajos/[id]">) {
           )}
         </div>
 
-        <Panel title="Cómo se paga">
+        <Panel title="Cómo se paga" description={job.platform ? <>Por las vistas en <PlatformTag platform={job.platform} className="align-bottom font-medium text-ink-2" /></> : undefined}>
           <PayRuleSummary {...job.payRule} />
         </Panel>
       </div>

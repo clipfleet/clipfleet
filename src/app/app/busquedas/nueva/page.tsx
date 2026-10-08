@@ -1,5 +1,6 @@
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
 import { PayRuleFields } from "@/components/forms/pay-rule-fields";
+import { PlatformField } from "@/components/forms/platform-field";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
@@ -28,9 +29,10 @@ export default async function NewJobPage() {
                 <Input name="slots" type="number" min="1" max="200" step="1" defaultValue="1" inputMode="numeric" />
               </Field>
             </div>
-            <Field label="Descripción" hint="Qué material das, en qué plataformas y cuántos videos esperás.">
+            <Field label="Descripción" hint="Qué material das y cuántos videos esperas.">
               <Textarea name="description" required minLength={20} rows={4} />
             </Field>
+            <PlatformField />
             <PayRuleFields />
           </div>
         </Panel>

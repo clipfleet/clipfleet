@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
 import { payRuleText } from "@/components/domain/pay-rule-summary";
+import { PlatformTag } from "@/components/domain/platform";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -31,6 +32,7 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
         meta={
           <>
             <Badge tone={JOB_STATUS[job.status].tone}>{JOB_STATUS[job.status].label}</Badge>
+            <PlatformTag platform={job.platform} />
             <span className="tabular-nums">{payRuleText(job.payRule)}</span>
           </>
         }
