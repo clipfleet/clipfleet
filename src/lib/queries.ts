@@ -8,6 +8,7 @@ import {
   invites,
   jobs,
   messages,
+  paymentDetails,
   payoutItems,
   payouts,
   reviews,
@@ -458,6 +459,32 @@ export async function listMyContracts(workerId: string) {
       ...m,
     };
   });
+}
+
+/** Todas las liquidaciones del gestor, de cualquier contratación, con quién paga cada una. */
+export async function listMyPayouts(workerId: string) {
+  const rows = await db
+    .select({
+      payout: payouts,
+      contractId: contracts.id,
+      contractTitle: contracts.title,
+      brandName: hirerProfiles.brandName,
+      payerHolder: paymentDetails.holderName,
+    })
+    .from(payouts)
+    .innerJoin(contracts, eq(contracts.id, payouts.contractId))
+    .innerJoin(hirerProfiles, eq(hirerProfiles.userId, contracts.hirerId))
+    .leftJoin(paymentDetails, eq(paymentDetails.userId, contracts.hirerId))
+    .where(eq(contracts.workerId, workerId))
+    .orderBy(desc(payouts.createdAt));
+  return rows.map((row) => ({
+    ...row.payout,
+    contractId: row.contractId,
+    contractTitle: row.contractTitle,
+    brandName: row.brandName,
+    // El titular guardado al pagar manda; si todavía no se pagó, el que tiene cargado hoy.
+    paidFrom: row.payout.paidFromHolder ?? row.payerHolder,
+  }));
 }
 
 export async function getProfiles(userId: string) {

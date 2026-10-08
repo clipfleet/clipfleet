@@ -23,7 +23,8 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
   } else {
     const counts = await workerNavCounts(me.id);
     nav = [
-      { href: "/app/contrataciones", label: "Mis trabajos", icon: <BriefcaseIcon />, badge: badge(counts.requested + counts.paymentsToConfirm) },
+      { href: "/app/contrataciones", label: "Mis trabajos", icon: <BriefcaseIcon />, badge: badge(counts.requested) },
+      { href: "/app/cobros", label: "Cobros", icon: <ReceiptIcon />, badge: badge(counts.paymentsToConfirm) },
       { href: "/app/postulaciones", label: "Postulaciones", icon: <SendIcon /> },
       { href: "/app/perfil", label: "Perfil", icon: <UserIcon /> },
     ];
