@@ -1,4 +1,4 @@
-# DESIGN — Clipfleet
+# DESIGN — ClipFleet
 
 Estado: **aprobado el 2026-09-30; modelo vigente revisado el 2026-10-02** (ver "Modelo vigente" justo abajo). Cambios que contradigan este documento se comunican antes de implementarse.
 
@@ -10,7 +10,7 @@ Decisiones del dueño que reemplazan lo que diga el resto del documento donde ha
 - **Sin comisión y sin plata en la plataforma.** Los pagos se hacen por fuera, exclusivamente entre las dos partes. La plataforma calcula cuánto corresponde según la regla y las vistas aprobadas (liquidación), el contratador marca "pagado" y el trabajador confirma el cobro. No hay saldo, depósitos, retiros ni panel de administración.
 - **Solo gestión de multicuentas** (definición en §1).
 - **Interfaz minimalista y profesional.** Dirección visual elegida: clara y sobria (fondo blanco, grises, un acento, tipografía sans precisa, líneas finas, mucho aire; referencias Stripe, Mercury, Ramp). Tiene que leerse como infraestructura de una industria, no como un proyecto de fin de semana.
-- **Nombre:** Clipfleet. Vive en una sola constante, `src/lib/brand.ts`.
+- **Nombre:** ClipFleet. Vive en una sola constante, `src/lib/brand.ts`.
 
 Consecuencias en el modelo:
 
