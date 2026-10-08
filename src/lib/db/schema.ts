@@ -251,6 +251,11 @@ export const payouts = pgTable(
     releasedAt: ts("released_at"),
     /** Cuándo el trabajador confirmó que recibió un pago hecho por fuera. */
     confirmedAt: ts("confirmed_at"),
+    // Copia de los datos de pago al marcar "pagado": si después alguien cambia los suyos,
+    // el registro de este pago no cambia.
+    paidToAccount: text("paid_to_account"),
+    paidToHolder: text("paid_to_holder"),
+    paidFromHolder: text("paid_from_holder"),
   },
   (t) => [index("payouts_contract_idx").on(t.contractId)],
 ).enableRLS();
@@ -406,6 +411,23 @@ export const messages = pgTable(
   },
   (t) => [index("messages_contract_idx").on(t.contractId)],
 ).enableRLS();
+
+// --- Datos de pago entre las partes ---
+
+/**
+ * A dónde cobra un gestor (titular + alias/CBU/CVU) o a nombre de quién paga un contratador
+ * (solo titular). Va en tabla propia y no en los perfiles porque los perfiles se leen enteros
+ * en páginas públicas: estos datos solo los ve la otra parte de una contratación.
+ */
+export const paymentDetails = pgTable("payment_details", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  holderName: text("holder_name").notNull(),
+  account: text("account"),
+  accountKind: text("account_kind", { enum: ["alias", "cbu", "cvu"] }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}).enableRLS();
 
 // --- Seguridad ---
 

@@ -1,10 +1,13 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { verifyPassword } from "better-auth/crypto";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { hirerProfiles, user, workerProfiles } from "@/lib/db/schema";
+import { account, hirerProfiles, user, workerProfiles } from "@/lib/db/schema";
 import { DEFAULT_CATEGORY } from "@/lib/domain/categories";
+import { parseAccount, parseHolderName } from "@/lib/payment-details";
+import { savePayeeDetails, savePayerHolder } from "@/lib/payment-details/service";
 import { tooMany } from "@/lib/security/limits";
 import { requireUser } from "@/lib/session";
 import { httpUrl, text, type ActionResult } from "./result";
@@ -60,4 +63,48 @@ export async function updateHirerProfile(form: FormData): Promise<ActionResult> 
     .onConflictDoUpdate({ target: hirerProfiles.userId, set: values });
   revalidatePath("/trabajos");
   return { ok: "Perfil guardado." };
+}
+
+/**
+ * El gestor carga a dónde cobra. Pide la contraseña actual: quien entra a una cuenta ajena
+ * no puede cambiar el alias para desviar el próximo pago.
+ */
+export async function updatePayeeDetails(form: FormData): Promise<ActionResult> {
+  const me = await requireUser("worker");
+  const limited = await tooMany("updatePaymentDetails", me.id);
+  if (limited) return limited;
+
+  const holderName = parseHolderName(text(form, "holderName", 120));
+  if (!holderName) return { error: "Poné el nombre del titular de la cuenta, tal como figura en el banco o la billetera." };
+  const parsed = parseAccount(text(form, "account", 60));
+  if ("error" in parsed) return parsed;
+
+  const currentPassword = form.get("currentPassword");
+  const [credential] = await db
+    .select({ hash: account.password })
+    .from(account)
+    .where(and(eq(account.userId, me.id), eq(account.providerId, "credential")));
+  const valid =
+    typeof currentPassword === "string" &&
+    currentPassword.length > 0 &&
+    currentPassword.length <= 128 &&
+    !!credential?.hash &&
+    (await verifyPassword({ hash: credential.hash, password: currentPassword }));
+  if (!valid) return { error: "La contraseña no es correcta." };
+
+  await savePayeeDetails(db, me.id, { holderName, account: parsed.account, accountKind: parsed.kind });
+  revalidatePath("/app", "layout");
+  return { ok: "Datos de cobro guardados." };
+}
+
+/** El contratador carga a nombre de quién salen sus transferencias. */
+export async function updatePayerHolder(form: FormData): Promise<ActionResult> {
+  const me = await requireUser("hirer");
+  const limited = await tooMany("updateProfile", me.id);
+  if (limited) return limited;
+  const holderName = parseHolderName(text(form, "holderName", 120));
+  if (!holderName) return { error: "Poné el nombre del titular de la cuenta desde la que pagás." };
+  await savePayerHolder(db, me.id, holderName);
+  revalidatePath("/app", "layout");
+  return { ok: "Titular guardado." };
 }

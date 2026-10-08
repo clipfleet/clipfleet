@@ -4,15 +4,15 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
-import { updateHirerProfile, updateWorkerProfile } from "@/lib/actions/profile";
-import { getProfiles } from "@/lib/queries";
+import { updateHirerProfile, updatePayeeDetails, updatePayerHolder, updateWorkerProfile } from "@/lib/actions/profile";
+import { getMyPaymentDetails, getProfiles } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
 
 export const metadata = { title: "Perfil" };
 
 export default async function ProfilePage() {
   const me = await requireUser();
-  const profiles = await getProfiles(me.id);
+  const [profiles, payment] = await Promise.all([getProfiles(me.id), getMyPaymentDetails(me.id)]);
 
   if (me.role === "hirer") {
     const profile = profiles.hirer;
@@ -29,6 +29,17 @@ export default async function ProfilePage() {
             </Field>
             <div>
               <FormSubmit pendingLabel="Guardando…">Guardar perfil</FormSubmit>
+            </div>
+          </ActionForm>
+        </Panel>
+
+        <Panel title="Pagos" description="Quien cobra ve este nombre para reconocer tu transferencia." className="max-w-form">
+          <ActionForm action={updatePayerHolder} className="flex flex-col gap-5">
+            <Field label="Titular de la cuenta desde la que pagás">
+              <Input name="holderName" required maxLength={80} defaultValue={payment?.holderName ?? ""} autoComplete="off" />
+            </Field>
+            <div>
+              <FormSubmit pendingLabel="Guardando…">Guardar titular</FormSubmit>
             </div>
           </ActionForm>
         </Panel>
@@ -57,6 +68,23 @@ export default async function ProfilePage() {
           </Field>
           <div>
             <FormSubmit pendingLabel="Guardando…">Guardar perfil</FormSubmit>
+          </div>
+        </ActionForm>
+      </Panel>
+
+      <Panel title="Datos de cobro" description="Solo los ve quien te contrata, al momento de pagarte." className="max-w-form">
+        <ActionForm action={updatePayeeDetails} className="flex flex-col gap-5">
+          <Field label="Titular de la cuenta" hint="Como figura en tu banco o billetera.">
+            <Input name="holderName" required maxLength={80} defaultValue={payment?.holderName ?? ""} autoComplete="off" />
+          </Field>
+          <Field label="Alias, CBU o CVU">
+            <Input name="account" required maxLength={40} defaultValue={payment?.account ?? ""} autoComplete="off" autoCapitalize="none" spellCheck={false} />
+          </Field>
+          <Field label="Tu contraseña" hint="Te la pedimos para que nadie más pueda cambiar a dónde cobrás.">
+            <Input name="currentPassword" type="password" required autoComplete="current-password" />
+          </Field>
+          <div>
+            <FormSubmit pendingLabel="Guardando…">Guardar datos de cobro</FormSubmit>
           </div>
         </ActionForm>
       </Panel>

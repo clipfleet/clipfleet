@@ -15,6 +15,7 @@ import {
   viewSnapshots,
   workerProfiles,
 } from "@/lib/db/schema";
+import { getPaymentDetails, payeeFor } from "@/lib/payment-details/service";
 import { computePayout } from "@/lib/payrules";
 import { contractPerformance, workerStats, type WorkerStats } from "@/lib/stats";
 
@@ -331,11 +332,15 @@ export async function listPayouts(hirerId: string) {
     .where(eq(contracts.hirerId, hirerId))
     .orderBy(desc(payouts.createdAt));
   const items = await itemsForPayouts(rows.map((row) => row.payout.id));
+  // A dónde transferirle a cada persona con una liquidación por pagar.
+  const toPay = [...new Set(rows.filter((row) => row.payout.status === "pending").map((row) => row.worker.id))];
+  const payees = new Map(await Promise.all(toPay.map(async (workerId) => [workerId, await payeeFor(db, hirerId, workerId)] as const)));
   return rows.map((row) => ({
     ...row.payout,
     contractTitle: row.contract.title,
     worker: { name: row.worker.name, username: row.worker.username },
     items: items.get(row.payout.id) ?? [],
+    payee: payees.get(row.worker.id) ?? null,
   }));
 }
 
@@ -388,10 +393,20 @@ export async function getContractDetail(contractId: string, userId: string) {
   const pendingSnapshot = new Map(snapshotRows.map((row) => [row.snapshot.deliverableId, row.snapshot]));
   const items = await itemsForPayouts(payoutRows.map((row) => row.id));
   const money = (await moneyByContract([contract])).get(contract.id)!;
+  // Datos de pago: cada parte ve solo lo que necesita de la otra para esta contratación.
+  const viewerIsHirer = contract.hirerId === userId;
+  const [payee, hirerDetails, workerDetails] = await Promise.all([
+    viewerIsHirer ? payeeFor(db, contract.hirerId, contract.workerId) : null,
+    getPaymentDetails(db, contract.hirerId),
+    viewerIsHirer ? null : getPaymentDetails(db, contract.workerId),
+  ]);
   return {
     contract,
     worker,
     hirer,
+    payment: viewerIsHirer
+      ? { payee, payerHolder: null, mineMissing: !hirerDetails }
+      : { payee: null, payerHolder: hirerDetails?.holderName ?? null, mineMissing: !workerDetails?.account },
     deliverables: deliverableRows.map((row) => ({ ...row, pendingSnapshot: pendingSnapshot.get(row.id) ?? null })),
     payouts: payoutRows.map((row) => ({ ...row, items: items.get(row.id) ?? [] })),
     messages: messageRows.map((row) => ({ ...row.message, authorName: row.authorName })),
@@ -498,4 +513,10 @@ export async function workerNavCounts(workerId: string) {
     .innerJoin(contracts, eq(contracts.id, payouts.contractId))
     .where(and(eq(contracts.workerId, workerId), eq(payouts.status, "released"), sql`${payouts.confirmedAt} is null`));
   return { requested: Number(requested.total), paymentsToConfirm: Number(toConfirm.total) };
+}
+
+// --- Datos de pago propios ---
+
+export async function getMyPaymentDetails(userId: string) {
+  return getPaymentDetails(db, userId);
 }
