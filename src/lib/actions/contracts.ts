@@ -7,7 +7,7 @@ import { contracts, deliverables, messages, reviews, viewSnapshots } from "@/lib
 import { parseCount } from "@/lib/format";
 import { tooMany } from "@/lib/security/limits";
 import { requireUser, type SessionUser } from "@/lib/session";
-import { PLATFORM_LABEL, type JobPlatform } from "@/lib/domain/categories";
+import { jobPlatformLabel, type JobPlatform } from "@/lib/domain/categories";
 import { detectPlatform } from "@/lib/views";
 import { httpUrl, text, type ActionResult } from "./result";
 
@@ -58,9 +58,10 @@ export async function requestDeliverable(form: FormData): Promise<ActionResult> 
 }
 
 /** La regla de pago vale para las vistas de una plataforma: un video de otra no entra en la contratación. */
-function platformMismatch(platform: JobPlatform | null, url: string): ActionResult {
+function platformMismatch(contract: { platform: JobPlatform | null; platformName: string | null }, url: string): ActionResult {
+  const { platform, platformName } = contract;
   if (!platform || detectPlatform(url) === platform) return undefined;
-  return { error: `Esta contratación es para ${PLATFORM_LABEL[platform]}. Pega el link de un video publicado ahí.` };
+  return { error: `Esta contratación es para ${jobPlatformLabel(platform, platformName)}. Pega el link de un video publicado ahí.` };
 }
 
 /** El trabajador registra una entrega: una nueva, o la respuesta a un encargo. */
@@ -77,7 +78,7 @@ export async function submitDeliverable(form: FormData): Promise<ActionResult> {
     const row = await deliverableFor(me, deliverableId);
     if (!row || row.contract.workerId !== me.id) return { error: "Encargo inexistente." };
     if (row.deliverable.status !== "requested") return { error: "Este encargo ya fue entregado." };
-    const wrongPlatform = platformMismatch(row.contract.platform, url);
+    const wrongPlatform = platformMismatch(row.contract, url);
     if (wrongPlatform) return wrongPlatform;
     await db
       .update(deliverables)
@@ -91,7 +92,7 @@ export async function submitDeliverable(form: FormData): Promise<ActionResult> {
   if (!contract || contract.workerId !== me.id || contract.status !== "active") {
     return { error: "La contratación no está activa." };
   }
-  const wrongPlatform = platformMismatch(contract.platform, url);
+  const wrongPlatform = platformMismatch(contract, url);
   if (wrongPlatform) return wrongPlatform;
   await db.insert(deliverables).values({
     contractId: contract.id,

@@ -6,13 +6,23 @@ import { redirect } from "next/navigation";
 import { randomBytes } from "node:crypto";
 import { db } from "@/lib/db";
 import { applications, contracts, invites, jobs } from "@/lib/db/schema";
-import { DEFAULT_CATEGORY, isJobPlatform } from "@/lib/domain/categories";
+import { DEFAULT_CATEGORY, isJobPlatform, type JobPlatform } from "@/lib/domain/categories";
 import { parseCount } from "@/lib/format";
 import { payRuleFromForm } from "@/lib/payrules/form";
 import { tooMany } from "@/lib/security/limits";
 import { requireUser } from "@/lib/session";
 import { getSettings } from "@/lib/settings";
 import { text, type ActionResult } from "./result";
+
+/** La plataforma elegida y, si es `otra`, el nombre que escribió el contratador. */
+function platformFromForm(form: FormData): { platform: JobPlatform; platformName: string | null } | { error: string } {
+  const platform = form.get("platform");
+  if (!isJobPlatform(platform)) return { error: "Elige en qué plataforma se publican los videos." };
+  if (platform !== "otra") return { platform, platformName: null };
+  const platformName = text(form, "platformName", 40);
+  if (platformName.length < 2) return { error: "Escribe el nombre de la plataforma." };
+  return { platform, platformName };
+}
 
 export async function createJob(form: FormData): Promise<ActionResult> {
   const me = await requireUser("hirer");
@@ -25,14 +35,14 @@ export async function createJob(form: FormData): Promise<ActionResult> {
   if (title.length < 5) return { error: "Poné un título más descriptivo." };
   if (description.length < 20) return { error: "Contá un poco más sobre el trabajo." };
   if (slots < 1 || slots > 200) return { error: "La cantidad de puestos tiene que estar entre 1 y 200." };
-  const platform = form.get("platform");
-  if (!isJobPlatform(platform)) return { error: "Elige en qué plataforma se publican los videos." };
+  const platform = platformFromForm(form);
+  if ("error" in platform) return platform;
   const parsed = payRuleFromForm(form);
   if ("error" in parsed) return parsed;
 
   const [job] = await db
     .insert(jobs)
-    .values({ hirerId: me.id, title, description, category, platform, slots, payRule: parsed.rule })
+    .values({ hirerId: me.id, title, description, category, ...platform, slots, payRule: parsed.rule })
     .returning({ id: jobs.id });
   revalidatePath("/trabajos");
   redirect(`/app/busquedas/${job.id}`);
@@ -98,6 +108,7 @@ export async function decideApplication(form: FormData): Promise<ActionResult> {
       title: row.job.title,
       category: row.job.category,
       platform: row.job.platform,
+      platformName: row.job.platformName,
       payRule: row.job.payRule,
       feeBps: settings.feeBps,
       feePayer: settings.feePayer,
@@ -120,8 +131,8 @@ export async function createInvites(form: FormData): Promise<ActionResult> {
   const quantity = parseCount(form.get("quantity")) ?? 1;
   if (title.length < 3) return { error: "Poné un nombre para este trabajo (ej. “Clips del canal”)." };
   if (quantity < 1 || quantity > 30) return { error: "Podés generar entre 1 y 30 links por vez." };
-  const platform = form.get("platform");
-  if (!isJobPlatform(platform)) return { error: "Elige en qué plataforma se publican los videos." };
+  const platform = platformFromForm(form);
+  if ("error" in platform) return platform;
   const parsed = payRuleFromForm(form);
   if ("error" in parsed) return parsed;
 
@@ -132,7 +143,7 @@ export async function createInvites(form: FormData): Promise<ActionResult> {
       token: randomBytes(18).toString("base64url"),
       title,
       category,
-      platform,
+      ...platform,
       payRule: parsed.rule,
       expiresAt,
     })),
@@ -163,6 +174,7 @@ export async function acceptInvite(form: FormData): Promise<ActionResult> {
         title: invite.title,
         category: invite.category,
         platform: invite.platform,
+        platformName: invite.platformName,
         payRule: invite.payRule,
         feeBps: settings.feeBps,
         feePayer: settings.feePayer,

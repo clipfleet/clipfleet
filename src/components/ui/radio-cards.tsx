@@ -19,8 +19,8 @@ export type RadioCardsProps = {
   hint?: ReactNode;
   error?: string | string[] | null;
   required?: boolean;
-  /** 1 = apiladas; 2 o 3 = en columnas desde tablet. En celular siempre se apilan. */
-  columns?: 1 | 2 | 3;
+  /** 1 = apiladas; 2 o 3 = en columnas desde tablet. En celular siempre se apilan. 4 = de a dos en celular. */
+  columns?: 1 | 2 | 3 | 4;
   className?: string;
 };
 
@@ -28,6 +28,7 @@ const COLUMNS: Record<NonNullable<RadioCardsProps["columns"]>, string> = {
   1: "grid-cols-1",
   2: "grid-cols-1 sm:grid-cols-2",
   3: "grid-cols-1 sm:grid-cols-3",
+  4: "grid-cols-2 sm:grid-cols-4",
 };
 
 /**

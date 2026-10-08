@@ -36,6 +36,13 @@
       "when": 1791478611699,
       "tag": "0004_datos_de_pago",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791479968550,
+      "tag": "0005_plataforma_otra",
+      "breakpoints": true
     }
   ]
 }

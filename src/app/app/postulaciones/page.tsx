@@ -57,7 +57,7 @@ export default async function MyApplicationsPage() {
                     <span className="block text-[0.8125rem] font-normal text-ink-3">{brandName}</span>
                   </TH>
                   <TD label="Pago" className="text-ink-2 tabular-nums">
-                    {job.platform ? <><PlatformTag platform={job.platform} /> · </> : null}
+                    {job.platform ? <><PlatformTag platform={job.platform} name={job.platformName} /> · </> : null}
                     {payRuleText(job.payRule)}
                   </TD>
                   <TD label="Enviada" muted>
