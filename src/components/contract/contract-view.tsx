@@ -2,6 +2,7 @@ import clsx from "clsx";
 import type { ReactNode } from "react";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
 import { payRuleText } from "@/components/domain/pay-rule-summary";
+import { PlatformTag } from "@/components/domain/platform";
 import { Rating } from "@/components/domain/rating";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink, buttonClasses } from "@/components/ui/button";
@@ -308,6 +309,11 @@ export function ContractView({ detail, viewer, userId }: { detail: Detail; viewe
         title="Videos"
         description={
           <>
+            {contract.platform ? (
+              <>
+                <PlatformTag platform={contract.platform} className="align-bottom text-ink-2" /> ·{" "}
+              </>
+            ) : null}
             <span className="text-ink-2 tabular-nums">{payRuleText(contract.payRule)}</span> · El pago se hace por fuera, entre ustedes.
           </>
         }

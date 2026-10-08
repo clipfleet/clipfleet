@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
 import { PayRuleSummary } from "@/components/domain/pay-rule-summary";
+import { PlatformTag } from "@/components/domain/platform";
 import { ButtonLink } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { Panel } from "@/components/ui/panel";
@@ -25,7 +26,11 @@ export default async function InvitePage({ params }: PageProps<"/invitacion/[tok
           <h1 className="type-page">{invite.title}</h1>
         </div>
 
-        <Panel title="Cómo se paga" className="shadow-xs">
+        <Panel
+          title="Cómo se paga"
+          description={invite.platform ? <>Por las vistas en <PlatformTag platform={invite.platform} className="align-bottom font-medium text-ink-2" /></> : undefined}
+          className="shadow-xs"
+        >
           <PayRuleSummary {...invite.payRule} />
         </Panel>
 

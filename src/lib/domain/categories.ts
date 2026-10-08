@@ -28,3 +28,11 @@ export const PLATFORM_LABEL: Record<Platform, string> = {
   youtube: "YouTube",
   otra: "Otra",
 };
+
+/** Plataformas que se pueden elegir para una búsqueda o una invitación. Cada una paga sus vistas aparte. */
+export const JOB_PLATFORMS = ["tiktok", "instagram", "youtube"] as const satisfies readonly Platform[];
+export type JobPlatform = (typeof JOB_PLATFORMS)[number];
+
+export function isJobPlatform(value: unknown): value is JobPlatform {
+  return typeof value === "string" && (JOB_PLATFORMS as readonly string[]).includes(value);
+}

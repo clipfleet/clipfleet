@@ -107,10 +107,11 @@ export async function seedIfEmpty(db: Db): Promise<void> {
     .values([
       {
         hirerId: "demo-hirer",
-        title: "Recortes del podcast en TikTok, Reels y Shorts",
+        title: "Recortes del podcast en TikTok",
         description:
           "Búsqueda de ejemplo. Te pasamos los episodios; creás las cuentas y subís recortes todos los días. Se paga por vistas aprobadas.",
         category: "multicuentas",
+        platform: "tiktok",
         payRule: cpmRule,
         slots: 10,
         createdAt: daysAgo(40),
@@ -120,9 +121,20 @@ export async function seedIfEmpty(db: Db): Promise<void> {
         title: "Clips del stream: premio por video que explota",
         description: "Búsqueda de ejemplo. Material libre del canal. Cobra el video que pasa los 10 mil o los 100 mil.",
         category: "multicuentas",
+        platform: "tiktok",
         payRule: tiersRule,
         slots: 25,
         createdAt: daysAgo(30),
+      },
+      {
+        hirerId: "demo-hirer",
+        title: "Shorts del podcast",
+        description: "Búsqueda de ejemplo. Los mismos episodios, recortados en vertical para YouTube Shorts. Se paga por vistas aprobadas.",
+        category: "multicuentas",
+        platform: "youtube",
+        payRule: cpmRule,
+        slots: 10,
+        createdAt: daysAgo(5),
       },
     ])
     .returning({ id: jobs.id });
@@ -135,8 +147,9 @@ export async function seedIfEmpty(db: Db): Promise<void> {
       hirerId: "demo-hirer",
       workerId: "demo-clipper",
       origin: "job",
-      title: "Recortes del podcast en TikTok, Reels y Shorts",
+      title: "Recortes del podcast en TikTok",
       category: "multicuentas",
+      platform: "tiktok",
       payRule: cpmRule,
       feeBps: 0,
       feePayer: "hirer",
@@ -192,6 +205,7 @@ export async function seedIfEmpty(db: Db): Promise<void> {
       origin: "job",
       title: "Clips del stream: premio por video que explota",
       category: "multicuentas",
+      platform: "tiktok",
       payRule: tiersRule,
       feeBps: 0,
       feePayer: "hirer",

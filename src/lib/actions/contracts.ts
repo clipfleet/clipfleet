@@ -7,6 +7,7 @@ import { contracts, deliverables, messages, reviews, viewSnapshots } from "@/lib
 import { parseCount } from "@/lib/format";
 import { tooMany } from "@/lib/security/limits";
 import { requireUser, type SessionUser } from "@/lib/session";
+import { PLATFORM_LABEL, type JobPlatform } from "@/lib/domain/categories";
 import { detectPlatform } from "@/lib/views";
 import { httpUrl, text, type ActionResult } from "./result";
 
@@ -56,6 +57,12 @@ export async function requestDeliverable(form: FormData): Promise<ActionResult> 
   refresh(contract.id);
 }
 
+/** La regla de pago vale para las vistas de una plataforma: un video de otra no entra en la contratación. */
+function platformMismatch(platform: JobPlatform | null, url: string): ActionResult {
+  if (!platform || detectPlatform(url) === platform) return undefined;
+  return { error: `Esta contratación es para ${PLATFORM_LABEL[platform]}. Pega el link de un video publicado ahí.` };
+}
+
 /** El trabajador registra una entrega: una nueva, o la respuesta a un encargo. */
 export async function submitDeliverable(form: FormData): Promise<ActionResult> {
   const me = await requireUser("worker");
@@ -70,6 +77,8 @@ export async function submitDeliverable(form: FormData): Promise<ActionResult> {
     const row = await deliverableFor(me, deliverableId);
     if (!row || row.contract.workerId !== me.id) return { error: "Encargo inexistente." };
     if (row.deliverable.status !== "requested") return { error: "Este encargo ya fue entregado." };
+    const wrongPlatform = platformMismatch(row.contract.platform, url);
+    if (wrongPlatform) return wrongPlatform;
     await db
       .update(deliverables)
       .set({ url, platform: detectPlatform(url), accountHandle, submittedAt: new Date(), status: "submitted" })
@@ -82,6 +91,8 @@ export async function submitDeliverable(form: FormData): Promise<ActionResult> {
   if (!contract || contract.workerId !== me.id || contract.status !== "active") {
     return { error: "La contratación no está activa." };
   }
+  const wrongPlatform = platformMismatch(contract.platform, url);
+  if (wrongPlatform) return wrongPlatform;
   await db.insert(deliverables).values({
     contractId: contract.id,
     title: text(form, "title", 160),

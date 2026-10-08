@@ -26,8 +26,15 @@
     {
       "idx": 3,
       "version": "7",
-      "when": 1791477880722,
-      "tag": "0003_datos_de_pago",
+      "when": 1791475619617,
+      "tag": "0003_plataforma",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791478611699,
+      "tag": "0004_datos_de_pago",
       "breakpoints": true
     }
   ]

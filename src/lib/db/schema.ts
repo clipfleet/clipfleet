@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { bigint, boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import type { PayRule } from "@/lib/payrules";
+import { JOB_PLATFORMS } from "@/lib/domain/categories";
 
 const id = () =>
   text("id")
@@ -103,6 +104,8 @@ export const jobs = pgTable(
     title: text("title").notNull(),
     description: text("description").notNull(),
     category: text("category").notNull(),
+    /** Dónde se publican los videos. La regla de pago vale para las vistas de esa plataforma. Vacía en búsquedas anteriores a este campo. */
+    platform: text("platform", { enum: JOB_PLATFORMS }),
     payRule: jsonb("pay_rule").$type<PayRule>().notNull(),
     slots: integer("slots").notNull().default(1),
     status: text("status", { enum: ["open", "paused", "closed"] })
@@ -140,6 +143,7 @@ export const invites = pgTable("invites", {
   token: text("token").notNull().unique(),
   title: text("title").notNull(),
   category: text("category").notNull(),
+  platform: text("platform", { enum: JOB_PLATFORMS }),
   payRule: jsonb("pay_rule").$type<PayRule>().notNull(),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   usedBy: text("used_by").references(() => user.id),
@@ -162,6 +166,7 @@ export const contracts = pgTable(
     title: text("title").notNull(),
     category: text("category").notNull(),
     // Copias al momento de contratar: cambiar la búsqueda o la configuración no altera el acuerdo.
+    platform: text("platform", { enum: JOB_PLATFORMS }),
     payRule: jsonb("pay_rule").$type<PayRule>().notNull(),
     feeBps: integer("fee_bps").notNull(),
     feePayer: text("fee_payer", { enum: ["hirer", "worker"] }).notNull(),

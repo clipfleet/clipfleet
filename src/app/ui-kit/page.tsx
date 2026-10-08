@@ -406,8 +406,8 @@ export default function UiKitPage() {
 
       <Group title="JobList y JobRow">
         <JobList>
-          <JobRow href="/ui-kit" title="Subir recortes del podcast" brandName="Canal Demo" payRuleSummary={payRuleText(RULE_CPM)} />
-          <JobRow href="/ui-kit" title="Clips del stream: premio por escalón" brandName="Hilo Rojo" payRuleSummary={payRuleText(RULE_TIERS)} />
+          <JobRow href="/ui-kit" title="Subir recortes del podcast" brandName="Canal Demo" platform="tiktok" payRuleSummary={payRuleText(RULE_CPM)} />
+          <JobRow href="/ui-kit" title="Clips del stream: premio por escalón" brandName="Hilo Rojo" platform="youtube" payRuleSummary={payRuleText(RULE_TIERS)} />
         </JobList>
       </Group>
 

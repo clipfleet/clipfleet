@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { payRuleText } from "@/components/domain/pay-rule-summary";
+import { PlatformTag } from "@/components/domain/platform";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -54,6 +55,7 @@ export default async function MyJobsPage() {
                     <Badge tone={JOB_STATUS[job.status].tone}>{JOB_STATUS[job.status].label}</Badge>
                   </TD>
                   <TD label="Pago" className="text-ink-2 tabular-nums">
+                    {job.platform ? <><PlatformTag platform={job.platform} /> · </> : null}
                     {payRuleText(job.payRule)}
                   </TD>
                   <TD label="Contratados" numeric>
