@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 @AGENTS.md
 
-Clipfleet: marketplace y herramienta de gestión entre contratadores (creadores, marcas) y gestores de multicuentas. El producto está definido en [DESIGN.md](DESIGN.md) (la sección "Modelo vigente" manda sobre el resto del documento) y el sistema visual en [docs/design-system.md](docs/design-system.md). Los cambios que contradigan DESIGN.md se consultan antes de implementarse.
+ClipFleet: marketplace y herramienta de gestión entre contratadores (creadores, marcas) y gestores de multicuentas. El producto está definido en [DESIGN.md](DESIGN.md) (la sección "Modelo vigente" manda sobre el resto del documento) y el sistema visual en [docs/design-system.md](docs/design-system.md). Los cambios que contradigan DESIGN.md se consultan antes de implementarse.
 
 ## Comandos
 
