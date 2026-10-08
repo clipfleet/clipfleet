@@ -42,4 +42,4 @@ El CI (`.github/workflows/ci.yml`) corre `next typegen`, typecheck, lint, tests 
 
 - El nombre y los datos de marca salen de `BRAND` en `src/lib/brand.ts`; nunca se escriben a mano.
 - Las pantallas siguen los presupuestos de [docs/design-system.md](docs/design-system.md) (una idea por pantalla, máximo 3 `Stat`, sin texto de ayuda que repita lo que la pantalla ya muestra). Se construyen con los primitivos de `src/components/ui` y `shell`/`domain`/`forms` antes de crear componentes nuevos.
-- Código, comentarios, docs y commits están en español.
+- El sitio está en español: todos los textos de la interfaz (páginas, formularios, mensajes de error de las Server Actions, metadata) se escriben en español.
