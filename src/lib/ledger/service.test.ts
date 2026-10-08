@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { contracts, deliverables, deposits, ledgerEntries, payouts, user } from "@/lib/db/schema";
 import { createTestDb } from "@/lib/db/testing";
 import type { Db } from "@/lib/db/types";
+import { payeeFor, savePayeeDetails, savePayerHolder } from "@/lib/payment-details/service";
 import type { PayRule } from "@/lib/payrules";
 import { InsufficientFundsError, sumBalance } from "./core";
 import {
@@ -223,5 +224,61 @@ describe("retiros", () => {
     const withdrawalId = await requestWithdrawal(db, { workerId: "worker", amount: 1_000_000, destination: "alias.test" });
     await processWithdrawal(db, { withdrawalId, adminId: "admin", outcome: "sent" });
     expect(await getBalance(db, "worker", "worker")).toBe(0);
+  });
+});
+
+describe("datos de pago entre las partes", () => {
+  async function pendingPayout() {
+    const contract = await seedContract();
+    await approvedDeliverable(contract.id, 12_000);
+    return { contract, payoutId: (await generatePayout(db, contract.id))! };
+  }
+
+  it("al marcar pagado guarda a qué cuenta y a nombre de quién fue, y no cambia si después cambian los datos", async () => {
+    const { payoutId } = await pendingPayout();
+    await savePayeeDetails(db, "worker", { holderName: "Tomás Agüero", account: "clips.tomi", accountKind: "alias" });
+    await savePayerHolder(db, "hirer", "Canal Demo SRL");
+
+    await markPayoutPaid(db, payoutId);
+    await savePayeeDetails(db, "worker", { holderName: "Otra Persona", account: "otro.alias", accountKind: "alias" });
+
+    const [payout] = await db.select().from(payouts).where(eq(payouts.id, payoutId));
+    expect(payout.paidToAccount).toBe("clips.tomi");
+    expect(payout.paidToHolder).toBe("Tomás Agüero");
+    expect(payout.paidFromHolder).toBe("Canal Demo SRL");
+  });
+
+  it("sin datos cargados igual se puede marcar pagado, sin inventar destino", async () => {
+    const { payoutId } = await pendingPayout();
+    await markPayoutPaid(db, payoutId);
+    const [payout] = await db.select().from(payouts).where(eq(payouts.id, payoutId));
+    expect(payout.status).toBe("released");
+    expect(payout.paidToAccount).toBeNull();
+    expect(payout.paidFromHolder).toBeNull();
+  });
+
+  it("el contratador no ve destino si el gestor no cargó una cuenta", async () => {
+    await seedContract();
+    expect(await payeeFor(db, "hirer", "worker")).toBeNull();
+    // Un contratador solo carga titular: eso no es un destino de cobro.
+    await savePayerHolder(db, "worker", "Solo Titular");
+    expect(await payeeFor(db, "hirer", "worker")).toBeNull();
+  });
+
+  it("avisa si la cuenta cambió desde el último pago de ese contratador, y solo entonces", async () => {
+    const { contract, payoutId } = await pendingPayout();
+    await savePayeeDetails(db, "worker", { holderName: "Tomás Agüero", account: "clips.tomi", accountKind: "alias" });
+    expect((await payeeFor(db, "hirer", "worker"))?.changedSinceLastPayment).toBe(false);
+
+    await markPayoutPaid(db, payoutId);
+    expect((await payeeFor(db, "hirer", "worker"))?.changedSinceLastPayment).toBe(false);
+
+    await savePayeeDetails(db, "worker", { holderName: "Tomás Agüero", account: "alias.nuevo", accountKind: "alias" });
+    expect((await payeeFor(db, "hirer", "worker"))?.changedSinceLastPayment).toBe(true);
+
+    // Una vez que se le paga a la cuenta nueva, deja de avisar.
+    await approvedDeliverable(contract.id, 15_000);
+    await markPayoutPaid(db, (await generatePayout(db, contract.id))!, new Date(Date.now() + 1000));
+    expect((await payeeFor(db, "hirer", "worker"))?.changedSinceLastPayment).toBe(false);
   });
 });

@@ -1,4 +1,5 @@
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
+import { PayeeBlock } from "@/components/domain/payee-block";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatDate } from "@/components/ui/format";
@@ -63,6 +64,9 @@ export default async function PayoutsPage() {
                 </ActionForm>
               }
             >
+              <div className="border-b border-line px-4 py-3.5 sm:px-5">
+                <PayeeBlock payee={payout.payee} name={payout.worker.name} />
+              </div>
               <Table caption={`Detalle de la liquidación de ${payout.worker.name}`} minWidth={0}>
                 <THead>
                   <TR>

@@ -19,6 +19,8 @@ export const LIMITS = {
   sendMessage: [120, HOUR],
   leaveReview: [20, HOUR],
   updateProfile: [30, HOUR],
+  // Pide la contraseña actual: el límite también frena que se la adivinen desde una sesión robada.
+  updatePaymentDetails: [5, HOUR],
   manage: [600, HOUR],
 } as const satisfies Record<string, readonly [number, number]>;
 

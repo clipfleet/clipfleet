@@ -10,6 +10,7 @@ import {
   hirerProfiles,
   jobs,
   messages,
+  paymentDetails,
   reviews,
   user,
   viewSnapshots,
@@ -93,6 +94,12 @@ export async function seedIfEmpty(db: Db): Promise<void> {
     { userId: "demo-clipper", headline: "Recortes de podcasts y entrevistas", bio: "Perfil de ejemplo.", categories: ["multicuentas"] },
     { userId: "demo-clipper2", headline: "Clips de streams, 15 videos por día", bio: "Perfil de ejemplo.", categories: ["multicuentas"] },
     { userId: "demo-new", headline: "Disponible todos los días", bio: "Perfil de ejemplo sin trabajos todavía.", categories: ["multicuentas"] },
+  ]);
+
+  // Datos de pago de ejemplo. La segunda gestora no los cargó, para ver ese caso.
+  await db.insert(paymentDetails).values([
+    { userId: "demo-hirer", holderName: "Lucas Ferreyra" },
+    { userId: "demo-clipper", holderName: "Tomás Agüero", account: "tomi.clips.demo", accountKind: "alias" },
   ]);
 
   const [cpmJob, tiersJob] = await db
