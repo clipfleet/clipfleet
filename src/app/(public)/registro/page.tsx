@@ -59,6 +59,13 @@ export default async function SignUpPage({ searchParams }: PageProps<"/registro"
             <FormSubmit block pendingLabel="Creando cuenta…">
               Crear cuenta
             </FormSubmit>
+            <p className="text-[0.8125rem] text-ink-3">
+              Al crear tu cuenta aceptás la{" "}
+              <Link href="/privacidad" className="link">
+                Política de privacidad
+              </Link>
+              .
+            </p>
           </ActionForm>
         </Panel>
         <p className="text-sm text-ink-2">
