@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { ActivityCalendar } from "@/components/domain/activity-calendar";
+import { BadgeList } from "@/components/domain/badge-list";
 import { ReviewItem } from "@/components/domain/review-item";
 import { TrackRecord } from "@/components/domain/track-record";
 import { CopyField } from "@/components/forms/copy-field";
@@ -9,7 +11,7 @@ import { Panel } from "@/components/ui/panel";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { baseUrl } from "@/lib/base-url";
 import { BRAND } from "@/lib/brand";
-import { getWorkerByUsername } from "@/lib/queries";
+import { getWorkerActivity, getWorkerByUsername } from "@/lib/queries";
 import { getSessionUser } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +26,7 @@ export default async function WorkerProfilePage({ params }: PageProps<"/t/[usern
   const { username } = await params;
   const worker = await getWorkerByUsername(username);
   if (!worker) notFound();
-  const [me, origin] = await Promise.all([getSessionUser(), baseUrl()]);
+  const [me, origin, activity] = await Promise.all([getSessionUser(), baseUrl(), getWorkerActivity(worker.user.id)]);
   const { user, profile, stats, history, reviews } = worker;
   const firstName = user.name.split(" ")[0];
   const isOwner = me?.id === user.id;
@@ -65,6 +67,17 @@ export default async function WorkerProfilePage({ params }: PageProps<"/t/[usern
           {stats.approvedDeliverables > 0 ? `Calculado con trabajo aprobado y pagado en ${BRAND.name}.` : `Todavía no tiene trabajo aprobado en ${BRAND.name}.`}
         </p>
       </div>
+
+      <BadgeList badges={activity.badges} />
+
+      {activity.calendar.total > 0 ? (
+        <Panel
+          title="Actividad"
+          description={`${activity.calendar.total} ${activity.calendar.total === 1 ? "video aprobado" : "videos aprobados"} en los últimos 6 meses`}
+        >
+          <ActivityCalendar calendar={activity.calendar} />
+        </Panel>
+      ) : null}
 
       {history.length > 0 ? (
         <Panel title="Trabajos" padded={false}>

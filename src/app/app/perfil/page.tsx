@@ -1,11 +1,12 @@
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
+import { BADGE_ICON } from "@/components/domain/badge-list";
 import { ButtonLink } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
 import { updateHirerProfile, updatePayeeDetails, updatePayerHolder, updateWorkerProfile } from "@/lib/actions/profile";
-import { getMyPaymentDetails, getProfiles } from "@/lib/queries";
+import { getMyPaymentDetails, getProfiles, getWorkerActivity } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
 
 export const metadata = { title: "Perfil" };
@@ -48,6 +49,7 @@ export default async function ProfilePage() {
   }
 
   const profile = profiles.worker;
+  const { next } = await getWorkerActivity(me.id);
   return (
     <>
       <PageHeader
@@ -71,6 +73,28 @@ export default async function ProfilePage() {
           </div>
         </ActionForm>
       </Panel>
+
+      {next ? (
+        <Panel title="Tu próxima insignia" className="max-w-form">
+          <div className="flex flex-col gap-3">
+            <p className="flex items-center gap-2 font-medium">
+              <span className="text-accent">{BADGE_ICON[next.family]}</span>
+              {next.label}
+              <span className="font-normal text-ink-2">· te faltan {next.missing}</span>
+            </p>
+            <div
+              role="progressbar"
+              aria-label={`Avance hacia ${next.label}`}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.floor(next.progress * 100)}
+              className="h-1.5 overflow-hidden rounded-full bg-wash-2"
+            >
+              <div className="h-full rounded-full bg-accent" style={{ width: `${Math.floor(next.progress * 100)}%` }} />
+            </div>
+          </div>
+        </Panel>
+      ) : null}
 
       <Panel title="Datos de cobro" description="Solo los ve quien te contrata, al momento de pagarte." className="max-w-form">
         <ActionForm action={updatePayeeDetails} className="flex flex-col gap-5">

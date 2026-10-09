@@ -178,6 +178,19 @@ export async function seedIfEmpty(db: Db): Promise<void> {
   await markPayoutPaid(db, firstPayout, daysAgo(10));
   await confirmPayoutReceived(db, firstPayout, daysAgo(9));
 
+  // Actividad de las últimas semanas para ver el calendario: videos que no llegaron al mínimo
+  // de vistas, así que no cambian lo liquidado.
+  const recent: Post[] = [];
+  for (let day = 2; day <= 75; day++) {
+    // Sube casi todos los días, algunos días varios videos, y cada tanto descansa.
+    const perDay = day % 9 === 0 ? 0 : (day * 7) % 5 === 0 ? 4 : (day % 3) + 1;
+    for (let i = 0; i < perDay; i++) {
+      const n = 100 + recent.length;
+      recent.push({ n, views: 400 + ((n * 137) % 9000), quality: 4, handle: `podcast.recortes.0${(n % 3) + 1}`, postedDaysAgo: day });
+    }
+  }
+  await db.insert(deliverables).values(approvedPosts(active.id, "Recorte", recent));
+
   // Después de esa liquidación: un video siguió creciendo, hay un reporte de vistas y un video sin revisar.
   await db.insert(viewSnapshots).values({ deliverableId: approved[2].id, views: 97_200, capturedAt: daysAgo(1) });
   await db.insert(deliverables).values({
