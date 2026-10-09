@@ -195,3 +195,42 @@ export function GridIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/* ---- Insignias ---- */
+
+export function EyeIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M1.75 8S4 3.75 8 3.75 14.25 8 14.25 8 12 12.25 8 12.25 1.75 8 1.75 8Z" />
+      <circle cx="8" cy="8" r="1.75" />
+    </Svg>
+  );
+}
+
+export function LayersIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="m8 2.25 5.75 3L8 8.25l-5.75-3L8 2.25Z" />
+      <path d="m2.25 8 5.75 3 5.75-3" />
+      <path d="m2.25 10.75 5.75 3 5.75-3" />
+    </Svg>
+  );
+}
+
+export function BoltIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M8.75 1.75 3.5 9h4l-.75 5.25L12.5 7h-4l.25-5.25Z" />
+    </Svg>
+  );
+}
+
+export function CalendarCheckIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <rect x="2.25" y="3.25" width="11.5" height="10.5" rx="1.5" />
+      <path d="M5 1.75v2.5M11 1.75v2.5M2.25 6.5h11.5" />
+      <path d="m6 10.25 1.5 1.5 2.75-2.75" />
+    </Svg>
+  );
+}

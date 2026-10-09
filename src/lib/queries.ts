@@ -19,6 +19,8 @@ import {
 import { getPaymentDetails, payeeFor } from "@/lib/payment-details/service";
 import { computePayout } from "@/lib/payrules";
 import { contractPerformance, workerStats, type WorkerStats } from "@/lib/stats";
+import { buildCalendar, countByDay, longestStreak } from "@/lib/stats/activity";
+import { earnedBadges, nextBadge } from "@/lib/stats/badges";
 
 // Subconsultas de conteo por fila. Van con nombres calificados a mano: en una consulta sin
 // joins Drizzle escribe las columnas sin tabla, y dentro de una subconsulta "id" pasaría a
@@ -540,6 +542,30 @@ export async function workerNavCounts(workerId: string) {
     .innerJoin(contracts, eq(contracts.id, payouts.contractId))
     .where(and(eq(contracts.workerId, workerId), eq(payouts.status, "released"), sql`${payouts.confirmedAt} is null`));
   return { requested: Number(requested.total), paymentsToConfirm: Number(toConfirm.total) };
+}
+
+// --- Actividad e insignias del gestor ---
+
+/** Semanas que muestra el calendario de actividad: seis meses. */
+const ACTIVITY_WEEKS = 26;
+
+/** Calendario de actividad e insignias de un gestor, calculados de sus videos aprobados. */
+export async function getWorkerActivity(workerId: string) {
+  const rows = await db
+    .select({ submittedAt: deliverables.submittedAt, createdAt: deliverables.createdAt, views: deliverables.views })
+    .from(deliverables)
+    .innerJoin(contracts, eq(contracts.id, deliverables.contractId))
+    .where(and(eq(contracts.workerId, workerId), eq(deliverables.status, "approved")));
+
+  // Un video cuenta en el día en que el gestor lo cargó.
+  const counts = countByDay(rows.map((row) => row.submittedAt ?? row.createdAt));
+  const facts = {
+    totalViews: rows.reduce((sum, row) => sum + row.views, 0),
+    approvedVideos: rows.length,
+    bestVideoViews: rows.reduce((best, row) => Math.max(best, row.views), 0),
+    longestStreak: longestStreak(counts),
+  };
+  return { calendar: buildCalendar(counts, ACTIVITY_WEEKS), badges: earnedBadges(facts), next: nextBadge(facts) };
 }
 
 // --- Datos de pago propios ---

@@ -20,6 +20,60 @@ Consecuencias en el modelo:
 - **Riesgo nuevo:** sin plata de por medio, inflar un perfil con contrataciones falsas no cuesta nada, y un "pagado" que el trabajador no confirma queda en disputa sin árbitro. Para la prueba de mercado se acepta.
 - **Lo que queda guardado para cuando los pagos pasen por la plataforma:** libro contable, comisión (`splitPayout`), depósitos (`PaymentProvider`), retiros (`PayoutProvider`) y sus tablas siguen en `src/lib` con tests, sin pantallas. Las secciones "Modelo monetario" y "La sección monetaria tiene que poder mutar" describen ese modo futuro.
 
+## Perfil del gestor: insignias y calendario de actividad (aprobado e implementado el 2026-10-09)
+
+**Objetivo:** que el perfil público de un gestor muestre de un vistazo constancia y logros, además de los cuatro números del trayecto. Hoy un perfil con buen historial y uno recién empezado se ven casi iguales.
+
+**Qué se construye**
+
+1. **Calendario de actividad.** Una grilla de cuadraditos por día, como el de GitHub: cuanto más intenso el color, más videos subió ese día. Muestra las últimas 26 semanas (6 meses) y una línea de resumen ("182 videos en los últimos 6 meses"). La grilla se adapta al ancho, así que en celular también entran las 26.
+2. **Insignias de logros.** Se ganan solas al cruzar un umbral y no se pierden. En el perfil público solo aparecen las ganadas; el dueño ve además, en su panel, cuál es la próxima y cuánto le falta.
+
+**Insignias iniciales** (cuatro familias, tres niveles cada una)
+
+| Familia | Qué premia | Niveles |
+|---|---|---|
+| Alcance | Vistas aprobadas acumuladas | 100 mil · 1 millón · 10 millones |
+| Volumen | Videos aprobados | 50 · 250 · 1.000 |
+| Viral | Vistas de su mejor video | 100 mil · 500 mil · 1 millón |
+| Constancia | Días seguidos subiendo al menos un video | 7 · 30 · 90 |
+
+De cada familia se muestra solo el nivel más alto alcanzado: como mucho cuatro insignias por perfil.
+
+**Reglas**
+
+- **Solo cuenta trabajo real:** videos aprobados por un contratador, con las vistas que ese contratador aprobó. Un video cuenta en el día en que el gestor lo cargó. Es la misma regla del trayecto: nada se declara a mano.
+- **Todo es derivado.** No hay tabla de insignias ni contadores guardados: se calculan de los videos, igual que el trayecto. Si mañana cambia un umbral, cambia para todos sin migrar datos.
+- **Los días se cuentan en hora de Buenos Aires**, para que un video subido a la noche no caiga en el día siguiente.
+- **Sin insignias por plata cobrada:** el monto es entre las partes y no se publica.
+
+**Diseño visual**
+
+- El calendario usa el verde de la marca en cuatro intensidades sobre gris claro, sin bordes ni sombras. Cada cuadradito dice al pasar el mouse (y a lectores de pantalla) "3 videos · 4 oct".
+- Las insignias son sobrias: un ícono de línea, el nombre y el nivel en una píldora. Nada de medallas de colores ni ilustraciones; tiene que seguir pareciendo una herramienta profesional.
+- **Cambia el presupuesto del perfil público** del sistema de diseño: pasa de "4 números y una acción" a "4 números, calendario e insignias". Trabajos y reseñas quedan debajo.
+
+**Dónde aparece**
+
+| Pantalla | Cambio |
+|---|---|
+| `/t/[usuario]` | Calendario e insignias ganadas, entre el trayecto y los trabajos |
+| `/app/perfil` (gestor) | "Tu próxima insignia": cuál es y cuánto falta |
+| `/talento` | Sin cambios por ahora |
+
+**Arquitectura**
+
+- `src/lib/stats/badges.ts` y `src/lib/stats/activity.ts`: funciones puras con tests (umbrales, rachas, agrupado por día y zona horaria).
+- Una consulta nueva trae los videos aprobados del gestor (fecha de carga y vistas); el resto se calcula en memoria.
+- Componentes `ActivityCalendar` y `BadgeList` en `src/components/domain`.
+- Sin cambios en la base.
+
+**Riesgos**
+
+1. **Manipulación.** Un contratador cómplice puede aprobar videos y vistas falsas para inflar insignias. Es el mismo riesgo que ya tiene el trayecto mientras no haya plata ni verificación automática de vistas.
+2. **Perfiles nuevos.** Un calendario vacío puede desalentar. Si no hay actividad, el bloque no se muestra y el perfil queda como hoy.
+3. **Rendimiento.** Se leen todos los videos aprobados del gestor en cada visita al perfil. Con miles de videos por persona conviene pasar a una consulta agregada por día; hoy no hace falta.
+
 ## Datos de pago entre las partes (aprobado e implementado el 2026-10-08)
 
 **Problema:** al pagar, el contratador no sabe a dónde transferir y el gestor no sabe de quién va a recibir.

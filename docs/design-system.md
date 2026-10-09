@@ -33,7 +33,7 @@ Alcanza para construir cualquier pantalla sin leer el código de los componentes
 | `StatGroup` | Máximo 3 `Stat`. Sin `note`, salvo que el número sea ambiguo sin ella |
 | Tabla de equipo | Persona, Videos, Vistas, Costo / 1.000, Pagado, Adeudado. Lo que espera revisión va como badge junto al nombre |
 | Detalle de contratación | La tabla de videos es la pantalla. Arriba, solo lo que tiene a la otra parte esperando (una liquidación por pagar o un cobro por confirmar). Liquidaciones, mensajes y finalizar: plegados |
-| Perfil público | Nombre, una línea, 4 números (`TrackRecord`), una acción |
+| Perfil público | Nombre, una línea, 4 números (`TrackRecord`), una acción; insignias ganadas (`BadgeList`, una por familia) y calendario de actividad (`ActivityCalendar`) solo si hay actividad |
 | Estados vacíos | Una línea y, si existe, la acción |
 | Formularios | Una columna, ancho contenido, solo los campos que hacen falta. Lo opcional va detrás de "Más opciones". `hint` solo si evita un error |
 | Navegación y pie públicos | Trabajos, Talento, Ingresar / Registrarme |
@@ -282,7 +282,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **Formulario** — un `Panel` (`max-w-form` o `max-w-2xl`), campos mínimos, lo opcional en "Más opciones", un botón.
 
-**Perfil público** — avatar, nombre, `@usuario · presentación` y una acción → `TrackRecord` con una línea de procedencia → solo si existen: trabajos (tabla de 3 columnas) y reseñas.
+**Perfil público** — avatar, nombre, `@usuario · presentación` y una acción → `TrackRecord` con una línea de procedencia → solo si existen: insignias (`BadgeList`), actividad (`ActivityCalendar` dentro de un `Panel`), trabajos (tabla de 3 columnas) y reseñas.
 
 **Páginas angostas públicas** (ingresar, registro, invitación) — envoltorio `flex-1 bg-wash`, adentro `mx-auto max-w-form px-4 py-12 sm:py-16` con `h1` (`type-page`) y un `Panel className="shadow-xs"`.
 
