@@ -36,6 +36,7 @@ En local alcanza con `.env.local` (copiar de `.env.example`). En producción las
 - `main` es producción: cada commit que entra a `main` lo publica GitHub Actions en Vercel, sin importar quién lo hizo (antes corren los chequeos y las migraciones de la base).
 - Para un cambio: rama nueva → push → pull request. GitHub corre tipos, lint, tests y auditoría de dependencias. No hay vistas previas publicadas: la base solo está conectada a producción, así que los cambios se prueban en local.
 - La publicación usa tres secretos del repositorio: `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID`.
+- El proyecto de Vercel **no** está conectado al repositorio, a propósito. Conectarlo publica cada cambio dos veces (y corre las migraciones dos veces) y hace que el bot de Vercel comente y mande avisos en cada pull request.
 
 ## Seguridad
 
