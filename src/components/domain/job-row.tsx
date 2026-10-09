@@ -17,12 +17,14 @@ export type JobRowProps = {
   brandName: string;
   /** Dónde se publican los videos; la paga es por las vistas ahí. */
   platform: JobPlatform | null;
+  /** Nombre de la plataforma cuando es `otra`. */
+  platformName?: string | null;
   /** Regla de pago en una línea. Generala con `payRuleText(rule)`. */
   payRuleSummary: string;
 };
 
 /** Una búsqueda en la bolsa: qué es, quién contrata y cuánto paga. Nada más. Toda la fila es el link. */
-export function JobRow({ href, title, brandName, platform, payRuleSummary }: JobRowProps) {
+export function JobRow({ href, title, brandName, platform, platformName, payRuleSummary }: JobRowProps) {
   return (
     <li className="group relative flex items-center gap-4 px-4 py-4 transition-colors duration-100 hover:bg-wash has-[a:focus-visible]:bg-wash sm:px-5">
       <div className="grid min-w-0 flex-1 gap-x-10 gap-y-1.5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
@@ -37,7 +39,7 @@ export function JobRow({ href, title, brandName, platform, payRuleSummary }: Job
             {platform ? (
               <>
                 <span aria-hidden="true">·</span>
-                <PlatformTag platform={platform} />
+                <PlatformTag platform={platform} name={platformName} />
               </>
             ) : null}
           </p>

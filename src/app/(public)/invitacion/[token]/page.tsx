@@ -28,7 +28,7 @@ export default async function InvitePage({ params }: PageProps<"/invitacion/[tok
 
         <Panel
           title="Cómo se paga"
-          description={invite.platform ? <>Por las vistas en <PlatformTag platform={invite.platform} className="align-bottom font-medium text-ink-2" /></> : undefined}
+          description={invite.platform ? <>Por las vistas en <PlatformTag platform={invite.platform} name={invite.platformName} className="align-bottom font-medium text-ink-2" /></> : undefined}
           className="shadow-xs"
         >
           <PayRuleSummary {...invite.payRule} />

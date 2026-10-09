@@ -1,4 +1,4 @@
-# Clipfleet
+# ClipFleet
 
 Punto de encuentro entre creadores de contenido y gestores de multicuentas: gente que crea cuentas descartables para subir ese contenido de forma masiva. Bolsa de búsquedas, perfiles con trayecto, y herramientas para que el contratador gestione a su equipo: rendimiento por persona y cálculo de lo que le corresponde a cada uno. Los pagos se hacen por fuera, entre las partes; la plataforma no cobra comisión.
 

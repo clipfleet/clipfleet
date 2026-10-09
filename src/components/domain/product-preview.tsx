@@ -45,7 +45,7 @@ export function ProductPreview({ className }: { className?: string }) {
       <div inert className="grid overflow-hidden rounded-lg border border-line bg-surface shadow-raised select-none lg:grid-cols-[13rem_minmax(0,1fr)]">
         <div className="hidden flex-col gap-1 border-r border-line bg-wash px-3 py-4 lg:flex">
           <p className="mb-3 flex items-center gap-2 px-2 text-[0.9375rem] leading-none font-semibold tracking-[-0.03em]">
-            <BrandMark className="size-4 text-accent" />
+            <BrandMark className="size-4" />
             {BRAND.name}
           </p>
           {NAV.map((item) => (
