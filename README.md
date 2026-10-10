@@ -48,7 +48,6 @@ En local alcanza con `.env.local` (copiar de `.env.example`). En producción las
 - **Autorización:** cada acción y cada página verifican sesión, rol y pertenencia al recurso en el servidor.
 - **Datos de pago:** el alias/CBU/CVU de un gestor solo lo ve el contratador de una contratación suya, al liquidar; cambiarlo pide la contraseña actual (`src/lib/payment-details`).
 - **Base:** conexión cifrada; Row Level Security en todas las tablas para que la API pública de Supabase no exponga datos.
-- **Privacidad:** la [Política de privacidad](src/app/(public)/privacidad/page.tsx) se actualiza en el mismo pull request que cualquier cambio sobre datos personales; el inventario de `src/lib/privacy` y sus tests lo exigen (regla completa en `CLAUDE.md`).
 - **Pendiente:** verificación de email y recuperación de contraseña (necesitan un servicio de envío de mails).
 
 ## Comandos
