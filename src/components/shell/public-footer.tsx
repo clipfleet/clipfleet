@@ -11,7 +11,7 @@ export type PublicFooterProps = {
 
 const linkClass = "rounded-sm text-ink-2 transition-colors duration-100 hover:text-ink";
 
-/** Pie de las páginas públicas: una línea fina, la marca y tres links. */
+/** Pie de las páginas públicas: una línea fina, la marca y cuatro links. */
 export function PublicFooter({ user, loginHref = "/ingresar", panelHref = "/app" }: PublicFooterProps) {
   return (
     <footer className="border-t border-line">
@@ -30,6 +30,11 @@ export function PublicFooter({ user, loginHref = "/ingresar", panelHref = "/app"
             <li>
               <Link href="/talento" className={linkClass}>
                 Talento
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacidad" className={linkClass}>
+                Privacidad
               </Link>
             </li>
             <li>
