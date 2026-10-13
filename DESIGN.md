@@ -39,6 +39,19 @@ Consecuencias en el modelo:
 | `/app/perfil` (ambos) | Bloques de lectura con "Editar": Perfil, Cuenta (email y cambiar contraseña) y los datos de pago, que siguen en el perfil |
 | Barra lateral | Sin rótulo de rol; "Búsquedas" pasa a "Campañas" |
 
+**El panel no te saca del panel.** Con la sesión iniciada, todo se ve dentro del panel, con la barra lateral. Las páginas públicas de campañas y perfiles se vuelven componentes que se muestran en los dos marcos: el contenido es el mismo y cambia solo el marco.
+
+| Hoy | Ahora |
+|---|---|
+| "Ver página pública" en una campaña propia | "Vista previa" en `/app/campanas/[id]`, con un aviso "Así la ven quienes suben videos", el link público para copiar y "Volver a la campaña" |
+| El nombre de quien se postuló lleva a `/t/[usuario]` | Lleva a `/app/talento/[usuario]`, con "Volver a la campaña" y, si tiene postulaciones sin responder a tus campañas, "Contratar" y "Descartar" ahí mismo |
+| "Ver mi perfil público" (gestor) | Vista previa en `/app/talento/[usuario]` con el link público para copiar |
+| Encontrar campañas o talento obliga a ir al sitio público | "Campañas" en la navegación del gestor (`/app/campanas`) y "Talento" en la del contratador (`/app/talento`) |
+
+Quien tiene la sesión iniciada y abre `/trabajos`, `/trabajos/[id]`, `/talento` o `/t/[usuario]` (por ejemplo, desde un link que le pasaron) va a la versión del panel. Las páginas públicas siguen igual para quien no ingresó. El tablero público pasa a llamarse "Campañas abiertas" para no confundirse con "Campañas" del contratador, que son las suyas.
+
+Navegación: contratador → Equipo, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil.
+
 **Cambiar la contraseña:** pide la actual y la nueva, con el mismo límite de intentos que el ingreso, y cierra las otras sesiones abiertas. No es recuperación de contraseña: esa sigue pendiente porque necesita envío de mails.
 
 ## Perfil del gestor: insignias y calendario de actividad (aprobado e implementado el 2026-10-09)
@@ -243,12 +256,14 @@ Puntos clave:
 | Ruta | Quién | Qué |
 |---|---|---|
 | `/` | público | Landing |
-| `/trabajos`, `/trabajos/[id]` | público | Bolsa de campañas y detalle |
-| `/talento`, `/t/[usuario]` | público | Directorio y perfil público con historial |
+| `/trabajos`, `/trabajos/[id]` | público | Bolsa de campañas y detalle; con sesión, redirige a `/app/campanas` |
+| `/talento`, `/t/[usuario]` | público | Directorio y perfil público con historial; con sesión, redirige a `/app/talento` |
 | `/app/busquedas`, `/app/busquedas/[id]` | contratador | Campañas: crear, pausar y responder postulaciones |
 | `/app/equipo`, `/app/equipo/[id]` | contratador | **CRM**: una fila por persona con rendimiento; detalle por contratación |
 | `/app/equipo/invitar`, `/invitacion/[token]` | contratador / invitado | Sumar equipo existente por link, sin pasar por la bolsa |
 | `/app/liquidaciones` | contratador | Qué se debe, a quién, por qué; marcar como pagado |
+| `/app/campanas`, `/app/campanas/[id]` | ambos | Campañas abiertas y su detalle dentro del panel; postularse (gestor) o vista previa de la propia (contratador) |
+| `/app/talento`, `/app/talento/[usuario]` | ambos | Directorio y perfil dentro del panel; contratar desde una postulación (contratador) o vista previa del propio (gestor) |
 | `/app/postulaciones` | trabajador | Estado de sus postulaciones |
 | `/app/contrataciones`, `/app/contrataciones/[id]` | trabajador | Trabajos activos, cargar entregas, ver lo ganado |
 | `/app/cobros` | trabajador | Pagos por confirmar, lo adeudado y lo cobrado |
