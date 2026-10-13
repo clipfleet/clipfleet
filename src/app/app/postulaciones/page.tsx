@@ -41,7 +41,7 @@ export default async function MyApplicationsPage() {
           <Table caption="Mis postulaciones" layout="stack" minWidth={640}>
             <THead>
               <TR>
-                <TH>Búsqueda</TH>
+                <TH>Campaña</TH>
                 <TH>Pago</TH>
                 <TH>Enviada</TH>
                 <TH>Respuesta</TH>

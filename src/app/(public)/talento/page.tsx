@@ -19,7 +19,7 @@ export default async function TalentPage() {
       <PageHeader title="Talento" />
 
       {workers.length === 0 ? (
-        <EmptyState title="Todavía no hay perfiles" action={<ButtonLink href="/registro?rol=contratador">Publicar una búsqueda</ButtonLink>} />
+        <EmptyState title="Todavía no hay perfiles" action={<ButtonLink href="/registro?rol=contratador">Publicar una campaña</ButtonLink>} />
       ) : (
         <Panel padded={false}>
           <Table caption="Gestores de multicuentas y sus resultados" minWidth={0}>

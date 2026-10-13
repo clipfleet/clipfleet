@@ -32,7 +32,7 @@ export default async function JobPage({ params }: PageProps<"/trabajos/[id]">) {
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
       <PageHeader
-        back={{ href: "/trabajos", label: "Trabajos" }}
+        back={{ href: "/trabajos", label: "Campañas" }}
         title={job.title}
         meta={
           <>
@@ -50,7 +50,7 @@ export default async function JobPage({ params }: PageProps<"/trabajos/[id]">) {
           <p className="max-w-prose text-[0.9375rem] leading-relaxed whitespace-pre-wrap text-ink-2">{job.description}</p>
 
           {!open ? (
-            <Notice tone="info" title="Esta búsqueda ya no recibe postulaciones" />
+            <Notice tone="info" title="Esta campaña ya no recibe postulaciones" />
           ) : !me ? (
             <div className="flex flex-wrap gap-2">
               <ButtonLink href={`/registro?next=/trabajos/${job.id}`}>Crear mi perfil y postularme</ButtonLink>

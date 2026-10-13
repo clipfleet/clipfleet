@@ -15,7 +15,7 @@ import { APPLICATION_STATUS, JOB_STATUS } from "@/lib/domain/labels";
 import { getMyJob } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
 
-export const metadata = { title: "Búsqueda" };
+export const metadata = { title: "Campaña" };
 
 export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[id]">) {
   const me = await requireUser("hirer");
@@ -27,7 +27,7 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
   return (
     <>
       <PageHeader
-        back={{ href: "/app/busquedas", label: "Búsquedas" }}
+        back={{ href: "/app/busquedas", label: "Campañas" }}
         title={job.title}
         meta={
           <>
@@ -61,7 +61,7 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
         {applications.length === 0 ? (
           <EmptyState flush title="Todavía no se postuló nadie" />
         ) : (
-          <Table caption="Postulaciones a la búsqueda" layout="stack" minWidth={640}>
+          <Table caption="Postulaciones a la campaña" layout="stack" minWidth={640}>
             <THead>
               <TR>
                 <TH>Persona</TH>

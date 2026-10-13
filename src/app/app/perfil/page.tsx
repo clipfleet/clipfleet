@@ -25,7 +25,7 @@ export default async function ProfilePage() {
             <Field label="Tu nombre">
               <Input name="name" required defaultValue={me.name} autoComplete="name" />
             </Field>
-            <Field label="Canal o marca" hint="Con este nombre aparecen tus búsquedas.">
+            <Field label="Canal o marca" hint="Con este nombre aparecen tus campañas.">
               <Input name="brandName" required defaultValue={profile?.brandName ?? ""} />
             </Field>
             <div>

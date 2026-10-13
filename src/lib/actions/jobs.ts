@@ -68,15 +68,15 @@ export async function applyToJob(form: FormData): Promise<ActionResult> {
   if (limited) return limited;
   const jobId = text(form, "jobId");
   const [job] = await db.select().from(jobs).where(eq(jobs.id, jobId));
-  if (!job || job.status !== "open") return { error: "Esta búsqueda ya no recibe postulaciones." };
+  if (!job || job.status !== "open") return { error: "Esta campaña ya no recibe postulaciones." };
   const inserted = await db
     .insert(applications)
     .values({ jobId, workerId: me.id, message: text(form, "message", 2000) })
     .onConflictDoNothing()
     .returning({ id: applications.id });
-  if (inserted.length === 0) return { error: "Ya te postulaste a esta búsqueda." };
+  if (inserted.length === 0) return { error: "Ya te postulaste a esta campaña." };
   revalidatePath(`/trabajos/${jobId}`);
-  return { ok: "Postulación enviada. Te avisamos en tu panel cuando el contratador responda." };
+  return { ok: "Postulación enviada. Te avisamos en tu panel cuando te respondan." };
 }
 
 export async function decideApplication(form: FormData): Promise<ActionResult> {
@@ -162,7 +162,7 @@ export async function acceptInvite(form: FormData): Promise<ActionResult> {
     const [invite] = await tx.select().from(invites).where(eq(invites.token, token)).for("update");
     if (!invite) return { error: "Invitación inexistente." };
     if (invite.usedBy) return { error: "Esta invitación ya fue usada." };
-    if (invite.expiresAt.getTime() < Date.now()) return { error: "Esta invitación venció. Pedile un link nuevo al contratador." };
+    if (invite.expiresAt.getTime() < Date.now()) return { error: "Esta invitación venció. Pedile un link nuevo a quien te invitó." };
 
     const settings = await getSettings(tx);
     const [contract] = await tx

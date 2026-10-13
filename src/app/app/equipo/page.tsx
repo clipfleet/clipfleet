@@ -58,7 +58,7 @@ export default async function TeamPage() {
             <span className="flex flex-wrap gap-2">
               <ButtonLink href="/app/equipo/invitar">Invitar por link</ButtonLink>
               <ButtonLink href="/app/busquedas/nueva" variant="secondary">
-                Publicar búsqueda
+                Publicar campaña
               </ButtonLink>
             </span>
           }

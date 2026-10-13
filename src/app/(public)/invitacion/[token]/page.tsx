@@ -50,8 +50,8 @@ export default async function InvitePage({ params }: PageProps<"/invitacion/[tok
             </ButtonLink>
           </div>
         ) : me.role !== "worker" ? (
-          <Notice tone="info" title="Esta invitación es para un perfil de trabajador">
-            Estás usando una cuenta de contratador.
+          <Notice tone="info" title="Esta invitación es para alguien que sube videos">
+            Entraste con una cuenta para publicar campañas.
           </Notice>
         ) : (
           <ActionForm action={acceptInvite} className="flex flex-col gap-3">

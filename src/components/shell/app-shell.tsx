@@ -26,12 +26,6 @@ export type AppShellProps = {
   children: ReactNode;
 };
 
-const ROLE_LABEL: Record<AppShellUser["role"], string> = {
-  hirer: "Contratador",
-  worker: "Trabajador",
-  admin: "Administración",
-};
-
 /**
  * Marco del panel autenticado. Escritorio: barra lateral clara, fija a la
  * izquierda. Celular: barra superior con la marca y la navegación fija abajo,
@@ -78,7 +72,7 @@ export function AppShell({ user, nav, signOutAction, children }: AppShellProps) 
           <Avatar name={user.name} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-[0.8125rem] leading-[1.125rem] font-medium text-ink">{user.name}</p>
-            <p className="truncate text-xs text-ink-3">{ROLE_LABEL[user.role]}</p>
+            <p className="truncate text-xs text-ink-3">@{user.username}</p>
           </div>
           <form action={signOutAction}>
             <button

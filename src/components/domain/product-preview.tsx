@@ -24,7 +24,7 @@ const costPerThousand = (paid: number, views: number) => Math.round((paid * 1000
 
 const NAV = [
   { label: "Equipo", icon: <TeamIcon />, active: true, badge: 2 },
-  { label: "Búsquedas", icon: <SearchIcon />, active: false },
+  { label: "Campañas", icon: <SearchIcon />, active: false },
   { label: "Liquidaciones", icon: <ReceiptIcon />, active: false },
   { label: "Perfil", icon: <UserIcon />, active: false },
 ];
@@ -39,7 +39,7 @@ export function ProductPreview({ className }: { className?: string }) {
     <figure className={clsx("flex min-w-0 flex-col gap-3", className)}>
       <figcaption className="flex items-center gap-2.5 text-[0.8125rem] text-ink-3">
         <Badge>Ejemplo</Badge>
-        El equipo de un contratador, con datos ficticios.
+        Un equipo, con datos ficticios.
       </figcaption>
 
       <div inert className="grid overflow-hidden rounded-lg border border-line bg-surface shadow-raised select-none lg:grid-cols-[13rem_minmax(0,1fr)]">

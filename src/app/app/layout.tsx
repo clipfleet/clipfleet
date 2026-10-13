@@ -16,7 +16,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     const counts = await hirerNavCounts(me.id);
     nav = [
       { href: "/app/equipo", label: "Equipo", icon: <TeamIcon />, badge: badge(counts.toReview) },
-      { href: "/app/busquedas", label: "Búsquedas", icon: <SearchIcon />, badge: badge(counts.applications) },
+      { href: "/app/busquedas", label: "Campañas", icon: <SearchIcon />, badge: badge(counts.applications) },
       { href: "/app/liquidaciones", label: "Liquidaciones", icon: <ReceiptIcon />, badge: badge(counts.pendingPayouts) },
       { href: "/app/perfil", label: "Perfil", icon: <UserIcon /> },
     ];

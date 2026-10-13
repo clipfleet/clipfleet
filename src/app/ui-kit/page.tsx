@@ -72,7 +72,7 @@ export default function UiKitPage() {
       nav={[
         { href: "/ui-kit", label: "Kit de UI", icon: <GridIcon /> },
         { href: "/app/equipo", label: "Equipo", icon: <TeamIcon />, badge: 2 },
-        { href: "/app/busquedas", label: "Búsquedas", icon: <SearchIcon /> },
+        { href: "/app/busquedas", label: "Campañas", icon: <SearchIcon /> },
         { href: "/app/liquidaciones", label: "Liquidaciones", icon: <ReceiptIcon /> },
       ]}
       signOutAction={noopSignOut}
@@ -141,7 +141,7 @@ export default function UiKitPage() {
           <div className="flex flex-col gap-6">
             <Specimen name="variant">
               <div className="flex flex-wrap items-center gap-2">
-                <Button variant="primary">Publicar búsqueda</Button>
+                <Button variant="primary">Publicar campaña</Button>
                 <Button variant="secondary">Invitar por link</Button>
                 <Button variant="ghost">Cancelar</Button>
                 <Button variant="danger">Finalizar contratación</Button>
@@ -231,7 +231,7 @@ export default function UiKitPage() {
               <CopyField value="https://ejemplo.local/invitacion/abc123" label="Link de invitación de ejemplo" />
             </Specimen>
             <div className="flex flex-wrap gap-2 border-t border-line pt-5">
-              <Button type="submit">Publicar búsqueda</Button>
+              <Button type="submit">Publicar campaña</Button>
               <Button variant="ghost">Cancelar</Button>
             </div>
           </form>
@@ -251,7 +251,7 @@ export default function UiKitPage() {
               <Badge tone="info">Pago informado</Badge>
             </div>
           </Panel>
-          <Notice tone="success" title="Búsqueda publicada" />
+          <Notice tone="success" title="Campaña publicada" />
           <Notice tone="error" title="No pudimos guardar los cambios">
             Revisá tu conexión y probá de nuevo.
           </Notice>
@@ -260,7 +260,7 @@ export default function UiKitPage() {
           </Notice>
           <Notice
             tone="info"
-            title="Esta búsqueda ya no recibe postulaciones"
+            title="Esta campaña ya no recibe postulaciones"
             action={
               <ButtonLink href="/trabajos" size="sm" variant="secondary">
                 Ver trabajos

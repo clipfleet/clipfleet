@@ -2,7 +2,7 @@ import clsx from "clsx";
 import type { ReactNode } from "react";
 
 export type EmptyStateProps = {
-  /** Qué falta, dicho como hecho: "Todavía no publicaste ninguna búsqueda". */
+  /** Qué falta, dicho como hecho: "Todavía no publicaste ninguna campaña". */
   title: ReactNode;
   /** Solo si el siguiente paso no se entiende con el botón. */
   description?: ReactNode;

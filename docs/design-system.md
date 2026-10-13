@@ -36,7 +36,7 @@ Alcanza para construir cualquier pantalla sin leer el código de los componentes
 | Perfil público | Nombre, una línea, 4 números (`TrackRecord`), una acción; insignias ganadas (`BadgeList`, una por familia) y calendario de actividad (`ActivityCalendar`) solo si hay actividad |
 | Estados vacíos | Una línea y, si existe, la acción |
 | Formularios | Una columna, ancho contenido, solo los campos que hacen falta. Lo opcional va detrás de "Más opciones". `hint` solo si evita un error |
-| Navegación y pie públicos | Trabajos, Talento, Ingresar / Registrarme |
+| Navegación y pie públicos | Campañas, Talento, Ingresar / Registrarme |
 
 No se sacan: los montos y el desglose por video de una liquidación (son lo que genera confianza).
 
@@ -242,7 +242,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 ## 6. Marco (`@/components/shell/*`)
 
-**AppShell** — `user: { name, username, role }`, `nav: { href, label, icon?, badge? }[]`, `signOutAction`, `children`. Escritorio: barra lateral clara de 240px con el ítem activo apenas despegado del fondo. Al pie de la barra lateral, avatar, nombre y "Salir", sin rótulo de rol. Celular: barra superior con la marca y navegación fija abajo (ícono + rótulo). Da contenedor, márgenes y `gap`: las páginas devuelven un fragmento. Navegación: contratador → Equipo, Campañas, Liquidaciones, Perfil. Gestor → Mis trabajos, Cobros, Postulaciones, Perfil.
+**AppShell** — `user: { name, username, role }`, `nav: { href, label, icon?, badge? }[]`, `signOutAction`, `children`. Escritorio: barra lateral clara de 240px con el ítem activo apenas despegado del fondo. Al pie de la barra lateral, avatar, nombre, `@usuario` y "Salir", sin rótulo de rol. Celular: barra superior con la marca y navegación fija abajo (ícono + rótulo). Da contenedor, márgenes y `gap`: las páginas devuelven un fragmento. Navegación: contratador → Equipo, Campañas, Liquidaciones, Perfil. Gestor → Mis trabajos, Cobros, Postulaciones, Perfil.
 
 **PublicHeader** — `user: { name } | null`, `loginHref?`, `registerHref?`, `panelHref?`. **PublicFooter** — `user`, `loginHref?`, `panelHref?`: una línea fina, la marca y tres links.
 
