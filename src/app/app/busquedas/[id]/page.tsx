@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
-import { PayRuleSummary } from "@/components/domain/pay-rule-summary";
+import { payRuleText } from "@/components/domain/pay-rule-summary";
 import { PlatformTag } from "@/components/domain/platform";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -15,6 +15,9 @@ import { getMyJob } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
 
 export const metadata = { title: "Campaña" };
+
+/** A partir de este largo la descripción se pliega a dos líneas con "Ver más". */
+const LONG_DESCRIPTION = 160;
 
 export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[id]">) {
   const me = await requireUser("hirer");
@@ -33,6 +36,7 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
           <>
             <Badge tone={JOB_STATUS[job.status].tone}>{JOB_STATUS[job.status].label}</Badge>
             <PlatformTag platform={job.platform} name={job.platformName} />
+            <span className="tabular-nums">{payRuleText(job.payRule)}</span>
             <span className="tabular-nums">
               Contratados {hired} de {job.slots}
             </span>
@@ -59,12 +63,17 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
         }
       />
 
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10">
+      {job.description.length <= LONG_DESCRIPTION ? (
         <p className="max-w-prose text-[0.9375rem] leading-relaxed whitespace-pre-wrap text-ink-2">{job.description}</p>
-        <Panel title="Cómo se paga">
-          <PayRuleSummary {...job.payRule} />
-        </Panel>
-      </div>
+      ) : (
+        <details className="group max-w-prose text-[0.9375rem] leading-relaxed text-ink-2">
+          <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <span className="line-clamp-2 whitespace-pre-wrap group-open:line-clamp-none">{job.description}</span>
+            <span className="link text-sm group-open:hidden">Ver más</span>
+            <span className="link hidden text-sm group-open:inline">Ver menos</span>
+          </summary>
+        </details>
+      )}
 
       <section aria-labelledby="postulaciones" className="flex flex-col gap-3">
         <h2 id="postulaciones" className="type-title flex flex-wrap items-center gap-2 text-[1.0625rem]">
