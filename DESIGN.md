@@ -20,6 +20,27 @@ Consecuencias en el modelo:
 - **Riesgo nuevo:** sin plata de por medio, inflar un perfil con contrataciones falsas no cuesta nada, y un "pagado" que el trabajador no confirma queda en disputa sin árbitro. Para la prueba de mercado se acepta.
 - **Lo que queda guardado para cuando los pagos pasen por la plataforma:** libro contable, comisión (`splitPayout`), depósitos (`PaymentProvider`), retiros (`PayoutProvider`) y sus tablas siguen en `src/lib` con tests, sin pantallas. Las secciones "Modelo monetario" y "La sección monetaria tiene que poder mutar" describen ese modo futuro.
 
+## Claridad del panel (aprobado el 2026-10-13)
+
+**Problema:** usando el panel como contratador no queda claro qué es Equipo, qué genera "Invitar por link", las postulaciones de una búsqueda se pierden en la tabla y el perfil es un par de formularios sueltos, sin forma de cambiar la contraseña.
+
+**Vocabulario**
+
+- **`Job` se dice "campaña"** en toda la interfaz, pública y del panel ("Publicar campaña", sección "Campañas"). Rutas, tablas y código siguen como están (`/app/busquedas`, `/trabajos`, `jobs`): no hay migración.
+- **Los roles no se nombran en la interfaz.** "Contratador", "trabajador", "gestor", "creador" y "clipper" no aparecen en pantalla: se sale el rótulo de rol de la barra lateral, en público se mantienen "Tengo contenido" y "Subo videos", y donde haga falta distinguir se dice qué hace cada uno. En el código y en este documento se sigue diciendo contratador y gestor.
+
+**Pantallas que cambian**
+
+| Pantalla | Cambio |
+|---|---|
+| `/app/equipo` | Una fila por persona, con sus campañas o invitaciones debajo del nombre |
+| `/app/equipo/invitar` | Dice qué genera: un link por persona, de un solo uso, que al abrirlo acepta el trabajo con esa regla de pago y vence a los 14 días |
+| `/app/busquedas/[id]` | Resumen de la campaña (descripción, contratados X de Y) y "Postulaciones" como sección propia con la cantidad sin responder. Quien fue contratado lleva a su contratación. "Ver página pública" pasa a link secundario |
+| `/app/perfil` (ambos) | Bloques de lectura con "Editar": Perfil, Cuenta (email y cambiar contraseña) y los datos de pago, que siguen en el perfil |
+| Barra lateral | Sin rótulo de rol; "Búsquedas" pasa a "Campañas" |
+
+**Cambiar la contraseña:** pide la actual y la nueva, con el mismo límite de intentos que el ingreso, y cierra las otras sesiones abiertas. No es recuperación de contraseña: esa sigue pendiente porque necesita envío de mails.
+
 ## Perfil del gestor: insignias y calendario de actividad (aprobado e implementado el 2026-10-09)
 
 **Objetivo:** que el perfil público de un gestor muestre de un vistazo constancia y logros, además de los cuatro números del trayecto. Hoy un perfil con buen historial y uno recién empezado se ven casi iguales.
@@ -222,18 +243,16 @@ Puntos clave:
 | Ruta | Quién | Qué |
 |---|---|---|
 | `/` | público | Landing |
-| `/trabajos`, `/trabajos/[id]` | público | Bolsa de búsquedas y detalle |
+| `/trabajos`, `/trabajos/[id]` | público | Bolsa de campañas y detalle |
 | `/talento`, `/t/[usuario]` | público | Directorio y perfil público con historial |
-| `/app/busquedas` | contratador | Crear/gestionar búsquedas y postulaciones |
-| `/app/equipo`, `/app/equipo/[id]` | contratador | **CRM**: tabla de trabajadores con rendimiento; detalle por contratación |
+| `/app/busquedas`, `/app/busquedas/[id]` | contratador | Campañas: crear, pausar y responder postulaciones |
+| `/app/equipo`, `/app/equipo/[id]` | contratador | **CRM**: una fila por persona con rendimiento; detalle por contratación |
 | `/app/equipo/invitar`, `/invitacion/[token]` | contratador / invitado | Sumar equipo existente por link, sin pasar por la bolsa |
-| `/app/liquidaciones` | contratador | Qué se debe, a quién, por qué; aprobar y liberar pago |
-| `/app/saldo` | contratador | Fondear saldo, ver reservado/disponible, movimientos |
+| `/app/liquidaciones` | contratador | Qué se debe, a quién, por qué; marcar como pagado |
 | `/app/postulaciones` | trabajador | Estado de sus postulaciones |
 | `/app/contrataciones`, `/app/contrataciones/[id]` | trabajador | Trabajos activos, cargar entregas, ver lo ganado |
-| `/app/cobros` | trabajador | Saldo a favor, pedir retiro, historial |
-| `/admin/retiros` | admin | Cola de retiros para procesar a mano |
-| `/app/perfil` | ambos | Editar perfil |
+| `/app/cobros` | trabajador | Pagos por confirmar, lo adeudado y lo cobrado |
+| `/app/perfil` | ambos | Perfil, cuenta (cambiar contraseña) y datos de pago |
 
 ## 3. Modelos de datos
 
@@ -409,7 +428,7 @@ Comisión, quién la paga y cómo se retiran los fondos van a cambiar. Por eso:
 
 Precisiones tomadas al construir. Ninguna cambia el alcance aprobado; se listan para que el documento refleje el código.
 
-- **Auth:** se usó Better Auth en vez de un proveedor gestionado (ver §5). Sin verificación de email ni recuperación de contraseña todavía: hacen falta antes de abrir al público y requieren un servicio de envío de mails.
+- **Auth:** se usó Better Auth en vez de un proveedor gestionado (ver §5). Sin verificación de email ni recuperación de contraseña todavía: hacen falta antes de abrir al público y requieren un servicio de envío de mails. Cambiar la contraseña con la sesión iniciada sí existe (2026-10-13), desde el perfil.
 - **Liquidación incremental:** cada entrega cobra la diferencia entre lo que ganó con sus vistas aprobadas a hoy y lo ya cobrado. Así las vistas que siguen creciendo se pagan en liquidaciones posteriores sin pagar dos veces. El desglose vive en la tabla `payout_items` (no en un JSON dentro de `Payout`), con las vistas congeladas al generar.
 - **`Payout`** guarda `amount` (lo acordado), `fee`, `hirerDebit` y `workerCredit`, para que quién paga la comisión pueda cambiar sin recalcular historia.
 - **Entregas con fecha:** el contratador puede pedir una entrega con fecha (`requested`); sobre esas se calcula la puntualidad. Las publicaciones que el trabajador sube por su cuenta no tienen fecha y no cuentan para esa métrica.
