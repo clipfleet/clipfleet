@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: PageProps<"/trabajos/[id]">) {
   const { id } = await params;
   const job = await getJob(id);
-  return { title: job?.title ?? "Trabajo" };
+  return { title: job?.title ?? "Campaña" };
 }
 
 export default async function JobPage({ params }: PageProps<"/trabajos/[id]">) {

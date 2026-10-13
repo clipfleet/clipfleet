@@ -214,17 +214,21 @@ export async function getMyJob(hirerId: string, jobId: string) {
     .where(and(eq(jobs.id, jobId), eq(jobs.hirerId, hirerId)));
   if (!job) return null;
   const rows = await db
-    .select({ application: applications, worker: user, profile: workerProfiles })
+    .select({ application: applications, worker: user, profile: workerProfiles, contractId: contracts.id })
     .from(applications)
     .innerJoin(user, eq(user.id, applications.workerId))
     .leftJoin(workerProfiles, eq(workerProfiles.userId, user.id))
+    .leftJoin(contracts, and(eq(contracts.jobId, applications.jobId), eq(contracts.workerId, applications.workerId)))
     .where(eq(applications.jobId, jobId))
     .orderBy(desc(applications.createdAt));
   const stats = await statsForWorkers(rows.map((row) => row.worker.id));
+  const hired = rows.filter((row) => row.contractId).length;
   return {
     job,
+    hired,
     applications: rows.map((row) => ({
       ...row.application,
+      contractId: row.contractId,
       worker: { name: row.worker.name, username: row.worker.username, headline: row.profile?.headline ?? "" },
       stats: stats.get(row.worker.id)!,
     })),

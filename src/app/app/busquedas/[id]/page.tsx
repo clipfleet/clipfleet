@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
-import { payRuleText } from "@/components/domain/pay-rule-summary";
+import { PayRuleSummary } from "@/components/domain/pay-rule-summary";
 import { PlatformTag } from "@/components/domain/platform";
 import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Num } from "@/components/ui/num";
 import { PageHeader } from "@/components/ui/page-header";
@@ -22,7 +21,8 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
   const { id } = await params;
   const data = await getMyJob(me.id, id);
   if (!data) notFound();
-  const { job, applications } = data;
+  const { job, applications, hired } = data;
+  const pending = applications.filter((application) => application.status === "pending").length;
 
   return (
     <>
@@ -33,14 +33,16 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
           <>
             <Badge tone={JOB_STATUS[job.status].tone}>{JOB_STATUS[job.status].label}</Badge>
             <PlatformTag platform={job.platform} name={job.platformName} />
-            <span className="tabular-nums">{payRuleText(job.payRule)}</span>
+            <span className="tabular-nums">
+              Contratados {hired} de {job.slots}
+            </span>
+            <Link href={`/trabajos/${job.id}`} className="link">
+              Ver página pública
+            </Link>
           </>
         }
         actions={
           <>
-            <ButtonLink href={`/trabajos/${job.id}`} variant="secondary">
-              Ver publicación
-            </ButtonLink>
             <ActionForm action={setJobStatus} feedback="inline" className="flex flex-col items-start gap-1.5 sm:items-end">
               <input type="hidden" name="jobId" value={job.id} />
               {job.status === "open" ? (
@@ -57,7 +59,19 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
         }
       />
 
-      <Panel title="Postulaciones" padded={false}>
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10">
+        <p className="max-w-prose text-[0.9375rem] leading-relaxed whitespace-pre-wrap text-ink-2">{job.description}</p>
+        <Panel title="Cómo se paga">
+          <PayRuleSummary {...job.payRule} />
+        </Panel>
+      </div>
+
+      <section aria-labelledby="postulaciones" className="flex flex-col gap-3">
+        <h2 id="postulaciones" className="type-title flex flex-wrap items-center gap-2 text-[1.0625rem]">
+          Postulaciones
+          {pending > 0 ? <Badge tone="warning">{pending} sin responder</Badge> : null}
+        </h2>
+        <Panel padded={false}>
         {applications.length === 0 ? (
           <EmptyState flush title="Todavía no se postuló nadie" />
         ) : (
@@ -98,6 +112,10 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
                           Descartar
                         </FormSubmit>
                       </ActionForm>
+                    ) : application.contractId ? (
+                      <Link href={`/app/equipo/${application.contractId}`} className="link">
+                        Ver contratación
+                      </Link>
                     ) : (
                       <Badge tone={APPLICATION_STATUS[application.status].tone}>{APPLICATION_STATUS[application.status].label}</Badge>
                     )}
@@ -107,7 +125,8 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
             </TBody>
           </Table>
         )}
-      </Panel>
+        </Panel>
+      </section>
     </>
   );
 }

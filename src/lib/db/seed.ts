@@ -109,7 +109,7 @@ export async function seedIfEmpty(db: Db): Promise<void> {
         hirerId: "demo-hirer",
         title: "Recortes del podcast en TikTok",
         description:
-          "Búsqueda de ejemplo. Te pasamos los episodios; creás las cuentas y subís recortes todos los días. Se paga por vistas aprobadas.",
+          "Campaña de ejemplo. Te pasamos los episodios; creás las cuentas y subís recortes todos los días. Se paga por vistas aprobadas.",
         category: "multicuentas",
         platform: "tiktok",
         payRule: cpmRule,
@@ -119,7 +119,7 @@ export async function seedIfEmpty(db: Db): Promise<void> {
       {
         hirerId: "demo-hirer",
         title: "Clips del stream: premio por video que explota",
-        description: "Búsqueda de ejemplo. Material libre del canal. Cobra el video que pasa los 10 mil o los 100 mil.",
+        description: "Campaña de ejemplo. Material libre del canal. Cobra el video que pasa los 10 mil o los 100 mil.",
         category: "multicuentas",
         platform: "tiktok",
         payRule: tiersRule,
@@ -129,7 +129,7 @@ export async function seedIfEmpty(db: Db): Promise<void> {
       {
         hirerId: "demo-hirer",
         title: "Shorts del podcast",
-        description: "Búsqueda de ejemplo. Los mismos episodios, recortados en vertical para YouTube Shorts. Se paga por vistas aprobadas.",
+        description: "Campaña de ejemplo. Los mismos episodios, recortados en vertical para YouTube Shorts. Se paga por vistas aprobadas.",
         category: "multicuentas",
         platform: "youtube",
         payRule: cpmRule,
