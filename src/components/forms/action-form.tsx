@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { CheckIcon, CrossIcon } from "@/components/ui/icons";
 import { Notice } from "@/components/ui/notice";
+import { useEditableSection } from "./editable-section";
 import type { ActionResult } from "@/lib/actions/result";
 
 type Submitter = { name: string; value: string } | null;
@@ -34,6 +35,7 @@ export function ActionForm({ action, children, className, resetOnSuccess = false
   const [result, setResult] = useState<ActionResult>();
   const [submitter, setSubmitter] = useState<Submitter>(null);
   const [pending, startTransition] = useTransition();
+  const section = useEditableSection();
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -48,6 +50,8 @@ export function ActionForm({ action, children, className, resetOnSuccess = false
       const outcome = (await action(data)) ?? undefined;
       setResult(outcome);
       if (resetOnSuccess && !(outcome && "error" in outcome)) form.reset();
+      // Dentro de una sección editable, guardar bien vuelve a mostrar los datos.
+      if (section && !(outcome && "error" in outcome)) section.close(outcome?.ok);
     });
   }
 

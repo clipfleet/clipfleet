@@ -237,6 +237,8 @@ Presentacionales y sin datos. Todos aceptan `className` para layout.
 
 **PayRuleFields** — la regla de pago. Tres tipos; cada uno muestra un solo campo obligatorio. Mínimo de vistas, tope y fijo adicional quedan detrás de "Más opciones". Sin props ni JavaScript.
 
+**EditableSection** — `title`, `view`, `children` (el `ActionForm`), `editLabel?`, `description?`. Un `Panel` que muestra datos y se edita en el lugar; el `ActionForm` de adentro lo cierra solo cuando la acción sale bien. **SectionCancel** — el "Cancelar" de ese formulario. **DetailList** — `items: { label, value }[]`: pares rótulo / valor de solo lectura; sin dato, "—".
+
 **CopyField** — `value`, `label`. Texto de solo lectura con "Copiar" (links de invitación). **CopyButton** — `value`, `children`, `size?`, `variant?`. Solo el botón, sin mostrar el link ("Copiar link" de una campaña o un perfil).
 
 Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda va debajo del control, así que los labels alinean arriba). Botón principal primero; "Cancelar" (`ghost`) solo si no hay otra forma de volver.
@@ -291,7 +293,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **Liquidaciones** — `StatGroup` de 2 → "Por pagar": un `Panel` por liquidación (persona, período, "Marcar como pagado" y el detalle por video con total) → `Panel` "Pagadas" con el estado de cada una.
 
-**Perfil (panel)** — bloques de lectura, no formularios abiertos: "Perfil" (nombre, canal o marca o presentación, `@usuario`), "Cuenta" (email y "Cambiar contraseña") y los datos de pago ("Pagos" para el contratador, "Datos de cobro" para el gestor). Cada bloque es un `Panel` con su título y un botón "Editar" (`secondary`, `sm`) en el encabezado; al editar, ese bloque se convierte en el formulario con "Guardar" y "Cancelar" y el resto queda como está. Un bloque sin datos muestra "—" y el botón dice "Completar". Cambiar la contraseña pide la actual y la nueva dos veces. El gestor suma "Tu próxima insignia" y "Ver mi perfil público" como acción del encabezado.
+**Perfil (panel)** — bloques de lectura con `EditableSection`, no formularios abiertos, en este orden: "Perfil" (nombre y canal o marca, o presentación), "Tu próxima insignia" (gestor), los datos de pago ("Pagos" para el contratador, "Datos de cobro" para el gestor) y "Cuenta" (email, `@usuario` y "Cambiar contraseña"). Cada bloque muestra un `DetailList` y un botón en el encabezado ("Editar", o "Completar" si todavía no hay datos); al apretarlo, ese bloque se convierte en su formulario con "Guardar" y "Cancelar" y el resto queda como está. Al guardar bien vuelve a los datos con la confirmación debajo. La nota de un bloque va debajo de los datos, no en el encabezado. Cambiar la contraseña pide la actual y la nueva dos veces, y cierra las demás sesiones. El gestor tiene "Ver mi perfil" como acción del encabezado.
 
 **Formulario** — un `Panel` (`max-w-form` o `max-w-2xl`), campos mínimos, lo opcional en "Más opciones", un botón.
 

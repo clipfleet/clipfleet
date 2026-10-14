@@ -1,15 +1,61 @@
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
+import { DetailList, EditableSection, SectionCancel } from "@/components/forms/editable-section";
 import { BADGE_ICON } from "@/components/domain/badge-list";
 import { ButtonLink } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
+import { changePassword } from "@/lib/actions/auth";
 import { updateHirerProfile, updatePayeeDetails, updatePayerHolder, updateWorkerProfile } from "@/lib/actions/profile";
+import { MIN_PASSWORD_LENGTH } from "@/lib/auth";
 import { getMyPaymentDetails, getProfiles, getWorkerActivity } from "@/lib/queries";
-import { requireUser } from "@/lib/session";
+import { requireUser, type SessionUser } from "@/lib/session";
 
 export const metadata = { title: "Perfil" };
+
+/** Botones de un formulario dentro de una sección: guardar y cancelar. */
+function SectionButtons({ children, pendingLabel = "Guardando…" }: { children: string; pendingLabel?: string }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      <FormSubmit pendingLabel={pendingLabel}>{children}</FormSubmit>
+      <SectionCancel />
+    </div>
+  );
+}
+
+/** Email y usuario no se editan desde acá; la contraseña sí. */
+function AccountSection({ me }: { me: SessionUser }) {
+  return (
+    <EditableSection
+      title="Cuenta"
+      editLabel="Cambiar contraseña"
+      className="max-w-form"
+      view={
+        <DetailList
+          items={[
+            { label: "Email", value: me.email },
+            { label: "Usuario", value: `@${me.username}` },
+            { label: "Contraseña", value: "••••••••••" },
+          ]}
+        />
+      }
+    >
+      <ActionForm action={changePassword} className="flex flex-col gap-5">
+        <Field label="Contraseña actual">
+          <Input name="currentPassword" type="password" required autoComplete="current-password" />
+        </Field>
+        <Field label="Contraseña nueva" hint={`Al menos ${MIN_PASSWORD_LENGTH} caracteres.`}>
+          <Input name="newPassword" type="password" required minLength={MIN_PASSWORD_LENGTH} autoComplete="new-password" />
+        </Field>
+        <Field label="Repetí la contraseña nueva">
+          <Input name="confirmPassword" type="password" required minLength={MIN_PASSWORD_LENGTH} autoComplete="new-password" />
+        </Field>
+        <SectionButtons pendingLabel="Cambiando…">Cambiar contraseña</SectionButtons>
+      </ActionForm>
+    </EditableSection>
+  );
+}
 
 export default async function ProfilePage() {
   const me = await requireUser();
@@ -20,7 +66,19 @@ export default async function ProfilePage() {
     return (
       <>
         <PageHeader title="Perfil" />
-        <Panel className="max-w-form">
+
+        <EditableSection
+          title="Perfil"
+          className="max-w-form"
+          view={
+            <DetailList
+              items={[
+                { label: "Nombre", value: me.name },
+                { label: "Canal o marca", value: profile?.brandName },
+              ]}
+            />
+          }
+        >
           <ActionForm action={updateHirerProfile} className="flex flex-col gap-5">
             <Field label="Tu nombre">
               <Input name="name" required defaultValue={me.name} autoComplete="name" />
@@ -28,22 +86,26 @@ export default async function ProfilePage() {
             <Field label="Canal o marca" hint="Con este nombre aparecen tus campañas.">
               <Input name="brandName" required defaultValue={profile?.brandName ?? ""} />
             </Field>
-            <div>
-              <FormSubmit pendingLabel="Guardando…">Guardar perfil</FormSubmit>
-            </div>
+            <SectionButtons>Guardar</SectionButtons>
           </ActionForm>
-        </Panel>
+        </EditableSection>
 
-        <Panel title="Pagos" description="Quien cobra ve este nombre para reconocer tu transferencia." className="max-w-form">
+        <EditableSection
+          title="Pagos"
+          description="Quien cobra ve este nombre para reconocer tu transferencia."
+          editLabel={payment?.holderName ? "Editar" : "Completar"}
+          className="max-w-form"
+          view={<DetailList items={[{ label: "Titular de la cuenta", value: payment?.holderName }]} />}
+        >
           <ActionForm action={updatePayerHolder} className="flex flex-col gap-5">
             <Field label="Titular de la cuenta desde la que pagás">
               <Input name="holderName" required maxLength={80} defaultValue={payment?.holderName ?? ""} autoComplete="off" />
             </Field>
-            <div>
-              <FormSubmit pendingLabel="Guardando…">Guardar titular</FormSubmit>
-            </div>
+            <SectionButtons>Guardar</SectionButtons>
           </ActionForm>
-        </Panel>
+        </EditableSection>
+
+        <AccountSection me={me} />
       </>
     );
   }
@@ -60,7 +122,19 @@ export default async function ProfilePage() {
           </ButtonLink>
         }
       />
-      <Panel className="max-w-form">
+
+      <EditableSection
+        title="Perfil"
+        className="max-w-form"
+        view={
+          <DetailList
+            items={[
+              { label: "Nombre", value: me.name },
+              { label: "Presentación", value: profile?.headline },
+            ]}
+          />
+        }
+      >
         <ActionForm action={updateWorkerProfile} className="flex flex-col gap-5">
           <Field label="Tu nombre">
             <Input name="name" required defaultValue={me.name} autoComplete="name" />
@@ -68,11 +142,9 @@ export default async function ProfilePage() {
           <Field label="Presentación" optional hint="Una línea. Tus números se calculan solos.">
             <Input name="headline" maxLength={120} defaultValue={profile?.headline ?? ""} />
           </Field>
-          <div>
-            <FormSubmit pendingLabel="Guardando…">Guardar perfil</FormSubmit>
-          </div>
+          <SectionButtons>Guardar</SectionButtons>
         </ActionForm>
-      </Panel>
+      </EditableSection>
 
       {next ? (
         <Panel title="Tu próxima insignia" className="max-w-form">
@@ -96,7 +168,20 @@ export default async function ProfilePage() {
         </Panel>
       ) : null}
 
-      <Panel title="Datos de cobro" description="Solo los ve quien te contrata, al momento de pagarte." className="max-w-form">
+      <EditableSection
+        title="Datos de cobro"
+        description="Solo los ve quien te contrata, al momento de pagarte."
+        editLabel={payment?.account ? "Editar" : "Completar"}
+        className="max-w-form"
+        view={
+          <DetailList
+            items={[
+              { label: "Titular de la cuenta", value: payment?.holderName },
+              { label: "Alias, CBU o CVU", value: payment?.account ? <span className="font-mono text-[0.8125rem]">{payment.account}</span> : null },
+            ]}
+          />
+        }
+      >
         <ActionForm action={updatePayeeDetails} className="flex flex-col gap-5">
           <Field label="Titular de la cuenta" hint="Como figura en tu banco o billetera.">
             <Input name="holderName" required maxLength={80} defaultValue={payment?.holderName ?? ""} autoComplete="off" />
@@ -107,11 +192,11 @@ export default async function ProfilePage() {
           <Field label="Tu contraseña" hint="Te la pedimos para que nadie más pueda cambiar a dónde cobrás.">
             <Input name="currentPassword" type="password" required autoComplete="current-password" />
           </Field>
-          <div>
-            <FormSubmit pendingLabel="Guardando…">Guardar datos de cobro</FormSubmit>
-          </div>
+          <SectionButtons>Guardar</SectionButtons>
         </ActionForm>
-      </Panel>
+      </EditableSection>
+
+      <AccountSection me={me} />
     </>
   );
 }

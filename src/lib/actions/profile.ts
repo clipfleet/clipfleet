@@ -40,6 +40,7 @@ export async function updateWorkerProfile(form: FormData): Promise<ActionResult>
     .onConflictDoUpdate({ target: workerProfiles.userId, set: values });
   revalidatePath(`/t/${me.username}`);
   revalidatePath("/talento");
+  revalidatePath("/app/perfil");
   return { ok: "Perfil guardado." };
 }
 
@@ -62,6 +63,7 @@ export async function updateHirerProfile(form: FormData): Promise<ActionResult> 
     .values({ userId: me.id, ...values })
     .onConflictDoUpdate({ target: hirerProfiles.userId, set: values });
   revalidatePath("/trabajos");
+  revalidatePath("/app", "layout");
   return { ok: "Perfil guardado." };
 }
 
