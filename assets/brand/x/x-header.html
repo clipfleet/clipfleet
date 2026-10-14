@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Header de X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=block" rel="stylesheet">
+<style>
+  /* Tokens de docs/design-system.md: blancos, grises y el verde pino como único acento. */
+  :root {
+    --ink: #14181c;
+    --ink-3: #646c76;
+    --ink-4: #9aa1a9;
+    --wash: #f7f8f9;
+    --line: #e5e8ec;
+    --accent: #0c6b4e;
+    --accent-soft: #e8f3ee;
+    --accent-line: #c2ddd0;
+    --clip: linear-gradient(135deg, #09573f 0%, #0c6b4e 50%, #17966d 100%);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1500px; height: 500px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: "Host Grotesk", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse 620px 300px at 1070px 250px, var(--accent-soft), transparent 70%),
+      radial-gradient(circle, rgba(20, 24, 28, 0.07) 1.2px, transparent 1.4px) 0 0 / 24px 24px,
+      var(--wash);
+  }
+
+  /* El avatar de X tapa la esquina inferior izquierda (hasta ~x 380, y 330): ahí no va nada. */
+  .wordmark {
+    position: absolute; left: 80px; top: 78px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 30px; font-weight: 600; letter-spacing: -0.03em;
+  }
+  .wordmark svg { width: 30px; height: 30px; }
+  .url {
+    position: absolute; left: 80px; top: 124px;
+    font-size: 18px; color: var(--ink-3); letter-spacing: -0.01em;
+  }
+
+  .arrow { position: absolute; left: 630px; top: 238px; }
+
+  /* El video original. */
+  .source {
+    position: absolute; left: 430px; top: 99px; width: 170px; height: 302px;
+    border-radius: 22px; background: var(--clip);
+    box-shadow: 0 24px 48px -20px rgba(9, 87, 63, 0.55);
+    display: grid; place-items: center;
+  }
+  .play {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: grid; place-items: center;
+  }
+  .play::after {
+    content: ""; margin-left: 6px;
+    border-left: 20px solid var(--accent);
+    border-top: 13px solid transparent; border-bottom: 13px solid transparent;
+  }
+  .source .tag {
+    position: absolute; left: 14px; bottom: 14px;
+    font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* El mismo video, publicado en varias cuentas. */
+  .phone {
+    position: absolute; width: 118px; height: 232px;
+    padding: 6px; border-radius: 24px; background: var(--ink);
+    box-shadow: 0 20px 40px -22px rgba(20, 24, 28, 0.6);
+  }
+  .screen {
+    position: relative; width: 100%; height: 100%;
+    border-radius: 18px; overflow: hidden; background: var(--clip);
+    display: grid; place-items: center;
+  }
+  .screen .play { width: 34px; height: 34px; }
+  .screen .play::after { margin-left: 3px; border-left-width: 11px; border-top-width: 7px; border-bottom-width: 7px; }
+  .handle {
+    position: absolute; left: 10px; top: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .handle i { width: 16px; height: 16px; border-radius: 50%; background: rgba(255, 255, 255, 0.85); }
+  .handle b { width: 44px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.6); }
+  .views {
+    position: absolute; left: 8px; right: 8px; bottom: 10px;
+    padding: 5px 0; border-radius: 999px; background: #fff;
+    font-size: 12.5px; font-weight: 600; color: var(--accent);
+    text-align: center; letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+</head>
+<body>
+  <div class="wordmark">
+    <svg viewBox="91 91 330 330" aria-hidden="true">
+      <defs>
+        <linearGradient id="g" x1="91" y1="91" x2="421" y2="421" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#09573F"/><stop offset="0.5" stop-color="#0C6B4E"/><stop offset="1" stop-color="#17966D"/>
+        </linearGradient>
+      </defs>
+      <g fill="url(#g)">
+        <path d="M91 289V211C91 179.174 103.643 148.652 126.147 126.147C148.652 103.643 179.174 91 211 91C242.826 91 273.348 103.643 295.853 126.147C318.357 148.652 331 179.174 331 211V289H271V211C271 195.087 264.679 179.826 253.426 168.574C242.174 157.321 226.913 151 211 151C195.087 151 179.826 157.321 168.574 168.574C157.321 179.826 151 195.087 151 211V289H91Z"/>
+        <path d="M181 223H241V301C241 316.913 247.321 332.174 258.574 343.426C269.826 354.679 285.087 361 301 361C316.913 361 332.174 354.679 343.426 343.426C354.679 332.174 361 316.913 361 301V223H421V301C421 332.826 408.357 363.348 385.853 385.853C363.348 408.357 332.826 421 301 421C269.174 421 238.652 408.357 216.147 385.853C193.643 363.348 181 332.826 181 301V223Z"/>
+      </g>
+    </svg>
+    ClipFleet
+  </div>
+  <div class="url">clipfleet.app</div>
+
+  <svg class="arrow" width="72" height="24" viewBox="0 0 72 24" aria-hidden="true">
+    <path d="M2 12H66M56 3l10 9-10 9" fill="none" stroke="#0c6b4e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+  <div class="source"><span class="play"></span><span class="tag">1 video</span></div>
+
+  <script>
+    // Cada teléfono: posición, giro y vistas.
+    const phones = [
+      { x: 730,  y: 150, r: -7, views: "8,4 mil" },
+      { x: 870,  y: 112, r: -3, views: "21,7 mil" },
+      { x: 1010, y: 96,  r: 0,  views: "54,2 mil" },
+      { x: 1150, y: 112, r: 3,  views: "17,9 mil" },
+      { x: 1290, y: 150, r: 7,  views: "32,6 mil" },
+    ];
+
+    for (const p of phones) {
+      const el = document.createElement("div");
+      el.className = "phone";
+      el.style.left = p.x + "px";
+      el.style.top = p.y + "px";
+      el.style.transform = `rotate(${p.r}deg)`;
+      el.innerHTML = `<div class="screen">
+        <span class="handle"><i></i><b></b></span>
+        <span class="play"></span>
+        <span class="views">${p.views} vistas</span>
+      </div>`;
+      document.body.append(el);
+    }
+
+  </script>
+</body>
+</html>
