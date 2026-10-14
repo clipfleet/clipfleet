@@ -59,11 +59,11 @@ function Identity({
                 <span className="text-sm text-ink-3">@{me.username}</span>
               </p>
             </div>
-            <div className="shrink-0 self-start sm:self-center">
+            <div className="flex shrink-0 flex-wrap gap-2 self-start sm:self-center">
               <EditTrigger>Editar</EditTrigger>
+              {actions}
             </div>
           </div>
-          {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
         </header>
       }
     >
@@ -168,8 +168,8 @@ export default async function ProfilePage() {
         subtitle={profile?.headline}
         subtitleField={<Input name="headline" maxLength={120} defaultValue={profile?.headline ?? ""} aria-label="Presentación" placeholder="Una línea sobre vos (opcional)" />}
         actions={
-          <ButtonLink href={`/app/talento/${me.username}`} variant="secondary">
-            Ver mi perfil
+          <ButtonLink href={`/app/talento/${me.username}`} variant="secondary" size="sm">
+            Ver perfil público
           </ButtonLink>
         }
       />

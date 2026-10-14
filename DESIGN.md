@@ -46,7 +46,7 @@ Consecuencias en el modelo:
 |---|---|
 | "Ver página pública" en una campaña propia | "Ver publicación" lleva a `/app/campanas/[id]`, con la nota "Así la ven quienes suben videos" junto al link para volver y "Copiar link" en el encabezado |
 | El nombre de quien se postuló lleva a `/t/[usuario]` | Lleva a `/app/talento/[usuario]`, con "Volver a la campaña" y, si tiene postulaciones sin responder a tus campañas, "Contratar" y "Descartar" ahí mismo |
-| "Ver mi perfil público" (gestor) | "Ver mi perfil" lleva a `/app/talento/[usuario]`, con la nota "Así ven tu perfil" y "Copiar link" |
+| "Ver mi perfil público" (gestor) | "Ver perfil público", junto a "Editar", lleva a `/app/talento/[usuario]`, con la nota "Así ven tu perfil" y "Copiar link" |
 | Encontrar campañas o talento obliga a ir al sitio público | "Campañas" en la navegación del gestor (`/app/campanas`) y "Talento" en la del contratador (`/app/talento`) |
 
 Quien tiene la sesión iniciada y abre `/trabajos`, `/trabajos/[id]`, `/talento` o `/t/[usuario]` (por ejemplo, desde un link que le pasaron) va a la versión del panel. Las páginas públicas siguen igual para quien no ingresó. El tablero público pasa a llamarse "Campañas abiertas" para no confundirse con "Campañas" del contratador, que son las suyas.
