@@ -257,6 +257,8 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **PublicHeader** — `user: { name } | null`, `loginHref?`, `registerHref?`, `panelHref?`. **PublicFooter** — `user`, `loginHref?`, `panelHref?`: una línea fina, la marca y tres links.
 
+**VerifyEmailNotice** — `email`. Primer elemento del panel (lo pone `src/app/app/layout.tsx`) mientras el email no está verificado: `Notice` de advertencia con "Verificar email", que manda el link y se cambia por la confirmación. No bloquea nada.
+
 **Wordmark · BrandMark** — `Wordmark`: `href?`, `size?: sm | md | lg`. El símbolo en el color de acento y el nombre (`BRAND.name`) en peso 600, sin recuadro; funciona con cualquier nombre corto. `BrandMark` es el símbolo solo: un triángulo de reproducción con un corte (un clip). Es el mismo dibujo de `src/app/icon.svg`.
 
 ---

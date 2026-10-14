@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { VerifyEmailNotice } from "@/components/domain/verify-email-notice";
 import { AppShell, type AppShellNavItem } from "@/components/shell/app-shell";
 import { BriefcaseIcon, LayersIcon, ReceiptIcon, SearchIcon, SendIcon, TeamIcon } from "@/components/ui/icons";
 import { signOut } from "@/lib/actions/auth";
@@ -33,6 +34,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
 
   return (
     <AppShell user={me} nav={nav} profileHref="/app/perfil" signOutAction={signOut}>
+      {me.emailVerified ? null : <VerifyEmailNotice email={me.email} />}
       {children}
     </AppShell>
   );
