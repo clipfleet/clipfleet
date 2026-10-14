@@ -14,6 +14,8 @@ export type AppShellNavItem = {
   label: string;
   /** Ícono de `ui/icons`. */
   icon?: ReactNode;
+  /** Sección de la barra lateral. Los ítems seguidos con la misma sección van juntos bajo ese rótulo. */
+  group?: string;
   /** Otras rutas en las que el ítem también se marca activo. */
   alsoMatch?: string[];
   /** Cantidad pendiente al lado del rótulo. */
@@ -24,8 +26,8 @@ export type AppShellProps = {
   user: AppShellUser;
   nav: AppShellNavItem[];
   /**
-   * Ítem de `nav` que en celular sale de la barra de abajo y pasa a la de
-   * arriba, como el avatar. En escritorio sigue en la barra lateral.
+   * El perfil no va en `nav`: en escritorio es el bloque de la cuenta, al pie
+   * de la barra lateral; en celular, el avatar de la barra de arriba.
    */
   profileHref?: string;
   /** Server Action que cierra la sesión. Se envía con un <form>, sin JavaScript. */
@@ -39,7 +41,13 @@ export type AppShellProps = {
  * al alcance del pulgar.
  */
 export function AppShell({ user, nav, profileHref, signOutAction, children }: AppShellProps) {
-  const bottomNav = nav.filter((item) => item.href !== profileHref);
+  // Ítems seguidos con la misma sección forman un grupo.
+  const groups: { label?: string; items: AppShellNavItem[] }[] = [];
+  for (const item of nav) {
+    const last = groups.at(-1);
+    if (last && last.label === item.group) last.items.push(item);
+    else groups.push({ label: item.group, items: [item] });
+  }
   return (
     <div className="min-h-dvh bg-surface lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
       <a
@@ -55,9 +63,12 @@ export function AppShell({ user, nav, profileHref, signOutAction, children }: Ap
           <Wordmark href="/app" />
         </div>
 
-        <nav aria-label="Secciones del panel" className="flex-1 overflow-y-auto px-3 py-2">
+        <nav aria-label="Secciones del panel" className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-2">
+          {groups.map((group, index) => (
+          <div key={group.label ?? index} className="flex flex-col gap-1">
+          {group.label ? <p className="px-2.5 text-xs font-medium text-ink-3">{group.label}</p> : null}
           <ul className="flex flex-col gap-0.5">
-            {nav.map((item) => (
+            {group.items.map((item) => (
               <li key={item.href}>
                 <NavLink
                   href={item.href}
@@ -75,14 +86,31 @@ export function AppShell({ user, nav, profileHref, signOutAction, children }: Ap
               </li>
             ))}
           </ul>
+          </div>
+          ))}
         </nav>
 
-        <div className="flex items-center gap-2.5 border-t border-line px-4 py-3.5">
-          <Avatar name={user.name} />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[0.8125rem] leading-[1.125rem] font-medium text-ink">{user.name}</p>
-            <p className="truncate text-xs text-ink-3">@{user.username}</p>
-          </div>
+        <div className="flex items-center gap-2 border-t border-line px-3 py-3">
+          {profileHref ? (
+            <NavLink
+              href={profileHref}
+              className="flex min-w-0 flex-1 items-center gap-2.5 rounded-md border border-transparent px-1.5 py-1 transition-colors duration-100 hover:bg-wash-2 aria-[current=page]:border-line aria-[current=page]:bg-surface aria-[current=page]:shadow-xs"
+            >
+              <Avatar name={user.name} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[0.8125rem] leading-[1.125rem] font-medium text-ink">{user.name}</span>
+                <span className="block truncate text-xs text-ink-3">@{user.username}</span>
+              </span>
+            </NavLink>
+          ) : (
+            <div className="flex min-w-0 flex-1 items-center gap-2.5 px-1.5 py-1">
+              <Avatar name={user.name} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[0.8125rem] leading-[1.125rem] font-medium text-ink">{user.name}</p>
+                <p className="truncate text-xs text-ink-3">@{user.username}</p>
+              </div>
+            </div>
+          )}
           <form action={signOutAction}>
             <button
               type="submit"
@@ -118,7 +146,7 @@ export function AppShell({ user, nav, profileHref, signOutAction, children }: Ap
       {/* Celular: navegación fija abajo */}
       <nav aria-label="Secciones del panel" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden">
         <ul className="mx-auto flex max-w-md">
-          {bottomNav.map((item) => (
+          {nav.map((item) => (
             <li key={item.href} className="min-w-0 flex-1">
               <NavLink
                 href={item.href}

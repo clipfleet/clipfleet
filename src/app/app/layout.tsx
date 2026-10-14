@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { AppShell, type AppShellNavItem } from "@/components/shell/app-shell";
-import { BriefcaseIcon, LayersIcon, ReceiptIcon, SearchIcon, SendIcon, TeamIcon, UserIcon } from "@/components/ui/icons";
+import { BriefcaseIcon, LayersIcon, ReceiptIcon, SearchIcon, SendIcon, TeamIcon } from "@/components/ui/icons";
 import { signOut } from "@/lib/actions/auth";
 import { hirerNavCounts, workerNavCounts } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
@@ -15,20 +15,19 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
   if (me.role === "hirer") {
     const counts = await hirerNavCounts(me.id);
     nav = [
-      { href: "/app/equipo", label: "Contratados", icon: <TeamIcon />, badge: badge(counts.toReview) },
-      { href: "/app/busquedas", label: "Campañas", icon: <LayersIcon />, alsoMatch: ["/app/campanas"], badge: badge(counts.applications) },
-      { href: "/app/talento", label: "Talento", icon: <SearchIcon /> },
-      { href: "/app/liquidaciones", label: "Liquidaciones", icon: <ReceiptIcon />, badge: badge(counts.pendingPayouts) },
-      { href: "/app/perfil", label: "Perfil", icon: <UserIcon /> },
+      { href: "/app/equipo", label: "Contratados", icon: <TeamIcon />, group: "Gestión", badge: badge(counts.toReview) },
+      { href: "/app/liquidaciones", label: "Liquidaciones", icon: <ReceiptIcon />, group: "Gestión", badge: badge(counts.pendingPayouts) },
+      // Las campañas son gestión (postulaciones por responder) y también la forma de contratar: van primero en "Contratar", con su contador.
+      { href: "/app/busquedas", label: "Campañas", icon: <LayersIcon />, group: "Contratar", alsoMatch: ["/app/campanas"], badge: badge(counts.applications) },
+      { href: "/app/talento", label: "Talento", icon: <SearchIcon />, group: "Contratar" },
     ];
   } else {
     const counts = await workerNavCounts(me.id);
     nav = [
-      { href: "/app/contrataciones", label: "Mis trabajos", icon: <BriefcaseIcon />, badge: badge(counts.requested) },
-      { href: "/app/campanas", label: "Campañas", icon: <SearchIcon /> },
-      { href: "/app/postulaciones", label: "Postulaciones", icon: <SendIcon /> },
-      { href: "/app/cobros", label: "Cobros", icon: <ReceiptIcon />, badge: badge(counts.paymentsToConfirm) },
-      { href: "/app/perfil", label: "Perfil", icon: <UserIcon /> },
+      { href: "/app/contrataciones", label: "Mis trabajos", icon: <BriefcaseIcon />, group: "Trabajo", badge: badge(counts.requested) },
+      { href: "/app/cobros", label: "Cobros", icon: <ReceiptIcon />, group: "Trabajo", badge: badge(counts.paymentsToConfirm) },
+      { href: "/app/campanas", label: "Campañas", icon: <SearchIcon />, group: "Buscar trabajo" },
+      { href: "/app/postulaciones", label: "Postulaciones", icon: <SendIcon />, group: "Buscar trabajo" },
     ];
   }
 

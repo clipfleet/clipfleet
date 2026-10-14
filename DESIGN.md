@@ -51,7 +51,7 @@ Consecuencias en el modelo:
 
 Quien tiene la sesión iniciada y abre `/trabajos`, `/trabajos/[id]`, `/talento` o `/t/[usuario]` (por ejemplo, desde un link que le pasaron) va a la versión del panel. Las páginas públicas siguen igual para quien no ingresó. El tablero público pasa a llamarse "Campañas abiertas" para no confundirse con "Campañas" del contratador, que son las suyas.
 
-Navegación: contratador → Contratados, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil.
+Navegación en secciones: contratador → Gestión (Contratados, Liquidaciones) y Contratar (Campañas, Talento). Gestor → Trabajo (Mis trabajos, Cobros) y Buscar trabajo (Campañas, Postulaciones). El perfil sale de la lista: es el bloque de la cuenta al pie de la barra lateral y el avatar de la barra de arriba en celular.
 
 **Las campañas no se editan.** Una campaña publicada solo se pausa o se reabre: ni la regla de pago, ni la plataforma, ni los cupos cambian después de publicarla. Si el contratador cambiara las condiciones a mitad de camino, quien se postuló lo hizo por otras. Para cambiar las condiciones se pausa la campaña y se publica otra. Si algún día se permite editar, solo título y descripción; las condiciones nunca. De todos modos, cada contratación guarda una copia de la regla de pago y la plataforma del momento en que se contrató, así que un cambio en la campaña no tocaría acuerdos vigentes.
 
