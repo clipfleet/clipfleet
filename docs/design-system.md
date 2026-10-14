@@ -24,7 +24,7 @@ Alcanza para construir cualquier pantalla sin leer el código de los componentes
 1. ¿Este texto explica algo que la pantalla ya muestra?
 2. ¿Este dato deja igual la decisión que la persona toma en esta pantalla?
 
-**El panel no te saca del panel.** Con la sesión iniciada, ningún link lleva al marco público: una campaña, un perfil o el directorio se ven dentro del `AppShell`. Si una pantalla del panel necesita mostrar algo público, usa la ruta del panel (`/app/campanas/[id]`, `/app/talento/[usuario]`) y, si hace falta compartirlo, ofrece el link público para copiar (`CopyField`), no un link que navega.
+**El panel no te saca del panel.** Con la sesión iniciada, ningún link lleva al marco público: una campaña, un perfil o el directorio se ven dentro del `AppShell`. Si una pantalla del panel necesita mostrar algo público, usa la ruta del panel (`/app/campanas/[id]`, `/app/talento/[usuario]`) y, si hace falta compartirlo, ofrece un botón "Copiar link" (`CopyButton`), no un link que navega.
 
 ### Presupuestos (son límites, no objetivos)
 
@@ -236,7 +236,7 @@ Presentacionales y sin datos. Todos aceptan `className` para layout.
 
 **PayRuleFields** — la regla de pago. Tres tipos; cada uno muestra un solo campo obligatorio. Mínimo de vistas, tope y fijo adicional quedan detrás de "Más opciones". Sin props ni JavaScript.
 
-**CopyField** — `value`, `label`. Texto de solo lectura con "Copiar" (links de invitación, link del perfil).
+**CopyField** — `value`, `label`. Texto de solo lectura con "Copiar" (links de invitación). **CopyButton** — `value`, `children`, `size?`, `variant?`. Solo el botón, sin mostrar el link ("Copiar link" de una campaña o un perfil).
 
 Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda va debajo del control, así que los labels alinean arriba). Botón principal primero; "Cancelar" (`ghost`) solo si no hay otra forma de volver.
 
@@ -244,7 +244,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 ## 6. Marco (`@/components/shell/*`)
 
-**AppShell** — `user: { name, username, role }`, `nav: { href, label, icon?, badge? }[]`, `signOutAction`, `children`. Escritorio: barra lateral clara de 240px con el ítem activo apenas despegado del fondo. Al pie de la barra lateral, avatar, nombre, `@usuario` y "Salir", sin rótulo de rol. Celular: barra superior con la marca y navegación fija abajo (ícono + rótulo). Da contenedor, márgenes y `gap`: las páginas devuelven un fragmento. Navegación: contratador → Equipo, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil. Cinco ítems como máximo: es lo que entra en la barra de abajo del celular.
+**AppShell** — `user: { name, username, role }`, `nav: { href, label, icon?, badge? }[]`, `signOutAction`, `children`. Escritorio: barra lateral clara de 240px con el ítem activo apenas despegado del fondo. Al pie de la barra lateral, avatar, nombre, `@usuario` y "Salir", sin rótulo de rol. Celular: barra superior con la marca y navegación fija abajo (ícono + rótulo). Da contenedor, márgenes y `gap`: las páginas devuelven un fragmento. Navegación: contratador → Equipo, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil. En celular, Perfil sale de la barra de abajo y pasa a la de arriba como el avatar (`profileHref`), así abajo quedan cuatro ítems con el rótulo entero; en escritorio sigue en la barra lateral.
 
 **PublicHeader** — `user: { name } | null`, `loginHref?`, `registerHref?`, `panelHref?`. **PublicFooter** — `user`, `loginHref?`, `panelHref?`: una línea fina, la marca y tres links.
 
@@ -282,9 +282,9 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **Detalle de contratación** — `PageHeader` (título, quién, acciones; "Liquidar $ X" si hay adeudado) → lo que espera a quien mira (liquidación por pagar con "Marcar como pagado", o pago informado con "Confirmar que cobré"), sobre `accent-soft` → `StatGroup` de 3 → `Panel` "Videos" con la regla de pago como descripción, el formulario de carga (trabajador) y la tabla → `DisclosureGroup` con liquidaciones, mensajes y finalizar o reseñas. Las acciones secundarias de una fila ("Actualizar vistas", "Reportar vistas") se abren en el lugar: la tabla no repite controles en todas las filas.
 
-**Detalle de campaña** — `PageHeader` (título; estado, plataforma, regla de pago en una línea, "Contratados X de Y" y el link "Vista previa" (a `/app/campanas/[id]`) como `meta`; "Pausar" o "Reabrir") → la descripción, plegada a dos líneas con "Ver más" si es larga. Sin panel de "Cómo se paga": el desglose está en la vista previa → sección "Postulaciones" como título propio con la cantidad sin responder, y la tabla. El nombre de quien se postuló lleva a su perfil dentro del panel (`/app/talento/[usuario]?campana=[id]`, con "Volver a la campaña"); quien ya fue contratado lleva además a su contratación (`/app/equipo/[id]`), no solo una píldora.
+**Detalle de campaña** — `PageHeader` (título; estado, plataforma, regla de pago en una línea, "Contratados X de Y" y el link "Vista previa" (a `/app/campanas/[id]`) como `meta`; "Copiar link" y "Pausar" o "Reabrir") → la descripción, plegada a dos líneas con "Ver más" si es larga. Sin panel de "Cómo se paga": el desglose está en la vista previa → sección "Postulaciones" como título propio con la cantidad sin responder, y la tabla. El nombre de quien se postuló lleva a su perfil dentro del panel (`/app/talento/[usuario]?campana=[id]`, con "Volver a la campaña"); quien ya fue contratado lleva además a su contratación (`/app/equipo/[id]`), no solo una píldora.
 
-**Campaña o perfil dentro del panel** — el mismo contenido que la página pública, sin el contenedor público (el `AppShell` da márgenes). Cuando quien mira es el dueño (su campaña, su perfil), arriba va un `Notice` "Así la ven quienes suben videos" / "Así ven tu perfil" con el link público en un `CopyField` y la acción para volver.
+**Campaña o perfil dentro del panel** — el mismo contenido que la página pública, sin el contenedor público (el `AppShell` da márgenes). Cuando quien mira es el dueño (su campaña, su perfil), arriba va un `Notice` "Así la ven quienes suben videos" / "Así ven tu perfil" en una línea, con "Copiar link" (`CopyButton`) como acción; el link para volver es el de siempre, arriba del título.
 
 **Equipo** — una fila por persona, no por contratación. Debajo del nombre, las campañas o invitaciones en las que trabaja; si son varias, cada una lleva a su contratación. Así se lee sin explicación que Equipo es la gente de todas las campañas.
 

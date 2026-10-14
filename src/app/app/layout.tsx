@@ -33,7 +33,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
   }
 
   return (
-    <AppShell user={me} nav={nav} signOutAction={signOut}>
+    <AppShell user={me} nav={nav} profileHref="/app/perfil" signOutAction={signOut}>
       {children}
     </AppShell>
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
+import { CopyButton } from "@/components/forms/copy-button";
 import { payRuleText } from "@/components/domain/pay-rule-summary";
 import { PlatformTag } from "@/components/domain/platform";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { decideApplication, setJobStatus } from "@/lib/actions/jobs";
+import { baseUrl } from "@/lib/base-url";
 import { APPLICATION_STATUS, JOB_STATUS } from "@/lib/domain/labels";
 import { getMyJob } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
@@ -22,7 +24,7 @@ const LONG_DESCRIPTION = 160;
 export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[id]">) {
   const me = await requireUser("hirer");
   const { id } = await params;
-  const data = await getMyJob(me.id, id);
+  const [data, origin] = await Promise.all([getMyJob(me.id, id), baseUrl()]);
   if (!data) notFound();
   const { job, applications, hired } = data;
   const pending = applications.filter((application) => application.status === "pending").length;
@@ -47,6 +49,9 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
         }
         actions={
           <>
+            <CopyButton value={`${origin}/trabajos/${job.id}`} size="md">
+              Copiar link
+            </CopyButton>
             <ActionForm action={setJobStatus} feedback="inline" className="flex flex-col items-start gap-1.5 sm:items-end">
               <input type="hidden" name="jobId" value={job.id} />
               {job.status === "open" ? (

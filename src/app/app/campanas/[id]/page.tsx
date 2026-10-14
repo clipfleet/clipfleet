@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { CopyField } from "@/components/forms/copy-field";
+import { CopyButton } from "@/components/forms/copy-button";
 import { Notice } from "@/components/ui/notice";
 import { JobDetail } from "@/components/views/job-detail";
 import { baseUrl } from "@/lib/base-url";
@@ -28,11 +28,7 @@ export default async function PanelJobPage({ params }: PageProps<"/app/campanas/
       back={isOwner ? { href: `/app/busquedas/${job.id}`, label: "Tu campaña" } : { href: "/app/campanas", label: "Campañas" }}
       notice={
         isOwner ? (
-          <Notice tone="info" title="Vista previa: así ven tu campaña quienes suben videos">
-            <span className="mt-2 block max-w-md">
-              <CopyField value={`${origin}/trabajos/${job.id}`} label="Link público de la campaña" />
-            </span>
-          </Notice>
+          <Notice tone="info" title="Vista previa: así ven tu campaña quienes suben videos" action={<CopyButton value={`${origin}/trabajos/${job.id}`}>Copiar link</CopyButton>} />
         ) : null
       }
     />

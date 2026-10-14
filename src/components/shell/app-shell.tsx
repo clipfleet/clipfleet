@@ -23,6 +23,11 @@ export type AppShellNavItem = {
 export type AppShellProps = {
   user: AppShellUser;
   nav: AppShellNavItem[];
+  /**
+   * Ítem de `nav` que en celular sale de la barra de abajo y pasa a la de
+   * arriba, como el avatar. En escritorio sigue en la barra lateral.
+   */
+  profileHref?: string;
   /** Server Action que cierra la sesión. Se envía con un <form>, sin JavaScript. */
   signOutAction: (formData: FormData) => void | Promise<void>;
   children: ReactNode;
@@ -33,7 +38,8 @@ export type AppShellProps = {
  * izquierda. Celular: barra superior con la marca y la navegación fija abajo,
  * al alcance del pulgar.
  */
-export function AppShell({ user, nav, signOutAction, children }: AppShellProps) {
+export function AppShell({ user, nav, profileHref, signOutAction, children }: AppShellProps) {
+  const bottomNav = nav.filter((item) => item.href !== profileHref);
   return (
     <div className="min-h-dvh bg-surface lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
       <a
@@ -91,11 +97,18 @@ export function AppShell({ user, nav, signOutAction, children }: AppShellProps) 
       {/* Celular: barra superior */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-line bg-surface px-4 lg:hidden">
         <Wordmark href="/app" />
-        <form action={signOutAction}>
-          <button type="submit" className="-mr-2 flex h-9 items-center rounded-md px-2.5 text-[0.8125rem] font-medium text-ink-2 hover:bg-wash-2 hover:text-ink">
-            Salir
-          </button>
-        </form>
+        <div className="flex items-center gap-1">
+          {profileHref ? (
+            <NavLink href={profileHref} aria-label="Perfil" className="flex size-9 items-center justify-center rounded-full aria-[current=page]:ring-2 aria-[current=page]:ring-accent">
+              <Avatar name={user.name} size="sm" />
+            </NavLink>
+          ) : null}
+          <form action={signOutAction}>
+            <button type="submit" className="-mr-2 flex h-9 items-center rounded-md px-2.5 text-[0.8125rem] font-medium text-ink-2 hover:bg-wash-2 hover:text-ink">
+              Salir
+            </button>
+          </form>
+        </div>
       </header>
 
       <main id="contenido" className="min-w-0">
@@ -105,7 +118,7 @@ export function AppShell({ user, nav, signOutAction, children }: AppShellProps) 
       {/* Celular: navegación fija abajo */}
       <nav aria-label="Secciones del panel" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden">
         <ul className="mx-auto flex max-w-md">
-          {nav.map((item) => (
+          {bottomNav.map((item) => (
             <li key={item.href} className="min-w-0 flex-1">
               <NavLink
                 href={item.href}

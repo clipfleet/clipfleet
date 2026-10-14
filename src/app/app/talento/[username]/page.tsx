@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
-import { CopyField } from "@/components/forms/copy-field";
+import { CopyButton } from "@/components/forms/copy-button";
 import { ButtonLink } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { WorkerProfile } from "@/components/views/worker-profile";
@@ -50,11 +50,7 @@ export default async function PanelWorkerProfilePage({ params, searchParams }: P
       }
       notice={
         isOwner ? (
-          <Notice tone="info" title="Vista previa: así ven tu perfil">
-            <span className="mt-2 block max-w-md">
-              <CopyField value={`${origin}/t/${worker.user.username}`} label="Link público de tu perfil" />
-            </span>
-          </Notice>
+          <Notice tone="info" title="Vista previa: así ven tu perfil" action={<CopyButton value={`${origin}/t/${worker.user.username}`}>Copiar link</CopyButton>} />
         ) : pending.length > 0 ? (
           <div className="flex flex-col gap-3">
             {pending.map((application) => (
