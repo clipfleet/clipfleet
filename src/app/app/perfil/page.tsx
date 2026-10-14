@@ -78,6 +78,7 @@ function Identity({
               defaultValue={me.name}
               autoComplete="name"
               aria-label="Tu nombre"
+              placeholder="Tu nombre"
               autoFocus
               className="h-11! text-[1.5rem]! leading-9 font-semibold tracking-[-0.025em]"
             />
