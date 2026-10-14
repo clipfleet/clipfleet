@@ -8,6 +8,7 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Panel } from "@/components/ui/panel";
 import { changePassword } from "@/lib/actions/auth";
+import type { ActionResult } from "@/lib/actions/result";
 import { updateHirerProfile, updatePayeeDetails, updatePayerHolder, updateWorkerProfile } from "@/lib/actions/profile";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth";
 import { getMyPaymentDetails, getProfiles, getWorkerActivity } from "@/lib/queries";
@@ -26,10 +27,24 @@ function SaveButtons({ children = "Guardar", pendingLabel = "Guardando…" }: { 
 }
 
 /**
- * Quién es: lo primero y lo más grande de la página. Al editar, el encabezado
- * se convierte en el formulario.
+ * Quién es: lo primero y lo más grande de la página. "Editar" convierte el
+ * nombre y la línea de abajo en campos en el mismo lugar y del mismo tamaño,
+ * así la página no cambia de forma.
  */
-function Identity({ me, subtitle, actions, form }: { me: SessionUser; subtitle: ReactNode; actions?: ReactNode; form: ReactNode }) {
+function Identity({
+  me,
+  action,
+  subtitle,
+  actions,
+  subtitleField,
+}: {
+  me: SessionUser;
+  action: (form: FormData) => Promise<ActionResult>;
+  subtitle: ReactNode;
+  actions?: ReactNode;
+  /** El campo que reemplaza a `subtitle` al editar. */
+  subtitleField: ReactNode;
+}) {
   return (
     <Editable
       className="sm:pb-3"
@@ -44,18 +59,39 @@ function Identity({ me, subtitle, actions, form }: { me: SessionUser; subtitle: 
                 <span className="text-sm text-ink-3">@{me.username}</span>
               </p>
             </div>
+            <div className="shrink-0 self-start sm:self-center">
+              <EditTrigger>Editar</EditTrigger>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {actions}
-            <EditTrigger size="md">Editar perfil</EditTrigger>
-          </div>
+          {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
         </header>
       }
     >
-      <div className="flex flex-col gap-4">
-        <h1 className="type-page">Editar perfil</h1>
-        <Panel className="max-w-form">{form}</Panel>
-      </div>
+      <ActionForm action={action} className="flex max-w-xl flex-col gap-4">
+        <div className="flex items-start gap-4">
+          <Avatar name={me.name} size="lg" />
+          <div className="flex min-w-0 flex-1 flex-col gap-2">
+            <h1 className="sr-only">Editar perfil</h1>
+            <Input
+              name="name"
+              required
+              defaultValue={me.name}
+              autoComplete="name"
+              aria-label="Tu nombre"
+              autoFocus
+              className="h-11! text-[1.5rem]! leading-9 font-semibold tracking-[-0.025em]"
+            />
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <div className="min-w-0 flex-1">{subtitleField}</div>
+              <span className="text-sm text-ink-3">@{me.username}</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2 sm:pl-18">
+          <FormSubmit pendingLabel="Guardando…">Guardar</FormSubmit>
+          <SectionCancel />
+        </div>
+      </ActionForm>
     </Editable>
   );
 }
@@ -93,18 +129,9 @@ export default async function ProfilePage() {
       <>
         <Identity
           me={me}
+          action={updateHirerProfile}
           subtitle={profile?.brandName}
-          form={
-            <ActionForm action={updateHirerProfile} className="flex flex-col gap-5">
-              <Field label="Tu nombre">
-                <Input name="name" required defaultValue={me.name} autoComplete="name" />
-              </Field>
-              <Field label="Canal o marca" hint="Con este nombre aparecen tus campañas.">
-                <Input name="brandName" required defaultValue={profile?.brandName ?? ""} />
-              </Field>
-              <SaveButtons />
-            </ActionForm>
-          }
+          subtitleField={<Input name="brandName" required defaultValue={profile?.brandName ?? ""} aria-label="Canal o marca" placeholder="Canal o marca" />}
         />
 
         <div className="flex max-w-3xl flex-col gap-8">
@@ -136,22 +163,13 @@ export default async function ProfilePage() {
     <>
       <Identity
         me={me}
+        action={updateWorkerProfile}
         subtitle={profile?.headline}
+        subtitleField={<Input name="headline" maxLength={120} defaultValue={profile?.headline ?? ""} aria-label="Presentación" placeholder="Una línea sobre vos (opcional)" />}
         actions={
           <ButtonLink href={`/app/talento/${me.username}`} variant="secondary">
             Ver mi perfil
           </ButtonLink>
-        }
-        form={
-          <ActionForm action={updateWorkerProfile} className="flex flex-col gap-5">
-            <Field label="Tu nombre">
-              <Input name="name" required defaultValue={me.name} autoComplete="name" />
-            </Field>
-            <Field label="Presentación" optional hint="Una línea. Tus números se calculan solos.">
-              <Input name="headline" maxLength={120} defaultValue={profile?.headline ?? ""} />
-            </Field>
-            <SaveButtons />
-          </ActionForm>
         }
       />
 
