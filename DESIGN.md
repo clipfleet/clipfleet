@@ -204,7 +204,7 @@ Una sola tabla para los dos roles: el gestor completa titular y cuenta; el contr
 
 **Riesgos y límites**
 
-1. **Sin verificación de email.** Se pueden crear cuentas con emails ajenos. La recuperación de contraseña ya existe (`/recuperar`, emails por Resend desde `mail.clipfleet.app`): el link llega solo a quien controla la casilla, así que el dueño real del email puede recuperar una cuenta creada a su nombre.
+1. **La verificación de email no se exige.** Quien no verificó ve un aviso en el panel con un botón que le manda el link (`/verificar`, vence en 24 horas), pero puede usar todo igual: se pueden crear cuentas con emails ajenos. La recuperación de contraseña (`/recuperar`) manda el link solo a quien controla la casilla, así que el dueño real del email puede recuperar una cuenta creada a su nombre. Los emails salen por Resend desde `mail.clipfleet.app`.
 2. **Plan gratuito de Vercel.** Es para uso no comercial, y con repositorio privado solo publica los commits del dueño de la cuenta: lo que suba el socio se publica cuando el dueño lo integra a `main`. Para un producto comercial con dos personas corresponde el plan Pro.
 3. **Límites de frecuencia en Postgres:** suficientes para esta etapa; con mucho tráfico conviene moverlos a un almacén en memoria.
 4. **Ninguna revisión reemplaza un test de penetración externo** antes de manejar plata o datos sensibles.

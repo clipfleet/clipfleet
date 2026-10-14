@@ -15,6 +15,7 @@ export const LIMITS = {
   passwordResetByIp: [10, HOUR],
   passwordResetByEmail: [3, HOUR],
   resetPasswordByIp: [10, HOUR],
+  sendVerificationEmail: [3, HOUR],
   createJob: [20, DAY],
   createInvites: [20, HOUR],
   applyToJob: [40, HOUR],

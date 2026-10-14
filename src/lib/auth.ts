@@ -7,11 +7,12 @@ import { baseUrl } from "@/lib/base-url";
 import { getDb } from "@/lib/db";
 import { account, session, user, verification } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
-import { resetPasswordEmail } from "@/lib/email/templates";
+import { resetPasswordEmail, verifyEmailEmail } from "@/lib/email/templates";
 
 export const MIN_PASSWORD_LENGTH = 10;
 export const MAX_PASSWORD_LENGTH = 128;
 export const RESET_PASSWORD_MINUTES = 30;
+export const VERIFY_EMAIL_HOURS = 24;
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -50,6 +51,22 @@ function createAuth() {
             await sendEmail(resetPasswordEmail(email, url, RESET_PASSWORD_MINUTES));
           } catch (error) {
             console.error("No se pudo mandar el email para restablecer la contraseña:", error);
+          }
+        });
+      },
+    },
+    emailVerification: {
+      expiresIn: VERIFY_EMAIL_HOURS * 60 * 60,
+      // Igual que el de la contraseña: el link apunta a nuestra página (`/verificar`), no al
+      // endpoint de better-auth, que no está montado.
+      sendVerificationEmail: async ({ user: { email }, token }) => {
+        const origin = baseURL ?? (await baseUrl());
+        const url = `${origin}/verificar?token=${encodeURIComponent(token)}`;
+        after(async () => {
+          try {
+            await sendEmail(verifyEmailEmail(email, url, VERIFY_EMAIL_HOURS));
+          } catch (error) {
+            console.error("No se pudo mandar el email de verificación:", error);
           }
         });
       },

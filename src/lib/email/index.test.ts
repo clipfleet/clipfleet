@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BRAND } from "@/lib/brand";
 import { fromHeader, sendEmail } from "./index";
-import { resetPasswordEmail } from "./templates";
+import { resetPasswordEmail, verifyEmailEmail } from "./templates";
 
 const email = { to: "ana@example.com", subject: "Asunto", text: "Texto", html: "<p>Texto</p>" };
 
@@ -68,5 +68,17 @@ describe("email para restablecer la contraseña", () => {
     expect(message.text).toContain(url);
     expect(message.text).toContain("30 minutos");
     expect(message.html).toContain('href="https://clipfleet.app/restablecer?token=abc&amp;x=1"');
+  });
+});
+
+describe("email para verificar la dirección", () => {
+  it("lleva el link en el texto y en el HTML, y cuánto dura", () => {
+    const url = "https://clipfleet.app/verificar?token=a.b.c";
+    const message = verifyEmailEmail("ana@example.com", url, 24);
+    expect(message.to).toBe("ana@example.com");
+    expect(message.subject).toContain(BRAND.name);
+    expect(message.text).toContain(url);
+    expect(message.text).toContain("24 horas");
+    expect(message.html).toContain(`href="${url}"`);
   });
 });

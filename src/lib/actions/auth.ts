@@ -191,3 +191,19 @@ export async function resetPassword(form: FormData): Promise<ActionResult> {
   }
   redirect("/ingresar?restablecida=1");
 }
+
+/** Manda el link para verificar el email de la sesión. Por ahora no se exige para nada. */
+export async function sendVerificationEmail(): Promise<ActionResult> {
+  const me = await requireUser();
+  if (me.emailVerified) return { ok: "Tu email ya está verificado." };
+  const limited = await tooMany("sendVerificationEmail", me.id);
+  if (limited) return limited;
+
+  try {
+    await getAuth().api.sendVerificationEmail({ body: { email: me.email }, headers: await headers() });
+  } catch (error) {
+    console.error("No se pudo pedir el email de verificación:", error);
+    return { error: "No pudimos mandar el email. Probá de nuevo en un rato." };
+  }
+  return { ok: `Te mandamos un link a ${me.email}. Abrilo para verificarlo.` };
+}
