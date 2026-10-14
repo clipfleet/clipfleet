@@ -3,7 +3,7 @@ import { BrandMark } from "@/components/shell/wordmark";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { buttonClasses } from "@/components/ui/button";
-import { ReceiptIcon, SearchIcon, TeamIcon, UserIcon } from "@/components/ui/icons";
+import { LayersIcon, ReceiptIcon, TeamIcon, UserIcon } from "@/components/ui/icons";
 import { Money } from "@/components/ui/money";
 import { Num } from "@/components/ui/num";
 import { Panel } from "@/components/ui/panel";
@@ -24,7 +24,7 @@ const costPerThousand = (paid: number, views: number) => Math.round((paid * 1000
 
 const NAV = [
   { label: "Equipo", icon: <TeamIcon />, active: true, badge: 2 },
-  { label: "Campañas", icon: <SearchIcon />, active: false },
+  { label: "Campañas", icon: <LayersIcon />, active: false },
   { label: "Liquidaciones", icon: <ReceiptIcon />, active: false },
   { label: "Perfil", icon: <UserIcon />, active: false },
 ];

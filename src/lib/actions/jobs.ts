@@ -76,6 +76,7 @@ export async function applyToJob(form: FormData): Promise<ActionResult> {
     .returning({ id: applications.id });
   if (inserted.length === 0) return { error: "Ya te postulaste a esta campaña." };
   revalidatePath(`/trabajos/${jobId}`);
+  revalidatePath(`/app/campanas/${jobId}`);
   return { ok: "Postulación enviada. Te avisamos en tu panel cuando te respondan." };
 }
 

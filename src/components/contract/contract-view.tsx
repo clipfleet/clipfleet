@@ -260,7 +260,7 @@ export function ContractView({ detail, viewer, userId }: { detail: Detail; viewe
         actions={
           viewer === "hirer" ? (
             <>
-              <ButtonLink href={`/t/${detail.worker.username}`} variant="secondary">
+              <ButtonLink href={`/app/talento/${detail.worker.username}`} variant="secondary">
                 Ver perfil
               </ButtonLink>
               {money.owed > 0 ? (

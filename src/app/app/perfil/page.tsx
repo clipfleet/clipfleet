@@ -55,8 +55,8 @@ export default async function ProfilePage() {
       <PageHeader
         title="Perfil"
         actions={
-          <ButtonLink href={`/t/${me.username}`} variant="secondary">
-            Ver mi perfil público
+          <ButtonLink href={`/app/talento/${me.username}`} variant="secondary">
+            Vista previa de mi perfil
           </ButtonLink>
         }
       />

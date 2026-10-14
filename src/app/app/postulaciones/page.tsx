@@ -22,19 +22,12 @@ export default async function MyApplicationsPage() {
     <>
       <PageHeader
         title="Postulaciones"
-        actions={
-          applications.length > 0 ? (
-            <ButtonLink href="/trabajos" variant="secondary">
-              Ver trabajos
-            </ButtonLink>
-          ) : null
-        }
       />
 
       {applications.length === 0 ? (
         <EmptyState
           title="Todavía no te postulaste a nada"
-          action={<ButtonLink href="/trabajos">Ver trabajos</ButtonLink>}
+          action={<ButtonLink href="/app/campanas">Ver campañas</ButtonLink>}
         />
       ) : (
         <Panel padded={false}>
@@ -51,7 +44,7 @@ export default async function MyApplicationsPage() {
               {applications.map(({ application, job, brandName }) => (
                 <TR key={application.id}>
                   <TH scope="row">
-                    <Link href={`/trabajos/${job.id}`} className="link-row">
+                    <Link href={`/app/campanas/${job.id}`} className="link-row">
                       {job.title}
                     </Link>
                     <span className="block text-[0.8125rem] font-normal text-ink-3">{brandName}</span>

@@ -14,6 +14,8 @@ export type AppShellNavItem = {
   label: string;
   /** Ícono de `ui/icons`. */
   icon?: ReactNode;
+  /** Otras rutas en las que el ítem también se marca activo. */
+  alsoMatch?: string[];
   /** Cantidad pendiente al lado del rótulo. */
   badge?: number | string;
 };
@@ -53,6 +55,7 @@ export function AppShell({ user, nav, signOutAction, children }: AppShellProps) 
               <li key={item.href}>
                 <NavLink
                   href={item.href}
+                alsoMatch={item.alsoMatch}
                   className="group/nav flex h-9 items-center gap-2.5 rounded-md border border-transparent px-2.5 text-sm font-medium text-ink-2 transition-colors duration-100 hover:bg-wash-2 hover:text-ink aria-[current=page]:border-line aria-[current=page]:bg-surface aria-[current=page]:text-ink aria-[current=page]:shadow-xs"
                 >
                   {item.icon ? <span className="flex shrink-0 text-ink-3 group-aria-[current=page]/nav:text-accent">{item.icon}</span> : null}
@@ -106,6 +109,7 @@ export function AppShell({ user, nav, signOutAction, children }: AppShellProps) 
             <li key={item.href} className="min-w-0 flex-1">
               <NavLink
                 href={item.href}
+                alsoMatch={item.alsoMatch}
                 className="group/nav flex h-14 flex-col items-center justify-center gap-1 rounded-md text-[0.6875rem] leading-none font-medium text-ink-3 -outline-offset-2 aria-[current=page]:text-ink"
               >
                 <span className="relative flex group-aria-[current=page]/nav:text-accent [&>svg]:size-[1.125rem]">

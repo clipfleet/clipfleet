@@ -90,6 +90,16 @@ export async function getMyApplication(jobId: string, workerId: string) {
   return row ?? null;
 }
 
+/** Postulaciones sin responder de un gestor a las campañas de este contratador. */
+export async function listPendingApplicationsFrom(hirerId: string, workerId: string) {
+  return db
+    .select({ id: applications.id, message: applications.message, jobId: jobs.id, jobTitle: jobs.title })
+    .from(applications)
+    .innerJoin(jobs, eq(jobs.id, applications.jobId))
+    .where(and(eq(jobs.hirerId, hirerId), eq(applications.workerId, workerId), eq(applications.status, "pending")))
+    .orderBy(desc(applications.createdAt));
+}
+
 // --- Trabajadores ---
 
 async function statsForWorkers(workerIds: string[]): Promise<Map<string, WorkerStats>> {

@@ -97,7 +97,7 @@ export default async function EarningsPage() {
       ) : null}
 
       {contracts.length === 0 ? (
-        <EmptyState title="Todavía no tenés trabajos" action={<ButtonLink href="/trabajos">Ver campañas abiertas</ButtonLink>} />
+        <EmptyState title="Todavía no tenés trabajos" action={<ButtonLink href="/app/campanas">Ver campañas abiertas</ButtonLink>} />
       ) : (
         <Panel title="A cobrar" description="Lo que generaron tus vistas aprobadas y todavía no te pagaron." padded={false}>
           {owing.length === 0 ? (

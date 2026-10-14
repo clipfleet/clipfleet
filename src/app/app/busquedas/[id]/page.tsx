@@ -40,8 +40,8 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
             <span className="tabular-nums">
               Contratados {hired} de {job.slots}
             </span>
-            <Link href={`/trabajos/${job.id}`} className="link">
-              Ver página pública
+            <Link href={`/app/campanas/${job.id}`} className="link">
+              Vista previa
             </Link>
           </>
         }
@@ -99,7 +99,7 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
               {applications.map((application) => (
                 <TR key={application.id}>
                   <TH scope="row">
-                    <Link href={`/t/${application.worker.username}`} className="link-row">
+                    <Link href={`/app/talento/${application.worker.username}?campana=${job.id}`} className="link-row">
                       {application.worker.name}
                     </Link>
                     {application.message ? <span className="mt-0.5 block max-w-prose text-[0.8125rem] font-normal text-ink-2">“{application.message}”</span> : null}

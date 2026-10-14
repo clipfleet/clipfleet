@@ -24,7 +24,7 @@ export function PublicFooter({ user, loginHref = "/ingresar", panelHref = "/app"
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             <li>
               <Link href="/trabajos" className={linkClass}>
-                Campañas
+                Campañas abiertas
               </Link>
             </li>
             <li>
