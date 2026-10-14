@@ -46,7 +46,7 @@ export default function LandingPage() {
               </li>
             ))}
           </ul>
-          <p className="text-[0.8125rem] leading-snug text-ink-3">Sin costo. Los pagos se hacen directo entre las partes.</p>
+          <p className="text-[0.8125rem] leading-snug text-ink-3">Gratis por ahora. Los pagos se hacen directo entre las partes.</p>
         </div>
       </section>
 
