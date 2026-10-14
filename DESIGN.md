@@ -53,6 +53,8 @@ Quien tiene la sesión iniciada y abre `/trabajos`, `/trabajos/[id]`, `/talento`
 
 Navegación: contratador → Contratados, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil.
 
+**Las campañas no se editan.** Una campaña publicada solo se pausa o se reabre: ni la regla de pago, ni la plataforma, ni los cupos cambian después de publicarla. Si el contratador cambiara las condiciones a mitad de camino, quien se postuló lo hizo por otras. Para cambiar las condiciones se pausa la campaña y se publica otra. Si algún día se permite editar, solo título y descripción; las condiciones nunca. De todos modos, cada contratación guarda una copia de la regla de pago y la plataforma del momento en que se contrató, así que un cambio en la campaña no tocaría acuerdos vigentes.
+
 **Cambiar la contraseña:** pide la actual y la nueva, con el mismo límite de intentos que el ingreso, y cierra las otras sesiones abiertas. No es recuperación de contraseña: esa sigue pendiente porque necesita envío de mails.
 
 ## Perfil del gestor: insignias y calendario de actividad (aprobado e implementado el 2026-10-09)
