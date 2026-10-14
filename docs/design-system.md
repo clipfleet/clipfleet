@@ -163,6 +163,8 @@ Presentacionales y sin datos. Todos aceptan `className` para layout.
 
 **Input** — todo lo de `<input>` + `size?: "md" | "sm"` (`sm` solo dentro de filas de tabla), `leading?`, `trailing?` (adornos: `"$"`, `"vistas"`). Ocupa el 100% salvo que le pases un ancho (`className="w-28"`). Los montos se cargan en pesos.
 
+**PasswordInput** — lo mismo que `Input` sin `type` ni `trailing`. Todo campo de contraseña lo usa: a la derecha lleva un ojo que la muestra u oculta (`aria-label` "Mostrar contraseña" / "Ocultar contraseña").
+
 **Select** — nativo. `options?`, `placeholder?`, `size?`. **Textarea** — nativo, `rows` 4.
 
 **RadioCards** — elección única entre 2 a 4 opciones. `name`, `legend`, `options: { value, title, description? }[]`, `defaultValue?`, `columns?: 1 | 2 | 3`, `hint?`, `error?`, `required?`.
@@ -217,7 +219,7 @@ Presentacionales y sin datos. Todos aceptan `className` para layout.
 
 **Avatar** — `name`, `size?: sm | md | lg`. Iniciales en un círculo neutro; decorativo.
 
-**Íconos** (`ui/icons`) — 16px, trazo de 1.5, decorativos: `CheckIcon`, `AlertIcon`, `InfoIcon`, `CrossIcon`, `ArrowRightIcon`, `ArrowLeftIcon`, `ChevronDownIcon`, `ChevronRightIcon`, `ExternalIcon`, `StarIcon` y los de navegación (`TeamIcon`, `SearchIcon`, `ReceiptIcon`, `UserIcon`, `BriefcaseIcon`, `SendIcon`, `GridIcon`). Nunca solos como botón.
+**Íconos** (`ui/icons`) — 16px, trazo de 1.5, decorativos: `CheckIcon`, `AlertIcon`, `InfoIcon`, `CrossIcon`, `ArrowRightIcon`, `ArrowLeftIcon`, `ChevronDownIcon`, `ChevronRightIcon`, `ExternalIcon`, `StarIcon` y los de navegación (`TeamIcon`, `SearchIcon`, `ReceiptIcon`, `UserIcon`, `BriefcaseIcon`, `SendIcon`, `GridIcon`). Nunca solos como botón, salvo el ojo de `PasswordInput`, que lleva `aria-label`. `EyeIcon` y `EyeOffIcon` son ese ojo.
 
 **Formato** (`ui/format`): `formatMoney`, `formatInt`, `formatCompact`, `formatRating`, `formatShortDate`, `formatDate`, `isoDate`, `initials`.
 

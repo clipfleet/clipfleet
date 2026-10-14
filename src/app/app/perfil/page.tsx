@@ -6,6 +6,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { ButtonLink } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Panel } from "@/components/ui/panel";
 import { changePassword } from "@/lib/actions/auth";
 import type { ActionResult } from "@/lib/actions/result";
@@ -105,13 +106,13 @@ function AccountGroup({ me }: { me: SessionUser }) {
       <SettingRow label="Contraseña" value="••••••••••" editLabel="Cambiar">
         <ActionForm action={changePassword} className="flex max-w-form flex-col gap-5">
           <Field label="Contraseña actual">
-            <Input name="currentPassword" type="password" required autoComplete="current-password" />
+            <PasswordInput name="currentPassword" required autoComplete="current-password" />
           </Field>
           <Field label="Contraseña nueva" hint={`Al menos ${MIN_PASSWORD_LENGTH} caracteres.`}>
-            <Input name="newPassword" type="password" required minLength={MIN_PASSWORD_LENGTH} autoComplete="new-password" />
+            <PasswordInput name="newPassword" required minLength={MIN_PASSWORD_LENGTH} autoComplete="new-password" />
           </Field>
           <Field label="Repetí la contraseña nueva">
-            <Input name="confirmPassword" type="password" required minLength={MIN_PASSWORD_LENGTH} autoComplete="new-password" />
+            <PasswordInput name="confirmPassword" required minLength={MIN_PASSWORD_LENGTH} autoComplete="new-password" />
           </Field>
           <SaveButtons pendingLabel="Cambiando…">Cambiar contraseña</SaveButtons>
         </ActionForm>
@@ -219,7 +220,7 @@ export default async function ProfilePage() {
                 <Input name="account" required maxLength={40} defaultValue={payment?.account ?? ""} autoComplete="off" autoCapitalize="none" spellCheck={false} />
               </Field>
               <Field label="Tu contraseña" hint="Te la pedimos para que nadie más pueda cambiar a dónde cobrás.">
-                <Input name="currentPassword" type="password" required autoComplete="current-password" />
+                <PasswordInput name="currentPassword" required autoComplete="current-password" />
               </Field>
               <SaveButtons />
             </ActionForm>

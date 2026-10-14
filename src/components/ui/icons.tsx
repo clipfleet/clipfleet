@@ -207,6 +207,17 @@ export function EyeIcon(props: IconProps) {
   );
 }
 
+/** El ojo tachado: la contraseña está a la vista y el botón la vuelve a ocultar. */
+export function EyeOffIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M1.75 8S4 3.75 8 3.75 14.25 8 14.25 8 12 12.25 8 12.25 1.75 8 1.75 8Z" />
+      <circle cx="8" cy="8" r="1.75" />
+      <path d="M2.5 2.5l11 11" />
+    </Svg>
+  );
+}
+
 export function LayersIcon(props: IconProps) {
   return (
     <Svg {...props}>
