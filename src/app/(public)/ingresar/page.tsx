@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Notice } from "@/components/ui/notice";
 import { Panel } from "@/components/ui/panel";
 import { signIn } from "@/lib/actions/auth";
@@ -28,7 +29,7 @@ export default async function SignInPage({ searchParams }: PageProps<"/ingresar"
               <Input name="email" type="email" required autoComplete="email" />
             </Field>
             <Field label="Contraseña">
-              <Input name="password" type="password" required autoComplete="current-password" />
+              <PasswordInput name="password" required autoComplete="current-password" />
             </Field>
             <Link href="/recuperar" className="-mt-1 self-start rounded-sm text-sm font-medium text-accent hover:text-accent-hover">
               ¿Olvidaste tu contraseña?

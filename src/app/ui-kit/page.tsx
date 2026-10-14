@@ -19,6 +19,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Field } from "@/components/ui/field";
 import { CheckIcon, GridIcon, ReceiptIcon, SearchIcon, TeamIcon } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Money } from "@/components/ui/money";
 import { Notice } from "@/components/ui/notice";
 import { Num } from "@/components/ui/num";
@@ -200,6 +201,9 @@ export default function UiKitPage() {
                 <Input name="cap" inputMode="decimal" leading="$" />
               </Field>
             </Disclosure>
+            <Field label="Contraseña" className="sm:max-w-80">
+              <PasswordInput name="password" defaultValue="una-contraseña" autoComplete="off" />
+            </Field>
             <Field label="Descripción" optional>
               <Textarea name="description" />
             </Field>

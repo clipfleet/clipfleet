@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ActionForm, FormSubmit } from "@/components/forms/action-form";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Panel } from "@/components/ui/panel";
 import { RadioCards } from "@/components/ui/radio-cards";
 import { signUp } from "@/lib/actions/auth";
@@ -54,7 +55,7 @@ export default async function SignUpPage({ searchParams }: PageProps<"/registro"
               <Input name="email" type="email" required autoComplete="email" />
             </Field>
             <Field label="Contraseña" hint="Al menos 10 caracteres.">
-              <Input name="password" type="password" required minLength={10} maxLength={128} autoComplete="new-password" />
+              <PasswordInput name="password" required minLength={10} maxLength={128} autoComplete="new-password" />
             </Field>
             <FormSubmit block pendingLabel="Creando cuenta…">
               Crear cuenta
