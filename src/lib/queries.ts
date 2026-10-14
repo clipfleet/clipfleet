@@ -90,6 +90,16 @@ export async function getMyApplication(jobId: string, workerId: string) {
   return row ?? null;
 }
 
+/** Postulaciones sin responder de un gestor a las campañas de este contratador. */
+export async function listPendingApplicationsFrom(hirerId: string, workerId: string) {
+  return db
+    .select({ id: applications.id, message: applications.message, jobId: jobs.id, jobTitle: jobs.title })
+    .from(applications)
+    .innerJoin(jobs, eq(jobs.id, applications.jobId))
+    .where(and(eq(jobs.hirerId, hirerId), eq(applications.workerId, workerId), eq(applications.status, "pending")))
+    .orderBy(desc(applications.createdAt));
+}
+
 // --- Trabajadores ---
 
 async function statsForWorkers(workerIds: string[]): Promise<Map<string, WorkerStats>> {
@@ -214,17 +224,21 @@ export async function getMyJob(hirerId: string, jobId: string) {
     .where(and(eq(jobs.id, jobId), eq(jobs.hirerId, hirerId)));
   if (!job) return null;
   const rows = await db
-    .select({ application: applications, worker: user, profile: workerProfiles })
+    .select({ application: applications, worker: user, profile: workerProfiles, contractId: contracts.id })
     .from(applications)
     .innerJoin(user, eq(user.id, applications.workerId))
     .leftJoin(workerProfiles, eq(workerProfiles.userId, user.id))
+    .leftJoin(contracts, and(eq(contracts.jobId, applications.jobId), eq(contracts.workerId, applications.workerId)))
     .where(eq(applications.jobId, jobId))
     .orderBy(desc(applications.createdAt));
   const stats = await statsForWorkers(rows.map((row) => row.worker.id));
+  const hired = rows.filter((row) => row.contractId).length;
   return {
     job,
+    hired,
     applications: rows.map((row) => ({
       ...row.application,
+      contractId: row.contractId,
       worker: { name: row.worker.name, username: row.worker.username, headline: row.profile?.headline ?? "" },
       stats: stats.get(row.worker.id)!,
     })),

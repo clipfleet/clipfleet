@@ -3,7 +3,7 @@ import { BrandMark } from "@/components/shell/wordmark";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { buttonClasses } from "@/components/ui/button";
-import { ReceiptIcon, SearchIcon, TeamIcon, UserIcon } from "@/components/ui/icons";
+import { LayersIcon, ReceiptIcon, SearchIcon, TeamIcon } from "@/components/ui/icons";
 import { Money } from "@/components/ui/money";
 import { Num } from "@/components/ui/num";
 import { Panel } from "@/components/ui/panel";
@@ -22,15 +22,26 @@ const TEAM = [
 const TOTALS = TEAM.reduce((sum, row) => ({ views: sum.views + row.views, paid: sum.paid + row.paid, owed: sum.owed + row.owed }), { views: 0, paid: 0, owed: 0 });
 const costPerThousand = (paid: number, views: number) => Math.round((paid * 1000) / views);
 
+// Las mismas secciones que la barra lateral del contratador.
 const NAV = [
-  { label: "Equipo", icon: <TeamIcon />, active: true, badge: 2 },
-  { label: "Búsquedas", icon: <SearchIcon />, active: false },
-  { label: "Liquidaciones", icon: <ReceiptIcon />, active: false },
-  { label: "Perfil", icon: <UserIcon />, active: false },
+  {
+    group: "Gestión",
+    items: [
+      { label: "Contratados", icon: <TeamIcon />, active: true, badge: 2 },
+      { label: "Liquidaciones", icon: <ReceiptIcon />, active: false },
+    ],
+  },
+  {
+    group: "Contratar",
+    items: [
+      { label: "Campañas", icon: <LayersIcon />, active: false, badge: 0 },
+      { label: "Talento", icon: <SearchIcon />, active: false, badge: 0 },
+    ],
+  },
 ];
 
 /**
- * La pantalla de Equipo del contratador, armada con los componentes reales y
+ * La pantalla de Contratados del contratador, armada con los componentes reales y
  * datos ficticios, enmarcada como captura de producto. Solo para la landing.
  * Es una imagen: va `inert` (no recibe foco ni clics) y la describe el epígrafe.
  */
@@ -39,7 +50,7 @@ export function ProductPreview({ className }: { className?: string }) {
     <figure className={clsx("flex min-w-0 flex-col gap-3", className)}>
       <figcaption className="flex items-center gap-2.5 text-[0.8125rem] text-ink-3">
         <Badge>Ejemplo</Badge>
-        El equipo de un contratador, con datos ficticios.
+        Contratados de un canal, con datos ficticios.
       </figcaption>
 
       <div inert className="grid overflow-hidden rounded-lg border border-line bg-surface shadow-raised select-none lg:grid-cols-[13rem_minmax(0,1fr)]">
@@ -48,7 +59,10 @@ export function ProductPreview({ className }: { className?: string }) {
             <BrandMark className="size-4" />
             {BRAND.name}
           </p>
-          {NAV.map((item) => (
+          {NAV.map((section) => (
+            <div key={section.group} className="mb-3 flex flex-col gap-1">
+              <p className="px-2.5 text-xs font-medium text-ink-3">{section.group}</p>
+          {section.items.map((item) => (
             <p
               key={item.label}
               className={clsx(
@@ -63,11 +77,13 @@ export function ProductPreview({ className }: { className?: string }) {
               ) : null}
             </p>
           ))}
+            </div>
+          ))}
         </div>
 
         <div className="flex min-w-0 flex-col gap-5 p-4 sm:gap-6 sm:p-6 lg:p-8">
           <div className="flex items-center justify-between gap-4">
-            <p className="text-xl leading-7 font-semibold tracking-[-0.02em]">Equipo</p>
+            <p className="text-xl leading-7 font-semibold tracking-[-0.02em]">Contratados</p>
             <div className="hidden gap-2 sm:flex">
               <span className={buttonClasses({ variant: "secondary", size: "sm" })}>Invitar por link</span>
               <span className={buttonClasses({ size: "sm" })}>Liquidar lo adeudado</span>

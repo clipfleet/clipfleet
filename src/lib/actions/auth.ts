@@ -7,7 +7,7 @@ import { getAuth, MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from "@/lib/auth";
 import { db, dbReady } from "@/lib/db";
 import { hirerProfiles, user, workerProfiles } from "@/lib/db/schema";
 import { clientIp, tooMany } from "@/lib/security/limits";
-import { homeFor } from "@/lib/session";
+import { homeFor, requireUser } from "@/lib/session";
 import { safeNext, text, type ActionResult } from "./result";
 
 const USERNAME = /^[a-z0-9_]{3,24}$/;
@@ -97,4 +97,41 @@ export async function signIn(form: FormData): Promise<ActionResult> {
 export async function signOut(): Promise<void> {
   await getAuth().api.signOut({ headers: await headers() });
   redirect("/");
+}
+
+/**
+ * Cambia la contraseña con la sesión iniciada. Pide la actual y cierra las demás sesiones:
+ * si alguien más tenía la cuenta abierta, queda afuera.
+ */
+export async function changePassword(form: FormData): Promise<ActionResult> {
+  const me = await requireUser();
+  const limited = await tooMany("changePassword", me.id);
+  if (limited) return limited;
+
+  const field = (name: string) => {
+    const value = form.get(name);
+    return typeof value === "string" ? value : "";
+  };
+  const currentPassword = field("currentPassword");
+  const newPassword = field("newPassword");
+  if (currentPassword.length === 0 || currentPassword.length > MAX_PASSWORD_LENGTH) return { error: "La contraseña actual no es correcta." };
+  if (newPassword.length < MIN_PASSWORD_LENGTH) return { error: `La contraseña nueva tiene que tener al menos ${MIN_PASSWORD_LENGTH} caracteres.` };
+  if (newPassword.length > MAX_PASSWORD_LENGTH) return { error: `La contraseña nueva no puede tener más de ${MAX_PASSWORD_LENGTH} caracteres.` };
+  if (newPassword !== field("confirmPassword")) return { error: "Las dos contraseñas nuevas no coinciden." };
+  if (newPassword === currentPassword) return { error: "La contraseña nueva tiene que ser distinta de la actual." };
+
+  const requestHeaders = await headers();
+  try {
+    // `revokeOtherSessions` de better-auth también reemplaza la sesión actual, y la página que se
+    // vuelve a dibujar después de la acción todavía lee la cookie vieja: te saca del panel. Por eso
+    // se cambia la contraseña conservando esta sesión y después se cierran solo las demás.
+    await getAuth().api.changePassword({ body: { currentPassword, newPassword }, headers: requestHeaders });
+  } catch (error) {
+    if (authErrorCode(error).includes("PASSWORD_COMPROMISED")) {
+      return { error: "Esa contraseña aparece en filtraciones de datos conocidas. Elegí otra." };
+    }
+    return { error: "La contraseña actual no es correcta." };
+  }
+  await getAuth().api.revokeOtherSessions({ headers: requestHeaders });
+  return { ok: "Contraseña cambiada. Cerramos la sesión en los demás dispositivos." };
 }

@@ -13,7 +13,7 @@ export type PublicHeaderProps = {
 };
 
 const NAV = [
-  { href: "/trabajos", label: "Trabajos" },
+  { href: "/trabajos", label: "Campañas abiertas" },
   { href: "/talento", label: "Talento" },
 ] as const;
 

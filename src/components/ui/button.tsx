@@ -6,11 +6,11 @@ export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const BASE =
-  "relative inline-flex shrink-0 items-center justify-center gap-2 rounded-md border font-medium whitespace-nowrap select-none transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 data-pending:opacity-80";
+  "relative inline-flex shrink-0 items-center justify-center gap-2 rounded-md border font-medium whitespace-nowrap select-none cursor-pointer transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 data-pending:opacity-80";
 
 const VARIANTS: Record<ButtonVariant, string> = {
   // La acción principal de la pantalla. Una sola por vista.
-  primary: "border-accent bg-accent text-white shadow-xs hover:border-accent-hover hover:bg-accent-hover disabled:hover:border-accent disabled:hover:bg-accent",
+  primary: "border-accent bg-accent text-on-accent shadow-xs hover:border-accent-hover hover:bg-accent-hover disabled:hover:border-accent disabled:hover:bg-accent",
   secondary: "border-line-strong bg-surface text-ink shadow-xs hover:bg-wash active:bg-wash-2 disabled:hover:bg-surface",
   ghost: "border-transparent bg-transparent text-ink-2 hover:bg-wash-2 hover:text-ink disabled:hover:bg-transparent",
   danger: "border-line-strong bg-surface text-negative shadow-xs hover:border-negative-line hover:bg-negative-soft disabled:hover:border-line-strong disabled:hover:bg-surface",

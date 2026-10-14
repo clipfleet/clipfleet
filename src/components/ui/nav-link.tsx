@@ -8,6 +8,8 @@ export type NavLinkProps = ComponentProps<typeof Link> & {
   href: string;
   /** Activo solo si la ruta es exactamente `href` (sin contar subrutas). */
   exact?: boolean;
+  /** Otras rutas (y sus subrutas) en las que este link también está activo. */
+  alsoMatch?: string[];
   /** Fuerza el estado activo. Usalo cuando la pestaña depende de un searchParam. */
   active?: boolean;
 };
@@ -17,11 +19,11 @@ export type NavLinkProps = ComponentProps<typeof Link> & {
  * es `href` o una subruta. Único componente cliente de la navegación: el
  * estilo del estado activo se resuelve con `aria-[current=page]:` en className.
  */
-export function NavLink({ href, exact = false, active, ...rest }: NavLinkProps) {
+export function NavLink({ href, exact = false, alsoMatch, active, ...rest }: NavLinkProps) {
   const pathname = usePathname();
   const path = href.split(/[?#]/)[0];
   const matches = pathname === path || (!exact && path !== "/" && pathname.startsWith(`${path}/`));
-  const isActive = active ?? matches;
+  const isActive = active ?? (matches || (alsoMatch ?? []).some((other) => pathname === other || pathname.startsWith(`${other}/`)));
   const ref = useRef<HTMLAnchorElement>(null);
 
   // En las tiras de navegación que se deslizan de costado (celular), trae el ítem activo a la vista.

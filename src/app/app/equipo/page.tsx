@@ -12,13 +12,15 @@ import { Stat, StatGroup } from "@/components/ui/stat";
 import { Table, TBody, TD, TFoot, TH, THead, TR } from "@/components/ui/table";
 import { generatePayouts } from "@/lib/actions/money";
 import { listTeam } from "@/lib/queries";
+import { teamByPerson } from "@/lib/stats/team";
 import { requireUser } from "@/lib/session";
 
-export const metadata = { title: "Equipo" };
+export const metadata = { title: "Contratados" };
 
 export default async function TeamPage() {
   const me = await requireUser("hirer");
   const team = await listTeam(me.id);
+  const people = teamByPerson(team);
 
   const totals = team.reduce(
     (sum, row) => ({
@@ -34,7 +36,7 @@ export default async function TeamPage() {
   return (
     <>
       <PageHeader
-        title="Equipo"
+        title="Contratados"
         actions={
           <>
             <ButtonLink href="/app/equipo/invitar" variant="secondary">
@@ -53,19 +55,19 @@ export default async function TeamPage() {
 
       {team.length === 0 ? (
         <EmptyState
-          title="Todavía no tenés a nadie en el equipo"
+          title="Todavía no contrataste a nadie"
           action={
             <span className="flex flex-wrap gap-2">
               <ButtonLink href="/app/equipo/invitar">Invitar por link</ButtonLink>
               <ButtonLink href="/app/busquedas/nueva" variant="secondary">
-                Publicar búsqueda
+                Publicar campaña
               </ButtonLink>
             </span>
           }
         />
       ) : (
         <>
-          <StatGroup cols={3} label="Resumen del equipo">
+          <StatGroup cols={3} label="Resumen de tus contratados">
             <Stat label="Vistas aprobadas" value={<Num value={totals.views} />} />
             <Stat label="Pagado" value={<Money cents={totals.paid} />} />
             <Stat label="Adeudado" value={<Money cents={totals.owed} />} />
@@ -84,46 +86,49 @@ export default async function TeamPage() {
                 </TR>
               </THead>
               <TBody>
-                {team.map((row) => {
-                  const waiting = row.performance.pendingReview + row.pendingViews;
-                  const ended = row.contract.status === "ended";
-                  return (
-                    <TR key={row.contract.id} tone={ended ? "muted" : "default"}>
-                      <TH scope="row">
-                        <span className="flex items-center gap-3">
-                          <Avatar name={row.worker.name} className="max-sm:hidden" />
-                          <span className="min-w-0">
-                            <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                              <Link href={`/app/equipo/${row.contract.id}`} className="link-row">
-                                {row.worker.name}
-                              </Link>
-                              {waiting > 0 ? <Badge tone="warning">{waiting} para revisar</Badge> : null}
-                            </span>
-                            <span className="block truncate text-[0.8125rem] font-normal text-ink-3 sm:max-w-[18rem]" title={row.contract.title}>
-                              {ended ? "Finalizada · " : ""}
-                              {row.contract.title}
-                            </span>
+                {people.map((person) => (
+                  <TR key={person.worker.username} tone={person.ended ? "muted" : "default"}>
+                    <TH scope="row">
+                      <span className="flex items-start gap-3">
+                        <Avatar name={person.worker.name} className="max-sm:hidden" />
+                        <span className="min-w-0">
+                          <Link href={`/app/talento/${person.worker.username}`} className="link-row">
+                            {person.worker.name}
+                          </Link>
+                          <span className="mt-0.5 flex flex-col gap-0.5">
+                            {person.contracts.map((row) => {
+                              const waiting = row.performance.pendingReview + row.pendingViews;
+                              return (
+                                <span key={row.contract.id} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem] font-normal">
+                                  <Link href={`/app/equipo/${row.contract.id}`} className="truncate text-ink-2 underline-offset-2 hover:text-ink hover:underline sm:max-w-[18rem]" title={row.contract.title}>
+                                    {row.contract.status === "ended" ? "Finalizada · " : ""}
+                                    {row.contract.title}
+                                  </Link>
+                                  {waiting > 0 ? <Badge tone="warning">{waiting} para revisar</Badge> : null}
+                                </span>
+                              );
+                            })}
                           </span>
                         </span>
-                      </TH>
-                      <TD numeric label="Videos">
-                        <Num value={row.performance.approvedDeliverables} compact={false} />
-                      </TD>
-                      <TD numeric label="Vistas">
-                        <Num value={row.performance.totalViews} />
-                      </TD>
-                      <TD numeric label="Costo / 1.000">
-                        <Money cents={row.performance.costPerThousand} decimals="never" />
-                      </TD>
-                      <TD numeric label="Pagado">
-                        <Money cents={row.paid} />
-                      </TD>
-                      <TD numeric label="Adeudado">
-                        <Money cents={row.owed} className={row.owed > 0 ? "font-medium text-ink" : undefined} />
-                      </TD>
-                    </TR>
-                  );
-                })}
+                      </span>
+                    </TH>
+                    <TD numeric label="Videos">
+                      <Num value={person.videos} compact={false} />
+                    </TD>
+                    <TD numeric label="Vistas">
+                      <Num value={person.views} />
+                    </TD>
+                    <TD numeric label="Costo / 1.000">
+                      <Money cents={person.costPerThousand} decimals="never" />
+                    </TD>
+                    <TD numeric label="Pagado">
+                      <Money cents={person.paid} />
+                    </TD>
+                    <TD numeric label="Adeudado">
+                      <Money cents={person.owed} className={person.owed > 0 ? "font-medium text-ink" : undefined} />
+                    </TD>
+                  </TR>
+                ))}
               </TBody>
               <TFoot>
                 <TR>

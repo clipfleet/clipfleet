@@ -20,6 +20,54 @@ Consecuencias en el modelo:
 - **Riesgo nuevo:** sin plata de por medio, inflar un perfil con contrataciones falsas no cuesta nada, y un "pagado" que el trabajador no confirma queda en disputa sin árbitro. Para la prueba de mercado se acepta.
 - **Lo que queda guardado para cuando los pagos pasen por la plataforma:** libro contable, comisión (`splitPayout`), depósitos (`PaymentProvider`), retiros (`PayoutProvider`) y sus tablas siguen en `src/lib` con tests, sin pantallas. Las secciones "Modelo monetario" y "La sección monetaria tiene que poder mutar" describen ese modo futuro.
 
+## Modo oscuro (aprobado el 2026-10-13)
+
+**Qué se construye:** el sitio entero (público y panel) sigue el modo del sistema: claro u oscuro según lo que tenga elegido cada persona en su dispositivo. Sin selector propio por ahora; si hace falta, se suma después sin rehacer nada.
+
+**Cómo:** los colores ya viven todos en los tokens de `globals.css`. El modo oscuro les da otros valores dentro de `@media (prefers-color-scheme: dark)`; los componentes no cambian. La dirección visual sigue siendo la misma, clara y sobria, ahora también sobre fondo oscuro: grises casi negros en lugar de blanco, el mismo acento verde más luminoso para que se lea, líneas finas en lugar de sombras, y el mismo contraste AA que en claro.
+
+**Reglas:**
+- Ningún color fuera de los tokens, tampoco `white` para texto sobre el acento: va `on-accent`, que es blanco en claro y casi negro en oscuro.
+- Los controles nativos (barras de desplazamiento, selectores de fecha, autocompletado) siguen el modo con `color-scheme`.
+- El color de la barra del navegador en celular (`themeColor`) también cambia con el modo.
+
+## Claridad del panel (aprobado el 2026-10-13)
+
+**Problema:** usando el panel como contratador no queda claro qué es Equipo, qué genera "Invitar por link", las postulaciones de una búsqueda se pierden en la tabla y el perfil es un par de formularios sueltos, sin forma de cambiar la contraseña.
+
+**Vocabulario**
+
+- **`Job` se dice "campaña"** en toda la interfaz, pública y del panel ("Publicar campaña", sección "Campañas"). Rutas, tablas y código siguen como están (`/app/busquedas`, `/trabajos`, `jobs`): no hay migración.
+- **"Equipo" pasa a "Contratados"** (la sección y el título; la ruta sigue siendo `/app/equipo`). Quienes suben videos no son el equipo del contratador sino gente que contrató por campaña o por invitación, y es la misma palabra de "Contratados X de Y" en cada campaña.
+- **Los roles no se nombran en la interfaz.** "Contratador", "trabajador", "gestor", "creador" y "clipper" no aparecen en pantalla: se sale el rótulo de rol de la barra lateral, en público se mantienen "Tengo contenido" y "Subo videos", y donde haga falta distinguir se dice qué hace cada uno. En el código y en este documento se sigue diciendo contratador y gestor.
+
+**Pantallas que cambian**
+
+| Pantalla | Cambio |
+|---|---|
+| `/app/equipo` | Se llama "Contratados". Una fila por persona, con sus campañas o invitaciones debajo del nombre |
+| `/app/equipo/invitar` | Dice qué genera: un link por persona, de un solo uso, que al abrirlo acepta el trabajo con esa regla de pago y vence a los 14 días |
+| `/app/busquedas/[id]` | Resumen de la campaña (descripción, contratados X de Y) y "Postulaciones" como sección propia con la cantidad sin responder. Quien fue contratado lleva a su contratación. "Ver página pública" pasa a "Ver publicación", un link secundario que no sale del panel, y "Copiar link" va junto a "Pausar" |
+| `/app/perfil` (ambos) | Bloques de lectura con "Editar": Perfil, Cuenta (email y cambiar contraseña) y los datos de pago, que siguen en el perfil |
+| Barra lateral | Sin rótulo de rol; "Búsquedas" pasa a "Campañas" |
+
+**El panel no te saca del panel.** Con la sesión iniciada, todo se ve dentro del panel, con la barra lateral. Las páginas públicas de campañas y perfiles se vuelven componentes que se muestran en los dos marcos: el contenido es el mismo y cambia solo el marco.
+
+| Hoy | Ahora |
+|---|---|
+| "Ver página pública" en una campaña propia | "Ver publicación" lleva a `/app/campanas/[id]`, con la nota "Así la ven quienes suben videos" junto al link para volver y "Copiar link" en el encabezado |
+| El nombre de quien se postuló lleva a `/t/[usuario]` | Lleva a `/app/talento/[usuario]`, con "Volver a la campaña" y, si tiene postulaciones sin responder a tus campañas, "Contratar" y "Descartar" ahí mismo |
+| "Ver mi perfil público" (gestor) | "Ver perfil público", junto a "Editar", lleva a `/app/talento/[usuario]`, con la nota "Así ven tu perfil" y "Copiar link" |
+| Encontrar campañas o talento obliga a ir al sitio público | "Campañas" en la navegación del gestor (`/app/campanas`) y "Talento" en la del contratador (`/app/talento`) |
+
+Quien tiene la sesión iniciada y abre `/trabajos`, `/trabajos/[id]`, `/talento` o `/t/[usuario]` (por ejemplo, desde un link que le pasaron) va a la versión del panel. Las páginas públicas siguen igual para quien no ingresó. El tablero público pasa a llamarse "Campañas abiertas" para no confundirse con "Campañas" del contratador, que son las suyas.
+
+Navegación en secciones: contratador → Gestión (Contratados, Liquidaciones) y Contratar (Campañas, Talento). Gestor → Trabajo (Mis trabajos, Cobros) y Buscar trabajo (Campañas, Postulaciones). El perfil sale de la lista: es el bloque de la cuenta al pie de la barra lateral y el avatar de la barra de arriba en celular.
+
+**Las campañas no se editan.** Una campaña publicada solo se pausa o se reabre: ni la regla de pago, ni la plataforma, ni los cupos cambian después de publicarla. Si el contratador cambiara las condiciones a mitad de camino, quien se postuló lo hizo por otras. Para cambiar las condiciones se pausa la campaña y se publica otra. Si algún día se permite editar, solo título y descripción; las condiciones nunca. De todos modos, cada contratación guarda una copia de la regla de pago y la plataforma del momento en que se contrató, así que un cambio en la campaña no tocaría acuerdos vigentes.
+
+**Cambiar la contraseña:** pide la actual y la nueva, con el mismo límite de intentos que el ingreso, y cierra las otras sesiones abiertas. No es recuperación de contraseña: esa sigue pendiente porque necesita envío de mails.
+
 ## Perfil del gestor: insignias y calendario de actividad (aprobado e implementado el 2026-10-09)
 
 **Objetivo:** que el perfil público de un gestor muestre de un vistazo constancia y logros, además de los cuatro números del trayecto. Hoy un perfil con buen historial y uno recién empezado se ven casi iguales.
@@ -222,18 +270,18 @@ Puntos clave:
 | Ruta | Quién | Qué |
 |---|---|---|
 | `/` | público | Landing |
-| `/trabajos`, `/trabajos/[id]` | público | Bolsa de búsquedas y detalle |
-| `/talento`, `/t/[usuario]` | público | Directorio y perfil público con historial |
-| `/app/busquedas` | contratador | Crear/gestionar búsquedas y postulaciones |
-| `/app/equipo`, `/app/equipo/[id]` | contratador | **CRM**: tabla de trabajadores con rendimiento; detalle por contratación |
+| `/trabajos`, `/trabajos/[id]` | público | Bolsa de campañas y detalle; con sesión, redirige a `/app/campanas` |
+| `/talento`, `/t/[usuario]` | público | Directorio y perfil público con historial; con sesión, redirige a `/app/talento` |
+| `/app/busquedas`, `/app/busquedas/[id]` | contratador | Campañas: crear, pausar y responder postulaciones |
+| `/app/equipo`, `/app/equipo/[id]` | contratador | **CRM**: una fila por persona con rendimiento; detalle por contratación |
 | `/app/equipo/invitar`, `/invitacion/[token]` | contratador / invitado | Sumar equipo existente por link, sin pasar por la bolsa |
-| `/app/liquidaciones` | contratador | Qué se debe, a quién, por qué; aprobar y liberar pago |
-| `/app/saldo` | contratador | Fondear saldo, ver reservado/disponible, movimientos |
+| `/app/liquidaciones` | contratador | Qué se debe, a quién, por qué; marcar como pagado |
+| `/app/campanas`, `/app/campanas/[id]` | ambos | Campañas abiertas y su detalle dentro del panel; postularse (gestor) o vista previa de la propia (contratador) |
+| `/app/talento`, `/app/talento/[usuario]` | ambos | Directorio y perfil dentro del panel; contratar desde una postulación (contratador) o vista previa del propio (gestor) |
 | `/app/postulaciones` | trabajador | Estado de sus postulaciones |
 | `/app/contrataciones`, `/app/contrataciones/[id]` | trabajador | Trabajos activos, cargar entregas, ver lo ganado |
-| `/app/cobros` | trabajador | Saldo a favor, pedir retiro, historial |
-| `/admin/retiros` | admin | Cola de retiros para procesar a mano |
-| `/app/perfil` | ambos | Editar perfil |
+| `/app/cobros` | trabajador | Pagos por confirmar, lo adeudado y lo cobrado |
+| `/app/perfil` | ambos | Perfil, cuenta (cambiar contraseña) y datos de pago |
 
 ## 3. Modelos de datos
 
@@ -409,7 +457,7 @@ Comisión, quién la paga y cómo se retiran los fondos van a cambiar. Por eso:
 
 Precisiones tomadas al construir. Ninguna cambia el alcance aprobado; se listan para que el documento refleje el código.
 
-- **Auth:** se usó Better Auth en vez de un proveedor gestionado (ver §5). Sin verificación de email ni recuperación de contraseña todavía: hacen falta antes de abrir al público y requieren un servicio de envío de mails.
+- **Auth:** se usó Better Auth en vez de un proveedor gestionado (ver §5). Sin verificación de email ni recuperación de contraseña todavía: hacen falta antes de abrir al público y requieren un servicio de envío de mails. Cambiar la contraseña con la sesión iniciada sí existe (2026-10-13), desde el perfil.
 - **Liquidación incremental:** cada entrega cobra la diferencia entre lo que ganó con sus vistas aprobadas a hoy y lo ya cobrado. Así las vistas que siguen creciendo se pagan en liquidaciones posteriores sin pagar dos veces. El desglose vive en la tabla `payout_items` (no en un JSON dentro de `Payout`), con las vistas congeladas al generar.
 - **`Payout`** guarda `amount` (lo acordado), `fee`, `hirerDebit` y `workerCredit`, para que quién paga la comisión pueda cambiar sin recalcular historia.
 - **Entregas con fecha:** el contratador puede pedir una entrega con fecha (`requested`); sobre esas se calcula la puntualidad. Las publicaciones que el trabajador sube por su cuenta no tienen fecha y no cuentan para esa métrica.

@@ -5,7 +5,7 @@ export type StatGroupProps = {
   children: ReactNode;
   /** Cantidad de <Stat>. Máximo 3: es un presupuesto, no un objetivo. */
   cols?: 1 | 2 | 3;
-  /** Nombre del grupo para lectores de pantalla, p. ej. "Resumen del equipo". */
+  /** Nombre del grupo para lectores de pantalla, p. ej. "Resumen de tus contratados". */
   label?: string;
   className?: string;
 };

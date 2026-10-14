@@ -4,8 +4,8 @@ import { ArrowRightIcon } from "@/components/ui/icons";
 import { BRAND } from "@/lib/brand";
 
 const DOORS = [
-  { href: "/registro?rol=contratador", who: "Tengo contenido", action: "Publicar una búsqueda" },
-  { href: "/trabajos", who: "Subo videos", action: "Ver búsquedas abiertas" },
+  { href: "/registro?rol=contratador", who: "Tengo contenido", action: "Publicar una campaña" },
+  { href: "/trabajos", who: "Subo videos", action: "Ver campañas abiertas" },
 ];
 
 /** Una pantalla: qué es, una frase, las dos entradas y el producto mismo. */
@@ -16,7 +16,7 @@ export default function LandingPage() {
         <div className="flex min-w-0 flex-col gap-5">
           <h1 className="type-display text-[2.375rem] sm:text-5xl lg:text-[3.5rem]">El trabajo de multicuentas, con las cuentas claras.</h1>
           <p className="max-w-[35rem] text-base leading-7 text-ink-2 sm:text-[1.0625rem]">
-            Contratadores y gestores se encuentran acá. Acuerdan una regla de pago, se aprueban los videos y las vistas, y lo que le corresponde a cada
+            Quien tiene contenido y quien sube videos se encuentran acá. Acuerdan una regla de pago, se aprueban los videos y las vistas, y lo que le corresponde a cada
             persona se calcula solo.
           </p>
         </div>

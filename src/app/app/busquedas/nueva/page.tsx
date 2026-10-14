@@ -9,14 +9,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { createJob } from "@/lib/actions/jobs";
 import { requireUser } from "@/lib/session";
 
-export const metadata = { title: "Publicar búsqueda" };
+export const metadata = { title: "Publicar campaña" };
 
 export default async function NewJobPage() {
   await requireUser("hirer");
 
   return (
     <>
-      <PageHeader back={{ href: "/app/busquedas", label: "Búsquedas" }} title="Publicar búsqueda" />
+      <PageHeader back={{ href: "/app/busquedas", label: "Campañas" }} title="Publicar campaña" />
 
       <ActionForm action={createJob} className="flex max-w-2xl flex-col gap-5">
         <Panel>
@@ -39,7 +39,7 @@ export default async function NewJobPage() {
 
         <div>
           <FormSubmit pendingLabel="Publicando…">
-            Publicar búsqueda
+            Publicar campaña
           </FormSubmit>
         </div>
       </ActionForm>

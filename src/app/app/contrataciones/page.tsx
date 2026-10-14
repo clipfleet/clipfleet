@@ -28,7 +28,7 @@ export default async function MyContractsPage() {
       {contracts.length === 0 ? (
         <EmptyState
           title="Todavía no tenés trabajos"
-          action={<ButtonLink href="/trabajos">Ver trabajos</ButtonLink>}
+          action={<ButtonLink href="/app/campanas">Ver campañas</ButtonLink>}
         />
       ) : (
         <>

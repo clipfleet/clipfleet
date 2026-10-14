@@ -241,7 +241,7 @@ export function ContractView({ detail, viewer, userId }: { detail: Detail; viewe
   const counterpart = viewer === "hirer" ? detail.worker.name : detail.hirer.brandName;
   const myReview = detail.reviews.find((review) => review.authorId === userId);
   const theirReview = detail.reviews.find((review) => review.authorId !== userId);
-  const back = viewer === "hirer" ? { href: "/app/equipo", label: "Equipo" } : { href: "/app/contrataciones", label: "Mis trabajos" };
+  const back = viewer === "hirer" ? { href: "/app/equipo", label: "Contratados" } : { href: "/app/contrataciones", label: "Mis trabajos" };
   const awaitingMe = detail.payouts.filter((payout) =>
     viewer === "hirer" ? payout.status === "pending" : payout.status === "released" && payout.confirmedAt === null,
   );
@@ -260,7 +260,7 @@ export function ContractView({ detail, viewer, userId }: { detail: Detail; viewe
         actions={
           viewer === "hirer" ? (
             <>
-              <ButtonLink href={`/t/${detail.worker.username}`} variant="secondary">
+              <ButtonLink href={`/app/talento/${detail.worker.username}`} variant="secondary">
                 Ver perfil
               </ButtonLink>
               {money.owed > 0 ? (

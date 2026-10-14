@@ -24,6 +24,8 @@ Alcanza para construir cualquier pantalla sin leer el código de los componentes
 1. ¿Este texto explica algo que la pantalla ya muestra?
 2. ¿Este dato deja igual la decisión que la persona toma en esta pantalla?
 
+**El panel no te saca del panel.** Con la sesión iniciada, ningún link lleva al marco público: una campaña, un perfil o el directorio se ven dentro del `AppShell`. Si una pantalla del panel necesita mostrar algo público, usa la ruta del panel (`/app/campanas/[id]`, `/app/talento/[usuario]`) y, si hace falta compartirlo, ofrece un botón "Copiar link" (`CopyButton`), no un link que navega.
+
 ### Presupuestos (son límites, no objetivos)
 
 | Qué | Límite |
@@ -31,12 +33,12 @@ Alcanza para construir cualquier pantalla sin leer el código de los componentes
 | Landing | Una pantalla, a lo sumo una y media: titular, una frase, las dos entradas y la captura de producto (`ProductPreview`). ≤ 100 palabras. Sin prueba social, sin tarifas, sin simuladores |
 | Encabezado de página | Título y acciones. Sin descripción, salvo que evite un error real |
 | `StatGroup` | Máximo 3 `Stat`. Sin `note`, salvo que el número sea ambiguo sin ella |
-| Tabla de equipo | Persona, Videos, Vistas, Costo / 1.000, Pagado, Adeudado. Lo que espera revisión va como badge junto al nombre |
+| Tabla de contratados | Persona, Videos, Vistas, Costo / 1.000, Pagado, Adeudado. Una fila por persona; debajo del nombre, sus campañas, y lo que espera revisión va como badge junto a la campaña |
 | Detalle de contratación | La tabla de videos es la pantalla. Arriba, solo lo que tiene a la otra parte esperando (una liquidación por pagar o un cobro por confirmar). Liquidaciones, mensajes y finalizar: plegados |
 | Perfil público | Nombre, una línea, 4 números (`TrackRecord`), una acción; insignias ganadas (`BadgeList`, una por familia) y calendario de actividad (`ActivityCalendar`) solo si hay actividad |
 | Estados vacíos | Una línea y, si existe, la acción |
 | Formularios | Una columna, ancho contenido, solo los campos que hacen falta. Lo opcional va detrás de "Más opciones". `hint` solo si evita un error |
-| Navegación y pie públicos | Trabajos, Talento, Ingresar / Registrarme |
+| Navegación y pie públicos | Campañas abiertas, Talento, Ingresar / Registrarme |
 
 No se sacan: los montos y el desglose por video de una liquidación (son lo que genera confianza).
 
@@ -47,7 +49,7 @@ No se sacan: los montos y el desglose por video de una liquidación (son lo que 
 Español rioplatense con voseo. Directo, sin marketing, sin signos de exclamación, sin emojis.
 
 - **Voseo siempre**: "publicá", "tenés", "podés".
-- **Los botones dicen lo que pasa**: "Publicar búsqueda", "Liquidar $ 28.560", "Marcar como pagado", "Confirmar que cobré", "Invitar por link". El mensaje de éxito usa la misma palabra.
+- **Los botones dicen lo que pasa**: "Publicar campaña", "Liquidar $ 28.560", "Marcar como pagado", "Confirmar que cobré", "Invitar por link". El mensaje de éxito usa la misma palabra.
 - **Errores**: qué pasó y cómo se arregla. "Indicá cuánto pagás cada 1.000 vistas."
 - **Vacíos**: un hecho y, si existe, el siguiente paso. Una línea.
 - **Sin dato ≠ cero**: lo que no se puede calcular o todavía no existe se muestra "—".
@@ -65,16 +67,19 @@ Son **cuentas descartables** que quien trabaja crea cuando lo contratan, para su
 
 | Concepto | Se dice | No se dice |
 |---|---|---|
-| `Job` | búsqueda | oferta, aviso |
+| `Job` | campaña | búsqueda, oferta, aviso |
 | `Application` | postulación | aplicación |
 | `Contract` | contratación ("Mis trabajos" para quien trabaja) | contrato |
 | `Deliverable` | video | entrega, entregable |
 | `Payout` | liquidación; "liquidar", "marcar como pagado", "confirmar que cobré" | payout, transferir |
-| `hirer` | contratador ("Tengo contenido") | cliente |
-| `worker` | trabajador en el panel; "Subo videos" en público | freelancer, clipper, editor |
+| `hirer` | sin sustantivo en la interfaz: se lo nombra por su canal o marca (`brandName`); "Tengo contenido" en público | contratador, creador, cliente |
+| `worker` | sin sustantivo en la interfaz: se lo nombra por su nombre; "Subo videos" en público | trabajador, gestor, freelancer, clipper, editor |
 | `payRule` | regla de pago; "cada 1.000 vistas" | CPM, tarifa |
 | `Job.slots` | cupos | puestos |
 | terminar un `Contract` | finalizar | cerrar, dar de baja |
+| las personas contratadas por un contratador | Contratados (la sección); "Contratados X de Y" en una campaña | equipo, staff |
+
+Los roles no se nombran en la interfaz: ningún sustantivo suena bien para ninguno de los dos lados y la pantalla ya dice a quién le habla. Donde haga falta distinguirlos se dice qué hace cada uno ("alguien que sube videos", "quien publica la campaña"). En el código y en los documentos se sigue diciendo contratador y gestor.
 
 Los textos de estado (`Abierta`, `Para revisar`, `Aprobado`, `Por pagar`, `Pago informado`, `Cobro confirmado`…) viven en `src/lib/domain/labels.ts`: usá siempre ese mapa con `Badge`.
 
@@ -115,6 +120,9 @@ La paleta por defecto de Tailwind está desactivada: solo existen estos tokens.
 | `accent` · `accent-hover` | `#0c6b4e` · `#09573f` | Acción principal, links, foco, selección |
 | `accent-soft` · `accent-line` | `#e8f3ee` · `#c2ddd0` | Fondo y línea de lo seleccionado o lo que espera una acción |
 | `positive` · `warning` · `negative` · `info` (+ `-soft`, `-line`) | | Estados: texto / fondo tenue / línea |
+| `on-accent` | `#ffffff` | Texto e íconos sobre el acento (botón principal, contadores). Nunca `white` |
+
+**Modo oscuro.** Sigue el modo del sistema (`prefers-color-scheme`); no hay selector. Los mismos tokens toman otros valores en `globals.css`, así que una pantalla hecha con tokens ya funciona en los dos modos. En oscuro: fondo `#121518`, apoyo `#181b1f` / `#22262b`, texto `#e8eaed` / `#b3b9c1` / `#8f969f`, líneas `#2a2f35` / `#3b4148`, acento `#4cbf93` con `on-accent` casi negro, y estados más luminosos sobre fondos tenues oscuros. Todos los pares de texto pasan AA. Antes de dar por terminada una pantalla, se mira en los dos modos.
 | `white` | | Texto sobre el acento |
 
 Todos los pares texto/fondo cumplen AA (el más justo, `ink-3` sobre `wash-2`, da 4,66:1). El acento se usa en: botón `primary`, links, anillo de foco, radio marcado, ícono del ítem activo de la navegación, contadores de pendientes y el símbolo de la marca. En nada más.
@@ -140,14 +148,14 @@ Presentacionales y sin datos. Todos aceptan `className` para layout.
 **Button · ButtonLink** — `variant`: `primary` (una por pantalla) · `secondary` · `ghost` · `danger`. `size`: `sm` · `md` · `lg`. `block`. `Button` suma `pending` y `pendingLabel` y acepta todo lo de `<button>` (`type="button"` por defecto). `ButtonLink` acepta todo lo de `next/link`. Dentro de una fila de tabla, las acciones van en `secondary` y `ghost`: el `primary` queda para la acción de la pantalla.
 
 ```tsx
-<ButtonLink href="/app/busquedas/nueva">Publicar búsqueda</ButtonLink>
+<ButtonLink href="/app/busquedas/nueva">Publicar campaña</ButtonLink>
 <Button variant="secondary" size="sm">Copiar</Button>
 ```
 
 **Field** — `label`, `hint?`, `error?`, `optional?`, `children` (un control). Asocia label, ayuda y error sin JS. La ayuda va debajo del control. Los campos son obligatorios salvo `optional`.
 
 ```tsx
-<Field label="Canal o marca" hint="Con este nombre aparecen tus búsquedas.">
+<Field label="Canal o marca" hint="Con este nombre aparecen tus campañas.">
   <Input name="brandName" required />
 </Field>
 ```
@@ -221,7 +229,7 @@ Presentacionales y sin datos. Todos aceptan `className` para layout.
 ```tsx
 <ActionForm action={createJob} className="flex max-w-2xl flex-col gap-5">
   <Panel>…campos…</Panel>
-  <div><FormSubmit pendingLabel="Publicando…">Publicar búsqueda</FormSubmit></div>
+  <div><FormSubmit pendingLabel="Publicando…">Publicar campaña</FormSubmit></div>
 </ActionForm>
 
 <ActionForm action={reviewDeliverable} feedback="inline" className="flex flex-wrap items-center gap-2 sm:justify-end">
@@ -232,7 +240,9 @@ Presentacionales y sin datos. Todos aceptan `className` para layout.
 
 **PayRuleFields** — la regla de pago. Tres tipos; cada uno muestra un solo campo obligatorio. Mínimo de vistas, tope y fijo adicional quedan detrás de "Más opciones". Sin props ni JavaScript.
 
-**CopyField** — `value`, `label`. Texto de solo lectura con "Copiar" (links de invitación, link del perfil).
+**Editable** — `view`, `children` (el formulario). Datos que se editan en el lugar: muestra `view` hasta que se aprieta su **EditTrigger** (`children`, `size?`, `variant?`) y entonces el formulario; el `ActionForm` de adentro lo cierra solo cuando la acción sale bien, y **SectionCancel** es su "Cancelar". **SettingsGroup** — `title`, `children`: filas de ajustes separadas por líneas finas. **SettingRow** — `label`, `value?`, `note?`, `editLabel?`, `children?` (el formulario): rótulo, dato ("—" si falta) y botón a la derecha.
+
+**CopyField** — `value`, `label`. Texto de solo lectura con "Copiar" (links de invitación). **CopyButton** — `value`, `children`, `size?`, `variant?`. Solo el botón, sin mostrar el link ("Copiar link" de una campaña o un perfil).
 
 Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda va debajo del control, así que los labels alinean arriba). Botón principal primero; "Cancelar" (`ghost`) solo si no hay otra forma de volver.
 
@@ -240,7 +250,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 ## 6. Marco (`@/components/shell/*`)
 
-**AppShell** — `user: { name, username, role }`, `nav: { href, label, icon?, badge? }[]`, `signOutAction`, `children`. Escritorio: barra lateral clara de 240px con el ítem activo apenas despegado del fondo. Celular: barra superior con la marca y navegación fija abajo (ícono + rótulo). Da contenedor, márgenes y `gap`: las páginas devuelven un fragmento. Navegación: contratador → Equipo, Búsquedas, Liquidaciones, Perfil. Trabajador → Mis trabajos, Postulaciones, Perfil.
+**AppShell** — `user: { name, username, role }`, `nav: { href, label, icon?, group?, alsoMatch?, badge? }[]`, `profileHref?`, `signOutAction`, `children`. Escritorio: barra lateral clara de 240px con el ítem activo apenas despegado del fondo. Los ítems van en secciones (`group`): un rótulo chico y gris, en minúscula, y aire entre secciones, sin líneas. El perfil no va en `nav`: al pie de la barra, el bloque de la cuenta (avatar, nombre, `@usuario`) es el link al perfil, y al lado "Salir". Celular: barra superior con la marca, el avatar (perfil) y "Salir"; navegación fija abajo con los mismos ítems en el mismo orden, sin rótulos de sección. Da contenedor, márgenes y `gap`: las páginas devuelven un fragmento. Navegación: contratador → Gestión (Contratados, Liquidaciones) y Contratar (Campañas, Talento). Gestor → Trabajo (Mis trabajos, Cobros) y Buscar trabajo (Campañas, Postulaciones). La primera sección es el día a día y su primer ítem es donde entra cada rol. Campañas del contratador es gestión y también contratar: va primera en "Contratar", con el contador de postulaciones por responder.
 
 **PublicHeader** — `user: { name } | null`, `loginHref?`, `registerHref?`, `panelHref?`. **PublicFooter** — `user`, `loginHref?`, `panelHref?`: una línea fina, la marca y tres links.
 
@@ -258,7 +268,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **ReviewItem** — `authorName`, `authorContext?`, `rating`, `comment`, `date`. **Rating** — `value`; solo para reseñas.
 
-**ProductPreview** — la pantalla de Equipo armada con los componentes reales y datos ficticios, enmarcada como captura y rotulada "Ejemplo". Solo en la landing. Va `inert`: no recibe foco ni clics.
+**ProductPreview** — la pantalla de Contratados armada con los componentes reales y datos ficticios, enmarcada como captura y rotulada "Ejemplo". Solo en la landing. Va `inert`: no recibe foco ni clics.
 
 ---
 
@@ -268,7 +278,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 ```tsx
 <>
-  <PageHeader title="Equipo" actions={…} />
+  <PageHeader title="Contratados" actions={…} />
   <StatGroup cols={3}>…</StatGroup>          {/* si hay plata o vistas que resumir */}
   <Panel padded={false}><Table layout="stack" …/></Panel>
 </>
@@ -278,7 +288,15 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **Detalle de contratación** — `PageHeader` (título, quién, acciones; "Liquidar $ X" si hay adeudado) → lo que espera a quien mira (liquidación por pagar con "Marcar como pagado", o pago informado con "Confirmar que cobré"), sobre `accent-soft` → `StatGroup` de 3 → `Panel` "Videos" con la regla de pago como descripción, el formulario de carga (trabajador) y la tabla → `DisclosureGroup` con liquidaciones, mensajes y finalizar o reseñas. Las acciones secundarias de una fila ("Actualizar vistas", "Reportar vistas") se abren en el lugar: la tabla no repite controles en todas las filas.
 
+**Detalle de campaña** — `PageHeader` (título; estado, plataforma, regla de pago en una línea, "Contratados X de Y" y el link "Ver publicación" (a `/app/campanas/[id]`) como `meta`; "Copiar link" y "Pausar" o "Reabrir") → la descripción, plegada a dos líneas con "Ver más" si es larga. Sin panel de "Cómo se paga": el desglose está en "Ver publicación" → sección "Postulaciones" como título propio con la cantidad sin responder, y la tabla. El nombre de quien se postuló lleva a su perfil dentro del panel (`/app/talento/[usuario]?campana=[id]`, con "Volver a la campaña"); quien ya fue contratado lleva además a su contratación (`/app/equipo/[id]`), no solo una píldora.
+
+**Campaña o perfil dentro del panel** — el mismo contenido que la página pública, sin el contenedor público (el `AppShell` da márgenes). Cuando quien mira es el dueño (su campaña, su perfil), no hay avisos: al lado del link para volver va una nota corta (`backNote`: "Así la ven quienes suben videos" / "Así ven tu perfil") y "Copiar link" (`CopyButton`) es la acción del encabezado.
+
+**Contratados** (`/app/equipo`) — una fila por persona, no por contratación. El nombre lleva a su perfil dentro del panel; debajo, cada campaña o invitación en la que trabaja lleva a su contratación. Así se lee sin explicación que son todas las personas contratadas, en todas las campañas.
+
 **Liquidaciones** — `StatGroup` de 2 → "Por pagar": un `Panel` por liquidación (persona, período, "Marcar como pagado" y el detalle por video con total) → `Panel` "Pagadas" con el estado de cada una.
+
+**Perfil (panel)** — arriba y en grande, quién es: avatar `lg`, el nombre como título y debajo el canal o marca (contratador) o la presentación (gestor) con el `@usuario`, y "Editar" pegado a ese bloque; el gestor tiene al lado "Ver perfil público". Al editar no cambia la forma de la página: el nombre y la línea de abajo se vuelven campos en el mismo lugar y casi del mismo tamaño, con "Guardar" y "Cancelar" debajo (`Editable`). Debajo, en un ancho contenido, lo demás como ajustes y no como tarjetas iguales: "Tu próxima insignia" (gestor) y grupos de filas (`SettingsGroup` con `SettingRow`): "Pagos" o "Cobros" (a nombre de quién pagás / dónde cobrás, con su nota) y "Cuenta" (email y contraseña). Cada fila muestra rótulo, dato y un botón chico a la derecha ("Cambiar", o "Completar" si falta el dato); al apretarlo, esa fila se abre en su formulario con "Guardar" y "Cancelar". Al guardar bien vuelve a los datos con la confirmación debajo. Cambiar la contraseña pide la actual y la nueva dos veces, y cierra las demás sesiones.
 
 **Formulario** — un `Panel` (`max-w-form` o `max-w-2xl`), campos mínimos, lo opcional en "Más opciones", un botón.
 

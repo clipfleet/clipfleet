@@ -12,7 +12,7 @@ import { JOB_STATUS } from "@/lib/domain/labels";
 import { listMyJobs } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
 
-export const metadata = { title: "Búsquedas" };
+export const metadata = { title: "Campañas" };
 
 export default async function MyJobsPage() {
   const me = await requireUser("hirer");
@@ -21,21 +21,21 @@ export default async function MyJobsPage() {
   return (
     <>
       <PageHeader
-        title="Búsquedas"
-        actions={<ButtonLink href="/app/busquedas/nueva">Publicar búsqueda</ButtonLink>}
+        title="Campañas"
+        actions={<ButtonLink href="/app/busquedas/nueva">Publicar campaña</ButtonLink>}
       />
 
       {jobs.length === 0 ? (
         <EmptyState
-          title="Todavía no publicaste ninguna búsqueda"
-          action={<ButtonLink href="/app/busquedas/nueva">Publicar búsqueda</ButtonLink>}
+          title="Todavía no publicaste ninguna campaña"
+          action={<ButtonLink href="/app/busquedas/nueva">Publicar campaña</ButtonLink>}
         />
       ) : (
         <Panel padded={false}>
-          <Table caption="Mis búsquedas" layout="stack" minWidth={760}>
+          <Table caption="Mis campañas" layout="stack" minWidth={760}>
             <THead>
               <TR>
-                <TH width="36%">Búsqueda</TH>
+                <TH width="36%">Campaña</TH>
                 <TH>Estado</TH>
                 <TH>Pago</TH>
                 <TH numeric>Contratados</TH>

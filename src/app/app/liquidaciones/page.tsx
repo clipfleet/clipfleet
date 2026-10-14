@@ -46,7 +46,7 @@ export default async function PayoutsPage() {
           Por pagar
         </h2>
         {pending.length === 0 ? (
-          <EmptyState title="No hay nada por pagar" description="Las vistas que apruebes en Equipo aparecen acá al calcular las liquidaciones." />
+          <EmptyState title="No hay nada por pagar" description="Las vistas que apruebes en Contratados aparecen acá al calcular las liquidaciones." />
         ) : (
           pending.map((payout) => (
             <Panel
