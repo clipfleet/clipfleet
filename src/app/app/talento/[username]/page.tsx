@@ -41,17 +41,20 @@ export default async function PanelWorkerProfilePage({ params, searchParams }: P
       worker={worker}
       activity={activity}
       back={back}
+      backNote={isOwner ? "Así ven tu perfil" : undefined}
       action={
-        me.role === "hirer" && pending.length === 0 ? (
+        isOwner ? (
+          <CopyButton value={`${origin}/t/${worker.user.username}`} size="md">
+            Copiar link
+          </CopyButton>
+        ) : me.role === "hirer" && pending.length === 0 ? (
           <ButtonLink href="/app/equipo/invitar" variant="secondary">
             Invitar a {firstName} a mi equipo
           </ButtonLink>
         ) : null
       }
       notice={
-        isOwner ? (
-          <Notice tone="info" title="Vista previa: así ven tu perfil" action={<CopyButton value={`${origin}/t/${worker.user.username}`}>Copiar link</CopyButton>} />
-        ) : pending.length > 0 ? (
+        pending.length > 0 ? (
           <div className="flex flex-col gap-3">
             {pending.map((application) => (
               <Notice

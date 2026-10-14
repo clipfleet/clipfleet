@@ -20,19 +20,31 @@ export type WorkerProfileProps = {
   /** Avisos arriba de los números: vista previa, postulaciones por responder. */
   notice?: ReactNode;
   back?: { href: string; label: string };
+  /** Nota al lado del link para volver, p. ej. cuando el gestor ve su propio perfil. */
+  backNote?: ReactNode;
 };
 
 /** Perfil de un gestor con su trayecto. Lo usan la página pública y el panel. */
-export function WorkerProfile({ worker, activity, action, notice, back }: WorkerProfileProps) {
+export function WorkerProfile({ worker, activity, action, notice, back, backNote }: WorkerProfileProps) {
   const { user, profile, stats, history, reviews } = worker;
 
   return (
     <>
       {back ? (
-        <Link href={back.href} className="-ml-0.5 inline-flex items-center gap-1.5 self-start rounded-sm text-[0.8125rem] font-medium text-ink-3 transition-colors duration-100 hover:text-ink">
-          <ArrowLeftIcon className="size-3.5" />
-          {back.label}
-        </Link>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem]">
+          <Link href={back.href} className="-ml-0.5 inline-flex items-center gap-1.5 rounded-sm font-medium text-ink-3 transition-colors duration-100 hover:text-ink">
+            <ArrowLeftIcon className="size-3.5" />
+            {back.label}
+          </Link>
+          {backNote ? (
+            <span className="text-ink-3 max-sm:basis-full">
+              <span aria-hidden className="max-sm:hidden">
+                ·{" "}
+              </span>
+              {backNote}
+            </span>
+          ) : null}
+        </div>
       ) : null}
 
       {/* Quién es y sus cuatro números: lo que se ve cuando alguien comparte su perfil. */}

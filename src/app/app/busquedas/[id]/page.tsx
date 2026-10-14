@@ -43,7 +43,7 @@ export default async function MyJobPage({ params }: PageProps<"/app/busquedas/[i
               Contratados {hired} de {job.slots}
             </span>
             <Link href={`/app/campanas/${job.id}`} className="link">
-              Vista previa
+              Ver publicación
             </Link>
           </>
         }

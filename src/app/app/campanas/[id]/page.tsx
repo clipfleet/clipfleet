@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { CopyButton } from "@/components/forms/copy-button";
-import { Notice } from "@/components/ui/notice";
 import { JobDetail } from "@/components/views/job-detail";
 import { baseUrl } from "@/lib/base-url";
 import { getJob, getMyApplication } from "@/lib/queries";
@@ -25,10 +24,13 @@ export default async function PanelJobPage({ params }: PageProps<"/app/campanas/
       job={job}
       me={me}
       application={application}
-      back={isOwner ? { href: `/app/busquedas/${job.id}`, label: "Tu campaña" } : { href: "/app/campanas", label: "Campañas" }}
-      notice={
+      back={isOwner ? { href: `/app/busquedas/${job.id}`, label: "Volver a tu campaña" } : { href: "/app/campanas", label: "Campañas" }}
+      backNote={isOwner ? "Así la ven quienes suben videos" : undefined}
+      actions={
         isOwner ? (
-          <Notice tone="info" title="Vista previa: así ven tu campaña quienes suben videos" action={<CopyButton value={`${origin}/trabajos/${job.id}`}>Copiar link</CopyButton>} />
+          <CopyButton value={`${origin}/trabajos/${job.id}`} size="md">
+            Copiar link
+          </CopyButton>
         ) : null
       }
     />

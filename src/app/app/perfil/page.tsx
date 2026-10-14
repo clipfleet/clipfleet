@@ -56,7 +56,7 @@ export default async function ProfilePage() {
         title="Perfil"
         actions={
           <ButtonLink href={`/app/talento/${me.username}`} variant="secondary">
-            Vista previa de mi perfil
+            Ver mi perfil
           </ButtonLink>
         }
       />

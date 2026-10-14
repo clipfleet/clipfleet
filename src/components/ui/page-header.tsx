@@ -12,20 +12,32 @@ export type PageHeaderProps = {
   actions?: ReactNode;
   /** Link para volver al listado padre, en pantallas de detalle. */
   back?: { href: string; label: string };
+  /** Una nota corta al lado del link para volver: dónde está parado quien mira. */
+  backNote?: ReactNode;
   /** Badges o datos cortos debajo del título: estado, quién contrata, regla de pago. */
   meta?: ReactNode;
   className?: string;
 };
 
 /** Encabezado de página: una vez por pantalla, arriba de todo. */
-export function PageHeader({ title, description, actions, back, meta, className }: PageHeaderProps) {
+export function PageHeader({ title, description, actions, back, backNote, meta, className }: PageHeaderProps) {
   return (
     <header className={clsx("flex flex-col gap-3", className)}>
       {back ? (
-        <Link href={back.href} className="-ml-0.5 inline-flex items-center gap-1.5 self-start rounded-sm text-[0.8125rem] font-medium text-ink-3 transition-colors duration-100 hover:text-ink">
-          <ArrowLeftIcon className="size-3.5" />
-          {back.label}
-        </Link>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem]">
+          <Link href={back.href} className="-ml-0.5 inline-flex items-center gap-1.5 rounded-sm font-medium text-ink-3 transition-colors duration-100 hover:text-ink">
+            <ArrowLeftIcon className="size-3.5" />
+            {back.label}
+          </Link>
+          {backNote ? (
+            <span className="text-ink-3 max-sm:basis-full">
+              <span aria-hidden className="max-sm:hidden">
+                ·{" "}
+              </span>
+              {backNote}
+            </span>
+          ) : null}
+        </div>
       ) : null}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 flex-col gap-1.5">

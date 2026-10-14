@@ -19,19 +19,22 @@ export type JobDetailProps = {
   me: SessionUser | null;
   application: Awaited<ReturnType<typeof getMyApplication>> | null;
   back: { href: string; label: string };
-  /** Aviso arriba de todo, p. ej. la vista previa del dueño. */
-  notice?: ReactNode;
+  /** Nota al lado del link para volver, p. ej. cuando el dueño ve su campaña. */
+  backNote?: ReactNode;
+  /** Acciones del encabezado, p. ej. "Copiar link" para el dueño. */
+  actions?: ReactNode;
 };
 
 /** Una campaña como la ve quien sube videos. La usan la página pública y el panel. */
-export function JobDetail({ job, me, application, back, notice }: JobDetailProps) {
+export function JobDetail({ job, me, application, back, backNote, actions }: JobDetailProps) {
   const open = job.status === "open";
 
   return (
     <>
-      {notice}
       <PageHeader
         back={back}
+        backNote={backNote}
+        actions={actions}
         title={job.title}
         meta={
           <>
