@@ -7,6 +7,7 @@ import { randomBytes } from "node:crypto";
 import { db } from "@/lib/db";
 import { applications, contracts, invites, jobs } from "@/lib/db/schema";
 import { DEFAULT_CATEGORY, isJobPlatform, type JobPlatform } from "@/lib/domain/categories";
+import { INVITE_DAYS } from "@/lib/domain/invites";
 import { parseCount } from "@/lib/format";
 import { payRuleFromForm } from "@/lib/payrules/form";
 import { tooMany } from "@/lib/security/limits";
@@ -137,7 +138,7 @@ export async function createInvites(form: FormData): Promise<ActionResult> {
   const parsed = payRuleFromForm(form);
   if ("error" in parsed) return parsed;
 
-  const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + INVITE_DAYS * 24 * 60 * 60 * 1000);
   await db.insert(invites).values(
     Array.from({ length: quantity }, () => ({
       hirerId: me.id,

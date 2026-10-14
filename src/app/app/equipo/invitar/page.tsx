@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { createInvites } from "@/lib/actions/jobs";
+import { INVITE_DAYS } from "@/lib/domain/invites";
 import { baseUrl } from "@/lib/base-url";
 import { listInvites } from "@/lib/queries";
 import { requireUser } from "@/lib/session";
@@ -24,7 +25,11 @@ export default async function InvitePage() {
 
   return (
     <>
-      <PageHeader back={{ href: "/app/equipo", label: "Equipo" }} title="Invitar por link" />
+      <PageHeader
+        back={{ href: "/app/equipo", label: "Equipo" }}
+        title="Invitar por link"
+        description={`Para sumar a alguien que ya conocés, sin publicar una campaña. Cada link sirve para una sola persona: al abrirlo, se suma a tu equipo con esta regla de pago. Vence a los ${INVITE_DAYS} días.`}
+      />
 
       <Panel className="max-w-2xl">
         <ActionForm action={createInvites} className="flex flex-col gap-5">
@@ -32,7 +37,7 @@ export default async function InvitePage() {
             <Field label="Nombre del trabajo">
               <Input name="title" required placeholder="Ej. Clips del canal" />
             </Field>
-            <Field label="Links" hint="Uno por persona.">
+            <Field label="Personas">
               <Input name="quantity" type="number" min="1" max="30" step="1" defaultValue="1" inputMode="numeric" />
             </Field>
           </div>

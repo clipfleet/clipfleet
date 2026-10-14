@@ -33,7 +33,7 @@ Alcanza para construir cualquier pantalla sin leer el código de los componentes
 | Landing | Una pantalla, a lo sumo una y media: titular, una frase, las dos entradas y la captura de producto (`ProductPreview`). ≤ 100 palabras. Sin prueba social, sin tarifas, sin simuladores |
 | Encabezado de página | Título y acciones. Sin descripción, salvo que evite un error real |
 | `StatGroup` | Máximo 3 `Stat`. Sin `note`, salvo que el número sea ambiguo sin ella |
-| Tabla de equipo | Persona, Videos, Vistas, Costo / 1.000, Pagado, Adeudado. Lo que espera revisión va como badge junto al nombre |
+| Tabla de equipo | Persona, Videos, Vistas, Costo / 1.000, Pagado, Adeudado. Una fila por persona; debajo del nombre, sus campañas, y lo que espera revisión va como badge junto a la campaña |
 | Detalle de contratación | La tabla de videos es la pantalla. Arriba, solo lo que tiene a la otra parte esperando (una liquidación por pagar o un cobro por confirmar). Liquidaciones, mensajes y finalizar: plegados |
 | Perfil público | Nombre, una línea, 4 números (`TrackRecord`), una acción; insignias ganadas (`BadgeList`, una por familia) y calendario de actividad (`ActivityCalendar`) solo si hay actividad |
 | Estados vacíos | Una línea y, si existe, la acción |
@@ -286,7 +286,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **Campaña o perfil dentro del panel** — el mismo contenido que la página pública, sin el contenedor público (el `AppShell` da márgenes). Cuando quien mira es el dueño (su campaña, su perfil), no hay avisos: al lado del link para volver va una nota corta (`backNote`: "Así la ven quienes suben videos" / "Así ven tu perfil") y "Copiar link" (`CopyButton`) es la acción del encabezado.
 
-**Equipo** — una fila por persona, no por contratación. Debajo del nombre, las campañas o invitaciones en las que trabaja; si son varias, cada una lleva a su contratación. Así se lee sin explicación que Equipo es la gente de todas las campañas.
+**Equipo** — una fila por persona, no por contratación. El nombre lleva a su perfil dentro del panel; debajo, cada campaña o invitación en la que trabaja lleva a su contratación. Así se lee sin explicación que Equipo es la gente de todas las campañas.
 
 **Liquidaciones** — `StatGroup` de 2 → "Por pagar": un `Panel` por liquidación (persona, período, "Marcar como pagado" y el detalle por video con total) → `Panel` "Pagadas" con el estado de cada una.
 
