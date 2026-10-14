@@ -40,6 +40,8 @@
   --color-accent-hover: #09573f;
   --color-accent-soft: #e8f3ee;
   --color-accent-line: #c2ddd0;
+  /* Texto e íconos sobre el acento (botón principal, contadores). */
+  --color-on-accent: #ffffff;
 
   /* Semánticos: texto / fondo tenue / línea */
   --color-positive: #0b6146;
@@ -75,6 +77,57 @@
   --container-page: 70rem;
   --container-prose: 40rem;
   --container-form: 30rem;
+}
+
+/*
+ * ---------- Modo oscuro ----------
+ * Sigue el modo del sistema. Mismos tokens, otros valores: los componentes no cambian.
+ * Grises casi negros, el acento más luminoso para que se lea sobre oscuro, y el mismo
+ * contraste AA que en claro. Las sombras casi no se ven: separan las líneas.
+ */
+:root {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-ink: #e8eaed;
+    --color-ink-2: #b3b9c1;
+    --color-ink-3: #8f969f;
+    --color-ink-4: #5c636b;
+
+    --color-surface: #121518;
+    --color-wash: #181b1f;
+    --color-wash-2: #22262b;
+
+    --color-line: #2a2f35;
+    --color-line-strong: #3b4148;
+
+    --color-accent: #4cbf93;
+    --color-accent-hover: #6fd0aa;
+    --color-accent-soft: #11271e;
+    --color-accent-line: #1f4a39;
+    --color-on-accent: #04150f;
+
+    --color-positive: #5cc79a;
+    --color-positive-soft: #10251b;
+    --color-positive-line: #1f4a39;
+
+    --color-warning: #e5b552;
+    --color-warning-soft: #2a2110;
+    --color-warning-line: #4d3c17;
+
+    --color-negative: #f2817a;
+    --color-negative-soft: #2e1615;
+    --color-negative-line: #5a2925;
+
+    --color-info: #8db4e2;
+    --color-info-soft: #131f2c;
+    --color-info-line: #26394f;
+
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6);
+  }
 }
 
 /* ---------- Roles tipográficos ---------- */

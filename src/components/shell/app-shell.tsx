@@ -52,7 +52,7 @@ export function AppShell({ user, nav, profileHref, signOutAction, children }: Ap
     <div className="min-h-dvh bg-surface lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
       <a
         href="#contenido"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-surface"
       >
         Saltar al contenido
       </a>
@@ -156,7 +156,7 @@ export function AppShell({ user, nav, profileHref, signOutAction, children }: Ap
                 <span className="relative flex group-aria-[current=page]/nav:text-accent [&>svg]:size-[1.125rem]">
                   {item.icon}
                   {item.badge !== undefined ? (
-                    <span className="absolute -top-1.5 left-3 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[0.625rem] leading-none font-semibold text-white tabular-nums ring-2 ring-surface">
+                    <span className="absolute -top-1.5 left-3 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[0.625rem] leading-none font-semibold text-on-accent tabular-nums ring-2 ring-surface">
                       {item.badge}
                     </span>
                   ) : null}

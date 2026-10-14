@@ -120,6 +120,9 @@ La paleta por defecto de Tailwind está desactivada: solo existen estos tokens.
 | `accent` · `accent-hover` | `#0c6b4e` · `#09573f` | Acción principal, links, foco, selección |
 | `accent-soft` · `accent-line` | `#e8f3ee` · `#c2ddd0` | Fondo y línea de lo seleccionado o lo que espera una acción |
 | `positive` · `warning` · `negative` · `info` (+ `-soft`, `-line`) | | Estados: texto / fondo tenue / línea |
+| `on-accent` | `#ffffff` | Texto e íconos sobre el acento (botón principal, contadores). Nunca `white` |
+
+**Modo oscuro.** Sigue el modo del sistema (`prefers-color-scheme`); no hay selector. Los mismos tokens toman otros valores en `globals.css`, así que una pantalla hecha con tokens ya funciona en los dos modos. En oscuro: fondo `#121518`, apoyo `#181b1f` / `#22262b`, texto `#e8eaed` / `#b3b9c1` / `#8f969f`, líneas `#2a2f35` / `#3b4148`, acento `#4cbf93` con `on-accent` casi negro, y estados más luminosos sobre fondos tenues oscuros. Todos los pares de texto pasan AA. Antes de dar por terminada una pantalla, se mira en los dos modos.
 | `white` | | Texto sobre el acento |
 
 Todos los pares texto/fondo cumplen AA (el más justo, `ink-3` sobre `wash-2`, da 4,66:1). El acento se usa en: botón `primary`, links, anillo de foco, radio marcado, ícono del ítem activo de la navegación, contadores de pendientes y el símbolo de la marca. En nada más.

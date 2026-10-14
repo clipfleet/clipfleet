@@ -20,6 +20,17 @@ Consecuencias en el modelo:
 - **Riesgo nuevo:** sin plata de por medio, inflar un perfil con contrataciones falsas no cuesta nada, y un "pagado" que el trabajador no confirma queda en disputa sin árbitro. Para la prueba de mercado se acepta.
 - **Lo que queda guardado para cuando los pagos pasen por la plataforma:** libro contable, comisión (`splitPayout`), depósitos (`PaymentProvider`), retiros (`PayoutProvider`) y sus tablas siguen en `src/lib` con tests, sin pantallas. Las secciones "Modelo monetario" y "La sección monetaria tiene que poder mutar" describen ese modo futuro.
 
+## Modo oscuro (aprobado el 2026-10-13)
+
+**Qué se construye:** el sitio entero (público y panel) sigue el modo del sistema: claro u oscuro según lo que tenga elegido cada persona en su dispositivo. Sin selector propio por ahora; si hace falta, se suma después sin rehacer nada.
+
+**Cómo:** los colores ya viven todos en los tokens de `globals.css`. El modo oscuro les da otros valores dentro de `@media (prefers-color-scheme: dark)`; los componentes no cambian. La dirección visual sigue siendo la misma, clara y sobria, ahora también sobre fondo oscuro: grises casi negros en lugar de blanco, el mismo acento verde más luminoso para que se lea, líneas finas en lugar de sombras, y el mismo contraste AA que en claro.
+
+**Reglas:**
+- Ningún color fuera de los tokens, tampoco `white` para texto sobre el acento: va `on-accent`, que es blanco en claro y casi negro en oscuro.
+- Los controles nativos (barras de desplazamiento, selectores de fecha, autocompletado) siguen el modo con `color-scheme`.
+- El color de la barra del navegador en celular (`themeColor`) también cambia con el modo.
+
 ## Claridad del panel (aprobado el 2026-10-13)
 
 **Problema:** usando el panel como contratador no queda claro qué es Equipo, qué genera "Invitar por link", las postulaciones de una búsqueda se pierden en la tabla y el perfil es un par de formularios sueltos, sin forma de cambiar la contraseña.
