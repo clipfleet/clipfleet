@@ -3,7 +3,7 @@ import { BrandMark } from "@/components/shell/wordmark";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { buttonClasses } from "@/components/ui/button";
-import { LayersIcon, ReceiptIcon, TeamIcon, UserIcon } from "@/components/ui/icons";
+import { LayersIcon, ReceiptIcon, SearchIcon, TeamIcon } from "@/components/ui/icons";
 import { Money } from "@/components/ui/money";
 import { Num } from "@/components/ui/num";
 import { Panel } from "@/components/ui/panel";
@@ -22,15 +22,26 @@ const TEAM = [
 const TOTALS = TEAM.reduce((sum, row) => ({ views: sum.views + row.views, paid: sum.paid + row.paid, owed: sum.owed + row.owed }), { views: 0, paid: 0, owed: 0 });
 const costPerThousand = (paid: number, views: number) => Math.round((paid * 1000) / views);
 
+// Las mismas secciones que la barra lateral del contratador.
 const NAV = [
-  { label: "Contratados", icon: <TeamIcon />, active: true, badge: 2 },
-  { label: "Campañas", icon: <LayersIcon />, active: false },
-  { label: "Liquidaciones", icon: <ReceiptIcon />, active: false },
-  { label: "Perfil", icon: <UserIcon />, active: false },
+  {
+    group: "Gestión",
+    items: [
+      { label: "Contratados", icon: <TeamIcon />, active: true, badge: 2 },
+      { label: "Liquidaciones", icon: <ReceiptIcon />, active: false },
+    ],
+  },
+  {
+    group: "Contratar",
+    items: [
+      { label: "Campañas", icon: <LayersIcon />, active: false, badge: 0 },
+      { label: "Talento", icon: <SearchIcon />, active: false, badge: 0 },
+    ],
+  },
 ];
 
 /**
- * La pantalla de Equipo del contratador, armada con los componentes reales y
+ * La pantalla de Contratados del contratador, armada con los componentes reales y
  * datos ficticios, enmarcada como captura de producto. Solo para la landing.
  * Es una imagen: va `inert` (no recibe foco ni clics) y la describe el epígrafe.
  */
@@ -48,7 +59,10 @@ export function ProductPreview({ className }: { className?: string }) {
             <BrandMark className="size-4" />
             {BRAND.name}
           </p>
-          {NAV.map((item) => (
+          {NAV.map((section) => (
+            <div key={section.group} className="mb-3 flex flex-col gap-1">
+              <p className="px-2.5 text-xs font-medium text-ink-3">{section.group}</p>
+          {section.items.map((item) => (
             <p
               key={item.label}
               className={clsx(
@@ -62,6 +76,8 @@ export function ProductPreview({ className }: { className?: string }) {
                 <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-accent-soft px-1.5 text-xs leading-none text-accent tabular-nums">{item.badge}</span>
               ) : null}
             </p>
+          ))}
+            </div>
           ))}
         </div>
 
