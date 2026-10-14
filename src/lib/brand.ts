@@ -4,9 +4,9 @@
  */
 export const BRAND = {
   name: "ClipFleet",
-  tagline: "Gestión de multicuentas.",
+  tagline: "Más vistas para tu contenido, ingresos por subirlo.",
   /** Una línea para metadata y pie de página. */
-  description: "Encontrá gente para subir tu contenido en multicuentas y gestioná a quienes contratás por resultados.",
+  description: "Publicá una campaña y pagá solo por las vistas que aprobás, o cobrá por cada vista que generás subiendo videos.",
   locale: "es-AR",
   currency: "ARS",
   timeZone: "America/Argentina/Buenos_Aires",
