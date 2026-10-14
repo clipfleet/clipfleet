@@ -6,7 +6,7 @@ export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const BASE =
-  "relative inline-flex shrink-0 items-center justify-center gap-2 rounded-md border font-medium whitespace-nowrap select-none transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 data-pending:opacity-80";
+  "relative inline-flex shrink-0 items-center justify-center gap-2 rounded-md border font-medium whitespace-nowrap select-none cursor-pointer transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 data-pending:opacity-80";
 
 const VARIANTS: Record<ButtonVariant, string> = {
   // La acción principal de la pantalla. Una sola por vista.

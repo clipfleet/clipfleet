@@ -114,7 +114,7 @@ export function AppShell({ user, nav, profileHref, signOutAction, children }: Ap
           <form action={signOutAction}>
             <button
               type="submit"
-              className="rounded-md px-2 py-1 text-[0.8125rem] font-medium text-ink-3 transition-colors duration-100 hover:bg-wash-2 hover:text-ink"
+              className="cursor-pointer rounded-md px-2 py-1 text-[0.8125rem] font-medium text-ink-3 transition-colors duration-100 hover:bg-wash-2 hover:text-ink"
             >
               Salir
             </button>
@@ -132,7 +132,7 @@ export function AppShell({ user, nav, profileHref, signOutAction, children }: Ap
             </NavLink>
           ) : null}
           <form action={signOutAction}>
-            <button type="submit" className="-mr-2 flex h-9 items-center rounded-md px-2.5 text-[0.8125rem] font-medium text-ink-2 hover:bg-wash-2 hover:text-ink">
+            <button type="submit" className="-mr-2 flex h-9 cursor-pointer items-center rounded-md px-2.5 text-[0.8125rem] font-medium text-ink-2 hover:bg-wash-2 hover:text-ink">
               Salir
             </button>
           </form>
