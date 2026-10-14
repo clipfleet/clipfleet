@@ -49,6 +49,7 @@ No se sacan: los montos y el desglose por video de una liquidación (son lo que 
 Español rioplatense con voseo. Directo, sin marketing, sin signos de exclamación, sin emojis.
 
 - **Voseo siempre**: "publicá", "tenés", "podés".
+- **Mayúscula solo al principio** (y en nombres propios), también en botones, títulos y navegación: "Publicar campaña", "Invitar por link", no "Publicar Campaña". La mayúscula en cada palabra es una convención del inglés y en español se lee como traducción.
 - **Los botones dicen lo que pasa**: "Publicar campaña", "Liquidar $ 28.560", "Marcar como pagado", "Confirmar que cobré", "Invitar por link". El mensaje de éxito usa la misma palabra.
 - **Errores**: qué pasó y cómo se arregla. "Indicá cuánto pagás cada 1.000 vistas."
 - **Vacíos**: un hecho y, si existe, el siguiente paso. Una línea.
