@@ -7,6 +7,8 @@ export const BRAND = {
   tagline: "Más vistas para tu contenido, ingresos por subirlo.",
   /** Una línea para metadata y pie de página. */
   description: "Publicá una campaña y pagá solo por las vistas que aprobás, o cobrá por cada vista que generás subiendo videos.",
+  /** A dónde escribir por privacidad y términos. */
+  contactEmail: "contacto@clipfleet.app",
   locale: "es-AR",
   currency: "ARS",
   timeZone: "America/Argentina/Buenos_Aires",

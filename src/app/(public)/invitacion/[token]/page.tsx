@@ -8,6 +8,7 @@ import { Panel } from "@/components/ui/panel";
 import { acceptInvite } from "@/lib/actions/jobs";
 import { getInvite } from "@/lib/queries";
 import { getSessionUser } from "@/lib/session";
+import { BRAND } from "@/lib/brand";
 
 export const metadata = { title: "Invitación", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -28,6 +29,7 @@ export default async function InvitePage({ params }: PageProps<"/invitacion/[tok
 
         <Panel
           title="Cómo se paga"
+          footer={`Te paga ${invite.brandName} directo. ${BRAND.name} no interviene en el pago ni lo garantiza.`}
           description={invite.platform ? <>Por las vistas en <PlatformTag platform={invite.platform} name={invite.platformName} className="align-bottom font-medium text-ink-2" /></> : undefined}
           className="shadow-xs"
         >
