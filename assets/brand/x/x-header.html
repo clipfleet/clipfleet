@@ -31,23 +31,23 @@
       var(--wash);
   }
 
-  /* El avatar de X tapa la esquina inferior izquierda (hasta ~x 380, y 330): ahí no va nada. */
+  /* Zonas que tapa X. Web: el avatar, abajo a la izquierda (hasta ~x 390, desde y 320).
+     App de iOS: recorta ~120 px de cada lado, la barra de estado tapa arriba (hasta y 130)
+     y los botones de volver y buscar quedan a media altura (y 215–340) en x 176–301 y 1201–1328.
+     La marca va abajo a la derecha: es la única esquina libre en las dos. */
   .wordmark {
-    position: absolute; left: 80px; top: 78px;
-    display: flex; align-items: center; gap: 12px;
-    font-size: 30px; font-weight: 600; letter-spacing: -0.03em;
+    position: absolute; right: 176px; bottom: 44px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 22px; font-weight: 600; letter-spacing: -0.03em;
   }
-  .wordmark svg { width: 30px; height: 30px; }
-  .url {
-    position: absolute; left: 80px; top: 124px;
-    font-size: 18px; color: var(--ink-3); letter-spacing: -0.01em;
-  }
+  .wordmark svg { width: 22px; height: 22px; }
+  .wordmark .url { margin-left: 6px; font-size: 17px; font-weight: 400; color: var(--ink-3); letter-spacing: -0.01em; }
 
-  .arrow { position: absolute; left: 630px; top: 238px; }
+  .arrow { position: absolute; left: 602px; top: 238px; }
 
   /* El video original. */
   .source {
-    position: absolute; left: 430px; top: 99px; width: 170px; height: 302px;
+    position: absolute; left: 404px; top: 99px; width: 170px; height: 302px;
     border-radius: 22px; background: var(--clip);
     box-shadow: 0 24px 48px -20px rgba(9, 87, 63, 0.55);
     display: grid; place-items: center;
@@ -109,8 +109,8 @@
       </g>
     </svg>
     ClipFleet
+    <span class="url">clipfleet.app</span>
   </div>
-  <div class="url">clipfleet.app</div>
 
   <svg class="arrow" width="72" height="24" viewBox="0 0 72 24" aria-hidden="true">
     <path d="M2 12H66M56 3l10 9-10 9" fill="none" stroke="#0c6b4e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -121,11 +121,11 @@
   <script>
     // Cada teléfono: posición, giro y vistas.
     const phones = [
-      { x: 730,  y: 150, r: -7, views: "8,4 mil" },
-      { x: 870,  y: 112, r: -3, views: "21,7 mil" },
-      { x: 1010, y: 96,  r: 0,  views: "54,2 mil" },
-      { x: 1150, y: 112, r: 3,  views: "17,9 mil" },
-      { x: 1290, y: 150, r: 7,  views: "32,6 mil" },
+      { x: 690,  y: 150, r: -7, views: "8,4 mil" },
+      { x: 825,  y: 112, r: -3, views: "21,7 mil" },
+      { x: 960,  y: 96,  r: 0,  views: "54,2 mil" },
+      { x: 1095, y: 112, r: 3,  views: "17,9 mil" },
+      { x: 1230, y: 150, r: 7,  views: "32,6 mil" },
     ];
 
     for (const p of phones) {
