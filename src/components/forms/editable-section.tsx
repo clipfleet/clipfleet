@@ -1,105 +1,136 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import { CheckIcon } from "@/components/ui/icons";
-import { Panel } from "@/components/ui/panel";
 
-const SectionContext = createContext<{ close: (saved?: string) => void } | null>(null);
+type EditableContextValue = { editing: boolean; open: () => void; close: (saved?: string) => void };
 
-/** Lo usa `ActionForm` para cerrar la sección cuando la acción sale bien. */
+const EditableContext = createContext<EditableContextValue | null>(null);
+
+/** Lo usa `ActionForm` para cerrar el bloque cuando la acción sale bien. */
 export function useEditableSection() {
-  return useContext(SectionContext);
+  return useContext(EditableContext);
 }
 
-export type EditableSectionProps = {
-  title: string;
-  /** Lo que se ve sin editar: casi siempre un `DetailList`. */
+export type EditableProps = {
+  /** Lo que se ve sin editar. Lleva adentro su `EditTrigger`. */
   view: ReactNode;
-  /** El formulario (`ActionForm`). Lleva sus propios botones; "Cancelar" lo agrega la sección. */
+  /** El formulario (`ActionForm`) con "Guardar" y `SectionCancel`. */
   children: ReactNode;
-  /** Rótulo del botón que abre el formulario. "Completar" cuando todavía no hay datos. */
-  editLabel?: string;
-  /** Una nota corta debajo de los datos (no en el encabezado, para que "Editar" no se corra de lugar). */
-  description?: ReactNode;
   className?: string;
 };
 
 /**
- * Un bloque del perfil: se lee como datos y se edita en el lugar. Al apretar
- * "Editar" el bloque se convierte en su formulario; al guardar bien o cancelar
- * vuelve a mostrar los datos. El resto de la página no cambia.
+ * Datos que se editan en el lugar: muestra `view` hasta que se aprieta su
+ * `EditTrigger`; entonces muestra el formulario. Al guardar bien o cancelar
+ * vuelve a los datos, con la confirmación debajo.
  */
-export function EditableSection({ title, view, children, editLabel = "Editar", description, className }: EditableSectionProps) {
+export function Editable({ view, children, className }: EditableProps) {
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState<string>();
+  const value: EditableContextValue = {
+    editing,
+    open: () => {
+      setSaved(undefined);
+      setEditing(true);
+    },
+    close: (message) => {
+      setSaved(message);
+      setEditing(false);
+    },
+  };
   return (
-    <Panel
-      title={title}
-      className={className}
-      actions={
-        editing ? null : (
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => {
-              setSaved(undefined);
-              setEditing(true);
-            }}
-          >
-            {editLabel}
-          </Button>
-        )
-      }
-    >
-      {editing ? (
-        <SectionContext.Provider
-          value={{
-            close: (message) => {
-              setSaved(message);
-              setEditing(false);
-            },
-          }}
-        >
-          {children}
-        </SectionContext.Provider>
-      ) : (
-        <>
-          {view}
-          {description ? <p className="mt-4 text-[0.8125rem] leading-snug text-ink-3">{description}</p> : null}
-          {saved ? (
-            <p role="status" className="mt-4 flex items-center gap-1.5 text-[0.8125rem] font-medium text-positive [&>svg]:size-3.5">
-              <CheckIcon />
-              {saved}
-            </p>
-          ) : null}
-        </>
-      )}
-    </Panel>
+    <EditableContext.Provider value={value}>
+      <div className={className}>
+        {editing ? (
+          children
+        ) : (
+          <>
+            {view}
+            {saved ? (
+              <p role="status" className="mt-2 flex items-center gap-1.5 text-[0.8125rem] font-medium text-positive [&>svg]:size-3.5">
+                <CheckIcon />
+                {saved}
+              </p>
+            ) : null}
+          </>
+        )}
+      </div>
+    </EditableContext.Provider>
   );
 }
 
-/** "Cancelar" de un formulario dentro de `EditableSection`. */
-export function SectionCancel() {
-  const section = useEditableSection();
-  if (!section) return null;
+/** El botón que abre el formulario de un `Editable`. */
+export function EditTrigger({ children, size = "sm", variant = "secondary" }: { children: string } & Pick<ButtonProps, "size" | "variant">) {
+  const editable = useEditableSection();
+  if (!editable || editable.editing) return null;
   return (
-    <Button type="button" variant="ghost" onClick={() => section.close()}>
+    <Button size={size} variant={variant} onClick={editable.open}>
+      {children}
+    </Button>
+  );
+}
+
+/** "Cancelar" de un formulario dentro de un `Editable`. */
+export function SectionCancel() {
+  const editable = useEditableSection();
+  if (!editable) return null;
+  return (
+    <Button type="button" variant="ghost" onClick={() => editable.close()}>
       Cancelar
     </Button>
   );
 }
 
-/** Pares rótulo / valor de solo lectura. Sin dato se muestra "—". */
-export function DetailList({ items }: { items: { label: string; value: ReactNode }[] }) {
-  return (
-    <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-[10rem_minmax(0,1fr)]">
-      {items.map((item) => (
-        <div key={item.label} className="contents">
-          <dt className="text-ink-3">{item.label}</dt>
-          <dd className="min-w-0 break-words text-ink max-sm:-mt-2">{item.value || "—"}</dd>
+export type SettingRowProps = {
+  label: string;
+  /** El dato. Sin dato se muestra "—". */
+  value?: ReactNode;
+  /** Una nota corta debajo del dato. */
+  note?: ReactNode;
+  /** Rótulo del botón para editar. Sin él, la fila es de solo lectura. */
+  editLabel?: string;
+  /** El formulario que reemplaza a la fila al editar. */
+  children?: ReactNode;
+};
+
+/**
+ * Una fila de ajustes: rótulo, dato y, a la derecha, el botón para cambiarlo.
+ * Van dentro de un `SettingsGroup`. Al editar, la fila se abre en su formulario.
+ */
+export function SettingRow({ label, value, note, editLabel, children }: SettingRowProps) {
+  const row = (
+    <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-5">
+      <p className="text-sm font-medium text-ink sm:w-48 sm:shrink-0">{label}</p>
+      <div className="min-w-0 flex-1 text-sm">
+        <p className="break-words text-ink-2">{value || "—"}</p>
+        {note ? <p className="mt-0.5 text-[0.8125rem] leading-snug text-ink-3">{note}</p> : null}
+      </div>
+      {editLabel ? (
+        <div className="shrink-0">
+          <EditTrigger>{editLabel}</EditTrigger>
         </div>
-      ))}
-    </dl>
+      ) : null}
+    </div>
+  );
+  if (!editLabel || !children) return row;
+  return (
+    <Editable view={row}>
+      <div className="flex flex-col gap-4 px-4 py-4 sm:px-5">
+        <p className="text-sm font-medium text-ink">{label}</p>
+        {children}
+      </div>
+    </Editable>
+  );
+}
+
+/** Un grupo de `SettingRow` con su título, separadas por líneas finas. */
+export function SettingsGroup({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="flex flex-col gap-3">
+      <h2 className="type-title">{title}</h2>
+      <div className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">{children}</div>
+    </section>
   );
 }
