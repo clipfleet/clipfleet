@@ -11,6 +11,10 @@ export const LIMITS = {
   signInByIp: [20, 15 * MINUTE],
   signInByEmail: [8, 15 * MINUTE],
   signUpByIp: [5, HOUR],
+  // Cada pedido manda un email: pocos por cuenta para no llenarle la casilla a nadie.
+  passwordResetByIp: [10, HOUR],
+  passwordResetByEmail: [3, HOUR],
+  resetPasswordByIp: [10, HOUR],
   createJob: [20, DAY],
   createInvites: [20, HOUR],
   applyToJob: [40, HOUR],

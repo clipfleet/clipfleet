@@ -1,5 +1,6 @@
 "use server";
 
+import { isPasswordCompromised } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -134,4 +135,59 @@ export async function changePassword(form: FormData): Promise<ActionResult> {
   }
   await getAuth().api.revokeOtherSessions({ headers: requestHeaders });
   return { ok: "Contraseña cambiada. Cerramos la sesión en los demás dispositivos." };
+}
+
+/**
+ * Pide el link para restablecer la contraseña. Responde lo mismo exista o no la cuenta:
+ * el formulario no sirve para averiguar qué emails están registrados.
+ */
+export async function requestPasswordReset(form: FormData): Promise<ActionResult> {
+  await dbReady();
+  const email = text(form, "email", 200).toLowerCase();
+  const limited = (await tooMany("passwordResetByIp", await clientIp())) ?? (await tooMany("passwordResetByEmail", email));
+  if (limited) return limited;
+
+  if (!EMAIL.test(email)) return { error: "Revisá el email." };
+  try {
+    await getAuth().api.requestPasswordReset({ body: { email }, headers: await headers() });
+  } catch (error) {
+    console.error("No se pudo pedir el link para restablecer la contraseña:", error);
+  }
+  return { ok: "Si hay una cuenta con ese email, te mandamos un link para elegir una contraseña nueva." };
+}
+
+/** Elige la contraseña nueva con el token del link. Cierra todas las sesiones de la cuenta. */
+export async function resetPassword(form: FormData): Promise<ActionResult> {
+  await dbReady();
+  const limited = await tooMany("resetPasswordByIp", await clientIp());
+  if (limited) return limited;
+
+  const token = text(form, "token", 200);
+  const newPassword = password(form);
+  const expired = { error: "El link venció o ya se usó. Pedí uno nuevo." };
+  if (!token) return expired;
+  if (newPassword.length < MIN_PASSWORD_LENGTH) return { error: `La contraseña tiene que tener al menos ${MIN_PASSWORD_LENGTH} caracteres.` };
+  if (newPassword.length > MAX_PASSWORD_LENGTH) return { error: `La contraseña no puede tener más de ${MAX_PASSWORD_LENGTH} caracteres.` };
+  const confirm = form.get("confirmPassword");
+  if (newPassword !== (typeof confirm === "string" ? confirm : "")) return { error: "Las dos contraseñas no coinciden." };
+
+  // better-auth gasta el token antes de revisar filtraciones: se revisa acá primero para que
+  // una contraseña rechazada no inutilice el link.
+  try {
+    if (await isPasswordCompromised(newPassword)) {
+      return { error: "Esa contraseña aparece en filtraciones de datos conocidas. Elegí otra." };
+    }
+  } catch {
+    return { error: "No pudimos revisar la contraseña. Probá de nuevo en un rato." };
+  }
+
+  try {
+    await getAuth().api.resetPassword({ body: { token, newPassword }, headers: await headers() });
+  } catch (error) {
+    if (authErrorCode(error).includes("PASSWORD_COMPROMISED")) {
+      return { error: "Esa contraseña aparece en filtraciones de datos conocidas. Elegí otra." };
+    }
+    return expired;
+  }
+  redirect("/ingresar?restablecida=1");
 }

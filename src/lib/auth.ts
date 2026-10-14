@@ -2,11 +2,16 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { haveIBeenPwned } from "better-auth/plugins";
+import { after } from "next/server";
+import { baseUrl } from "@/lib/base-url";
 import { getDb } from "@/lib/db";
 import { account, session, user, verification } from "@/lib/db/schema";
+import { sendEmail } from "@/lib/email";
+import { resetPasswordEmail } from "@/lib/email/templates";
 
 export const MIN_PASSWORD_LENGTH = 10;
 export const MAX_PASSWORD_LENGTH = 128;
+export const RESET_PASSWORD_MINUTES = 30;
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -31,6 +36,23 @@ function createAuth() {
       minPasswordLength: MIN_PASSWORD_LENGTH,
       maxPasswordLength: MAX_PASSWORD_LENGTH,
       autoSignIn: true,
+      resetPasswordTokenExpiresIn: RESET_PASSWORD_MINUTES * 60,
+      // Quien tenía la cuenta abierta con la contraseña vieja queda afuera.
+      revokeSessionsOnPasswordReset: true,
+      // El link apunta a nuestra página y no al de better-auth (`/api/auth/reset-password/…`),
+      // que no está montado. En producción el origen es fijo: nunca sale del `Host` del request.
+      // El envío va en `after`: la respuesta tarda lo mismo exista o no la cuenta.
+      sendResetPassword: async ({ user: { email }, token }) => {
+        const origin = baseURL ?? (await baseUrl());
+        const url = `${origin}/restablecer?token=${encodeURIComponent(token)}`;
+        after(async () => {
+          try {
+            await sendEmail(resetPasswordEmail(email, url, RESET_PASSWORD_MINUTES));
+          } catch (error) {
+            console.error("No se pudo mandar el email para restablecer la contraseña:", error);
+          }
+        });
+      },
     },
     user: {
       additionalFields: {
