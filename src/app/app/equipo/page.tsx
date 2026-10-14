@@ -15,7 +15,7 @@ import { listTeam } from "@/lib/queries";
 import { teamByPerson } from "@/lib/stats/team";
 import { requireUser } from "@/lib/session";
 
-export const metadata = { title: "Equipo" };
+export const metadata = { title: "Contratados" };
 
 export default async function TeamPage() {
   const me = await requireUser("hirer");
@@ -36,7 +36,7 @@ export default async function TeamPage() {
   return (
     <>
       <PageHeader
-        title="Equipo"
+        title="Contratados"
         actions={
           <>
             <ButtonLink href="/app/equipo/invitar" variant="secondary">
@@ -55,7 +55,7 @@ export default async function TeamPage() {
 
       {team.length === 0 ? (
         <EmptyState
-          title="Todavía no tenés a nadie en el equipo"
+          title="Todavía no contrataste a nadie"
           action={
             <span className="flex flex-wrap gap-2">
               <ButtonLink href="/app/equipo/invitar">Invitar por link</ButtonLink>
@@ -67,7 +67,7 @@ export default async function TeamPage() {
         />
       ) : (
         <>
-          <StatGroup cols={3} label="Resumen del equipo">
+          <StatGroup cols={3} label="Resumen de tus contratados">
             <Stat label="Vistas aprobadas" value={<Num value={totals.views} />} />
             <Stat label="Pagado" value={<Money cents={totals.paid} />} />
             <Stat label="Adeudado" value={<Money cents={totals.owed} />} />

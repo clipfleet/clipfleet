@@ -33,7 +33,7 @@ Alcanza para construir cualquier pantalla sin leer el código de los componentes
 | Landing | Una pantalla, a lo sumo una y media: titular, una frase, las dos entradas y la captura de producto (`ProductPreview`). ≤ 100 palabras. Sin prueba social, sin tarifas, sin simuladores |
 | Encabezado de página | Título y acciones. Sin descripción, salvo que evite un error real |
 | `StatGroup` | Máximo 3 `Stat`. Sin `note`, salvo que el número sea ambiguo sin ella |
-| Tabla de equipo | Persona, Videos, Vistas, Costo / 1.000, Pagado, Adeudado. Una fila por persona; debajo del nombre, sus campañas, y lo que espera revisión va como badge junto a la campaña |
+| Tabla de contratados | Persona, Videos, Vistas, Costo / 1.000, Pagado, Adeudado. Una fila por persona; debajo del nombre, sus campañas, y lo que espera revisión va como badge junto a la campaña |
 | Detalle de contratación | La tabla de videos es la pantalla. Arriba, solo lo que tiene a la otra parte esperando (una liquidación por pagar o un cobro por confirmar). Liquidaciones, mensajes y finalizar: plegados |
 | Perfil público | Nombre, una línea, 4 números (`TrackRecord`), una acción; insignias ganadas (`BadgeList`, una por familia) y calendario de actividad (`ActivityCalendar`) solo si hay actividad |
 | Estados vacíos | Una línea y, si existe, la acción |
@@ -77,6 +77,7 @@ Son **cuentas descartables** que quien trabaja crea cuando lo contratan, para su
 | `payRule` | regla de pago; "cada 1.000 vistas" | CPM, tarifa |
 | `Job.slots` | cupos | puestos |
 | terminar un `Contract` | finalizar | cerrar, dar de baja |
+| las personas contratadas por un contratador | Contratados (la sección); "Contratados X de Y" en una campaña | equipo, staff |
 
 Los roles no se nombran en la interfaz: ningún sustantivo suena bien para ninguno de los dos lados y la pantalla ya dice a quién le habla. Donde haga falta distinguirlos se dice qué hace cada uno ("alguien que sube videos", "quien publica la campaña"). En el código y en los documentos se sigue diciendo contratador y gestor.
 
@@ -244,7 +245,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 ## 6. Marco (`@/components/shell/*`)
 
-**AppShell** — `user: { name, username, role }`, `nav: { href, label, icon?, badge? }[]`, `signOutAction`, `children`. Escritorio: barra lateral clara de 240px con el ítem activo apenas despegado del fondo. Al pie de la barra lateral, avatar, nombre, `@usuario` y "Salir", sin rótulo de rol. Celular: barra superior con la marca y navegación fija abajo (ícono + rótulo). Da contenedor, márgenes y `gap`: las páginas devuelven un fragmento. Navegación: contratador → Equipo, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil. En celular, Perfil sale de la barra de abajo y pasa a la de arriba como el avatar (`profileHref`), así abajo quedan cuatro ítems con el rótulo entero; en escritorio sigue en la barra lateral.
+**AppShell** — `user: { name, username, role }`, `nav: { href, label, icon?, badge? }[]`, `signOutAction`, `children`. Escritorio: barra lateral clara de 240px con el ítem activo apenas despegado del fondo. Al pie de la barra lateral, avatar, nombre, `@usuario` y "Salir", sin rótulo de rol. Celular: barra superior con la marca y navegación fija abajo (ícono + rótulo). Da contenedor, márgenes y `gap`: las páginas devuelven un fragmento. Navegación: contratador → Contratados, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil. En celular, Perfil sale de la barra de abajo y pasa a la de arriba como el avatar (`profileHref`), así abajo quedan cuatro ítems con el rótulo entero; en escritorio sigue en la barra lateral.
 
 **PublicHeader** — `user: { name } | null`, `loginHref?`, `registerHref?`, `panelHref?`. **PublicFooter** — `user`, `loginHref?`, `panelHref?`: una línea fina, la marca y tres links.
 
@@ -262,7 +263,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **ReviewItem** — `authorName`, `authorContext?`, `rating`, `comment`, `date`. **Rating** — `value`; solo para reseñas.
 
-**ProductPreview** — la pantalla de Equipo armada con los componentes reales y datos ficticios, enmarcada como captura y rotulada "Ejemplo". Solo en la landing. Va `inert`: no recibe foco ni clics.
+**ProductPreview** — la pantalla de Contratados armada con los componentes reales y datos ficticios, enmarcada como captura y rotulada "Ejemplo". Solo en la landing. Va `inert`: no recibe foco ni clics.
 
 ---
 
@@ -272,7 +273,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 ```tsx
 <>
-  <PageHeader title="Equipo" actions={…} />
+  <PageHeader title="Contratados" actions={…} />
   <StatGroup cols={3}>…</StatGroup>          {/* si hay plata o vistas que resumir */}
   <Panel padded={false}><Table layout="stack" …/></Panel>
 </>
@@ -286,7 +287,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **Campaña o perfil dentro del panel** — el mismo contenido que la página pública, sin el contenedor público (el `AppShell` da márgenes). Cuando quien mira es el dueño (su campaña, su perfil), no hay avisos: al lado del link para volver va una nota corta (`backNote`: "Así la ven quienes suben videos" / "Así ven tu perfil") y "Copiar link" (`CopyButton`) es la acción del encabezado.
 
-**Equipo** — una fila por persona, no por contratación. El nombre lleva a su perfil dentro del panel; debajo, cada campaña o invitación en la que trabaja lleva a su contratación. Así se lee sin explicación que Equipo es la gente de todas las campañas.
+**Contratados** (`/app/equipo`) — una fila por persona, no por contratación. El nombre lleva a su perfil dentro del panel; debajo, cada campaña o invitación en la que trabaja lleva a su contratación. Así se lee sin explicación que son todas las personas contratadas, en todas las campañas.
 
 **Liquidaciones** — `StatGroup` de 2 → "Por pagar": un `Panel` por liquidación (persona, período, "Marcar como pagado" y el detalle por video con total) → `Panel` "Pagadas" con el estado de cada una.
 

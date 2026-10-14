@@ -1,4 +1,4 @@
-/** Lo mínimo de una contratación del equipo que hace falta para agruparla por persona. */
+/** Lo mínimo de una contratación que hace falta para agruparla por persona. */
 export type TeamContract = {
   worker: { username: string; name: string };
   contract: { id: string; status: "active" | "ended" };

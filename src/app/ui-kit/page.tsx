@@ -71,7 +71,7 @@ export default function UiKitPage() {
       user={{ name: "Lucía Benítez", username: "lucia", role: "hirer" }}
       nav={[
         { href: "/ui-kit", label: "Kit de UI", icon: <GridIcon /> },
-        { href: "/app/equipo", label: "Equipo", icon: <TeamIcon />, badge: 2 },
+        { href: "/app/equipo", label: "Contratados", icon: <TeamIcon />, badge: 2 },
         { href: "/app/busquedas", label: "Campañas", icon: <SearchIcon /> },
         { href: "/app/liquidaciones", label: "Liquidaciones", icon: <ReceiptIcon /> },
       ]}
@@ -271,7 +271,7 @@ export default function UiKitPage() {
       </Group>
 
       <Group title="Stat y StatGroup (máximo 3)">
-        <StatGroup cols={3} label="Resumen del equipo">
+        <StatGroup cols={3} label="Resumen de tus contratados">
           <Stat label="Vistas aprobadas" value={<Num value={1_626_000} />} />
           <Stat label="Pagado" value={<Money cents={16_820_000} />} />
           <Stat label="Adeudado" value={<Money cents={1_864_000} />} />

@@ -49,7 +49,7 @@ export default async function PanelWorkerProfilePage({ params, searchParams }: P
           </CopyButton>
         ) : me.role === "hirer" && pending.length === 0 ? (
           <ButtonLink href="/app/equipo/invitar" variant="secondary">
-            Invitar a {firstName} a mi equipo
+            Invitar a {firstName}
           </ButtonLink>
         ) : null
       }

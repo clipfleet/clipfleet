@@ -22,7 +22,7 @@ export default async function InvitePage({ params }: PageProps<"/invitacion/[tok
     <div className="flex-1 bg-wash">
       <div className="mx-auto flex max-w-form flex-col gap-6 px-4 py-12 sm:py-16">
         <div className="flex flex-col gap-1.5">
-          <p className="text-sm text-ink-2">{invite.brandName} te invita a su equipo</p>
+          <p className="text-sm text-ink-2">{invite.brandName} te invita a trabajar</p>
           <h1 className="type-page">{invite.title}</h1>
         </div>
 
@@ -56,8 +56,8 @@ export default async function InvitePage({ params }: PageProps<"/invitacion/[tok
         ) : (
           <ActionForm action={acceptInvite} className="flex flex-col gap-3">
             <input type="hidden" name="token" value={token} />
-            <FormSubmit size="lg" block pendingLabel="Sumándote…">
-              Aceptar y sumarme al equipo
+            <FormSubmit size="lg" block pendingLabel="Aceptando…">
+              Aceptar la invitación
             </FormSubmit>
           </ActionForm>
         )}

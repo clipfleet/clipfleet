@@ -27,13 +27,14 @@ Consecuencias en el modelo:
 **Vocabulario**
 
 - **`Job` se dice "campaña"** en toda la interfaz, pública y del panel ("Publicar campaña", sección "Campañas"). Rutas, tablas y código siguen como están (`/app/busquedas`, `/trabajos`, `jobs`): no hay migración.
+- **"Equipo" pasa a "Contratados"** (la sección y el título; la ruta sigue siendo `/app/equipo`). Quienes suben videos no son el equipo del contratador sino gente que contrató por campaña o por invitación, y es la misma palabra de "Contratados X de Y" en cada campaña.
 - **Los roles no se nombran en la interfaz.** "Contratador", "trabajador", "gestor", "creador" y "clipper" no aparecen en pantalla: se sale el rótulo de rol de la barra lateral, en público se mantienen "Tengo contenido" y "Subo videos", y donde haga falta distinguir se dice qué hace cada uno. En el código y en este documento se sigue diciendo contratador y gestor.
 
 **Pantallas que cambian**
 
 | Pantalla | Cambio |
 |---|---|
-| `/app/equipo` | Una fila por persona, con sus campañas o invitaciones debajo del nombre |
+| `/app/equipo` | Se llama "Contratados". Una fila por persona, con sus campañas o invitaciones debajo del nombre |
 | `/app/equipo/invitar` | Dice qué genera: un link por persona, de un solo uso, que al abrirlo acepta el trabajo con esa regla de pago y vence a los 14 días |
 | `/app/busquedas/[id]` | Resumen de la campaña (descripción, contratados X de Y) y "Postulaciones" como sección propia con la cantidad sin responder. Quien fue contratado lleva a su contratación. "Ver página pública" pasa a "Ver publicación", un link secundario que no sale del panel, y "Copiar link" va junto a "Pausar" |
 | `/app/perfil` (ambos) | Bloques de lectura con "Editar": Perfil, Cuenta (email y cambiar contraseña) y los datos de pago, que siguen en el perfil |
@@ -50,7 +51,7 @@ Consecuencias en el modelo:
 
 Quien tiene la sesión iniciada y abre `/trabajos`, `/trabajos/[id]`, `/talento` o `/t/[usuario]` (por ejemplo, desde un link que le pasaron) va a la versión del panel. Las páginas públicas siguen igual para quien no ingresó. El tablero público pasa a llamarse "Campañas abiertas" para no confundirse con "Campañas" del contratador, que son las suyas.
 
-Navegación: contratador → Equipo, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil.
+Navegación: contratador → Contratados, Campañas, Talento, Liquidaciones, Perfil. Gestor → Mis trabajos, Campañas, Postulaciones, Cobros, Perfil.
 
 **Cambiar la contraseña:** pide la actual y la nueva, con el mismo límite de intentos que el ingreso, y cierra las otras sesiones abiertas. No es recuperación de contraseña: esa sigue pendiente porque necesita envío de mails.
 

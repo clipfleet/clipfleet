@@ -23,7 +23,7 @@ const TOTALS = TEAM.reduce((sum, row) => ({ views: sum.views + row.views, paid: 
 const costPerThousand = (paid: number, views: number) => Math.round((paid * 1000) / views);
 
 const NAV = [
-  { label: "Equipo", icon: <TeamIcon />, active: true, badge: 2 },
+  { label: "Contratados", icon: <TeamIcon />, active: true, badge: 2 },
   { label: "Campañas", icon: <LayersIcon />, active: false },
   { label: "Liquidaciones", icon: <ReceiptIcon />, active: false },
   { label: "Perfil", icon: <UserIcon />, active: false },
@@ -39,7 +39,7 @@ export function ProductPreview({ className }: { className?: string }) {
     <figure className={clsx("flex min-w-0 flex-col gap-3", className)}>
       <figcaption className="flex items-center gap-2.5 text-[0.8125rem] text-ink-3">
         <Badge>Ejemplo</Badge>
-        Un equipo, con datos ficticios.
+        Contratados de un canal, con datos ficticios.
       </figcaption>
 
       <div inert className="grid overflow-hidden rounded-lg border border-line bg-surface shadow-raised select-none lg:grid-cols-[13rem_minmax(0,1fr)]">
@@ -67,7 +67,7 @@ export function ProductPreview({ className }: { className?: string }) {
 
         <div className="flex min-w-0 flex-col gap-5 p-4 sm:gap-6 sm:p-6 lg:p-8">
           <div className="flex items-center justify-between gap-4">
-            <p className="text-xl leading-7 font-semibold tracking-[-0.02em]">Equipo</p>
+            <p className="text-xl leading-7 font-semibold tracking-[-0.02em]">Contratados</p>
             <div className="hidden gap-2 sm:flex">
               <span className={buttonClasses({ variant: "secondary", size: "sm" })}>Invitar por link</span>
               <span className={buttonClasses({ size: "sm" })}>Liquidar lo adeudado</span>

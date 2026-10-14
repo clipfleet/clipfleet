@@ -26,9 +26,9 @@ export default async function InvitePage() {
   return (
     <>
       <PageHeader
-        back={{ href: "/app/equipo", label: "Equipo" }}
+        back={{ href: "/app/equipo", label: "Contratados" }}
         title="Invitar por link"
-        description={`Para sumar a alguien que ya conocés, sin publicar una campaña. Cada link sirve para una sola persona: al abrirlo, se suma a tu equipo con esta regla de pago. Vence a los ${INVITE_DAYS} días.`}
+        description={`Para sumar a alguien que ya conocés, sin publicar una campaña. Cada link sirve para una sola persona: al abrirlo, queda contratada con esta regla de pago. Vence a los ${INVITE_DAYS} días.`}
       />
 
       <Panel className="max-w-2xl">
