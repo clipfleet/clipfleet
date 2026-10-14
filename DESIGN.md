@@ -272,6 +272,7 @@ Puntos clave:
 | `/` | público | Landing |
 | `/trabajos`, `/trabajos/[id]` | público | Bolsa de campañas y detalle; con sesión, redirige a `/app/campanas` |
 | `/talento`, `/t/[usuario]` | público | Directorio y perfil público con historial; con sesión, redirige a `/app/talento` |
+| `/terminos`, `/privacidad` | público | Términos y política de privacidad. Borradores: falta revisión legal y borrar la cuenta antes de abrir el sitio |
 | `/app/busquedas`, `/app/busquedas/[id]` | contratador | Campañas: crear, pausar y responder postulaciones |
 | `/app/equipo`, `/app/equipo/[id]` | contratador | **CRM**: una fila por persona con rendimiento; detalle por contratación |
 | `/app/equipo/invitar`, `/invitacion/[token]` | contratador / invitado | Sumar equipo existente por link, sin pasar por la bolsa |

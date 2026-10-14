@@ -37,10 +37,15 @@ export default async function NewJobPage() {
           </div>
         </Panel>
 
-        <div>
-          <FormSubmit pendingLabel="Publicando…">
-            Publicar campaña
-          </FormSubmit>
+        <div className="flex flex-col gap-3">
+          <p className="text-[0.8125rem] leading-snug text-ink-3">
+            Al publicar te comprometés a pagar lo que la regla calcule sobre las vistas que apruebes, y declarás tener los derechos del contenido.
+          </p>
+          <div>
+            <FormSubmit pendingLabel="Publicando…">
+              Publicar campaña
+            </FormSubmit>
+          </div>
         </div>
       </ActionForm>
     </>

@@ -30,7 +30,7 @@ Alcanza para construir cualquier pantalla sin leer el código de los componentes
 
 | Qué | Límite |
 |---|---|
-| Landing | Una pantalla, a lo sumo una y media: titular, una frase, las dos entradas y la captura de producto (`ProductPreview`). ≤ 100 palabras. Sin prueba social, sin tarifas, sin simuladores |
+| Landing | Una pantalla, a lo sumo una y media: titular, las dos entradas (cada una con lo que gana ese lado, cómo y la acción) y la captura de producto (`ProductPreview`). ≤ 100 palabras. Sin prueba social, sin tarifas, sin simuladores |
 | Encabezado de página | Título y acciones. Sin descripción, salvo que evite un error real |
 | `StatGroup` | Máximo 3 `Stat`. Sin `note`, salvo que el número sea ambiguo sin ella |
 | Tabla de contratados | Persona, Videos, Vistas, Costo / 1.000, Pagado, Adeudado. Una fila por persona; debajo del nombre, sus campañas, y lo que espera revisión va como badge junto a la campaña |
@@ -269,7 +269,7 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **ReviewItem** — `authorName`, `authorContext?`, `rating`, `comment`, `date`. **Rating** — `value`; solo para reseñas.
 
-**ProductPreview** — la pantalla de Contratados armada con los componentes reales y datos ficticios, enmarcada como captura y rotulada "Ejemplo". Solo en la landing. Va `inert`: no recibe foco ni clics.
+**ProductPreview** — `side: "hirer" | "worker"`. Una pantalla del panel (Contratados o Mis trabajos) armada con los componentes reales y datos ficticios, enmarcada como captura y rotulada "Ejemplo". Solo en la landing, dentro de `PreviewTabs`. Va `inert`: no recibe foco ni clics.
 
 ---
 
@@ -303,9 +303,13 @@ Reglas: filas de campos con `grid items-start gap-4 sm:grid-cols-…` (la ayuda 
 
 **Perfil público** — avatar, nombre, `@usuario · presentación` y una acción → `TrackRecord` con una línea de procedencia → solo si existen: insignias (`BadgeList`), actividad (`ActivityCalendar` dentro de un `Panel`), trabajos (tabla de 3 columnas) y reseñas.
 
+**Páginas legales** (`/terminos`, `/privacidad`) — `LegalPage`: título, fecha de actualización y el texto en `max-w-prose` con `h2`, `p` y `ul` sin clases.
+
+**Quién paga, en el momento de comprometerse.** Donde alguien acepta una regla de pago, una línea lo dice: en "Cómo se paga" de una campaña o invitación, como `footer` del `Panel` ("Te paga {marca} directo. {marca de la plataforma} no interviene en el pago ni lo garantiza."); al publicar una campaña, sobre el botón (el compromiso de pagar y los derechos del contenido); en el registro, debajo del botón (aceptar términos y privacidad). Una línea, en `ink-3`, sin `Notice`.
+
 **Páginas angostas públicas** (ingresar, registro, invitación) — envoltorio `flex-1 bg-wash`, adentro `mx-auto max-w-form px-4 py-12 sm:py-16` con `h1` (`type-page`) y un `Panel className="shadow-xs"`.
 
-**Landing** — una sección: a la izquierda titular y una frase; a la derecha, las dos entradas como una lista de dos filas y la línea sobre pagos y costo. Debajo, `ProductPreview`. Nada más.
+**Landing** — el titular, que dice lo que gana cada lado. Debajo, las dos entradas como tarjetas iguales, una al lado de la otra (apiladas en celular): quién es ("Tengo contenido" / "Subo videos"), el resultado como título en voseo ("Multiplicá las vistas de tu contenido" / "Cobrá por cada vista que generás"), una frase con cómo se logra y la acción. Toda la tarjeta es el link. Abajo, la línea sobre pagos y costo. Después, `PreviewTabs` con las mismas dos entradas, y en cada pestaña su `ProductPreview`. Nada más. Se habla de vistas e ingresos, no de cuentas: nombrar las multicuentas en la landing suena a spam.
 
 **Estados que toda pantalla resuelve** — vacío (`EmptyState`), sin dato ("—"), error y éxito (los muestra `ActionForm`), en espera (`FormSubmit` con indicador; sin esqueletos).
 

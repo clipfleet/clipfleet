@@ -10,6 +10,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
 import { Textarea } from "@/components/ui/textarea";
 import { applyToJob } from "@/lib/actions/jobs";
+import { BRAND } from "@/lib/brand";
 import { APPLICATION_STATUS, JOB_STATUS } from "@/lib/domain/labels";
 import type { getJob, getMyApplication } from "@/lib/queries";
 import type { SessionUser } from "@/lib/session";
@@ -75,7 +76,10 @@ export function JobDetail({ job, me, application, back, backNote, actions }: Job
           )}
         </div>
 
-        <Panel title="Cómo se paga" description={job.platform ? <>Por las vistas en <PlatformTag platform={job.platform} name={job.platformName} className="align-bottom font-medium text-ink-2" /></> : undefined}>
+        <Panel
+          title="Cómo se paga"
+          footer={`Te paga ${job.hirer.brandName} directo. ${BRAND.name} no interviene en el pago ni lo garantiza.`}
+          description={job.platform ? <>Por las vistas en <PlatformTag platform={job.platform} name={job.platformName} className="align-bottom font-medium text-ink-2" /></> : undefined}>
           <PayRuleSummary {...job.payRule} />
         </Panel>
       </div>
