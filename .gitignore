@@ -50,3 +50,6 @@ next-env.d.ts
 # archivos que instala la integración de Supabase
 /.agents/
 /skills-lock.json
+
+# leads del outreach (datos de terceros, no se versionan)
+/leads/
